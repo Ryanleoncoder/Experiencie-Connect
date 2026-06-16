@@ -1,0 +1,153 @@
+# Environment and local deploy state
+.env
+.env.*
+!*.env.example
+.vercel/
+
+# Dependencies and build outputs
+node_modules/
+.npm/
+.pnpm-store/
+dist/
+build/
+out/
+.next/
+
+# Editor, OS and runtime noise
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
+logs/
+*.pid
+*.seed
+*.pid.lock
+*.swp
+*.swo
+*~
+
+# Python and test caches
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.cache/
+coverage/
+htmlcov/
+*.coverage
+
+# Local-only folders
+tools/
+design/
+preview/
+video-showcase/
+scripts/
+
+# Servicos em VPS: o codigo-fonte e publicado; segredos, conteudo gerado,
+# material de avaliacao proprietario e scripts de infraestrutura nao sao.
+#
+# Conteudo oculto (estrutura mantida via README placeholder):
+vps-deployment/logun-ia/logun/prompts/*
+!vps-deployment/logun-ia/logun/prompts/README.md
+vps-deployment/logun-ia/logun/rubrics/*
+!vps-deployment/logun-ia/logun/rubrics/README.md
+vps-deployment/logun-ia/logun/data/*
+!vps-deployment/logun-ia/logun/data/README.md
+vps-deployment/logun-ia/challenge-contexts/*
+!vps-deployment/logun-ia/challenge-contexts/README.md
+#
+# Infraestrutura e material operacional (deploy/rollback/especificos de servidor):
+vps-deployment/deploy-to-vps.sh
+vps-deployment/backend/install.sh
+vps-deployment/docs/
+vps-deployment/vercel-updates/
+vps-deployment/scripts/
+
+# Gabaritos de avaliacao dos desafios assistidos (criterios, pesos, pontuacao).
+# Nunca publicar: expor isso permite ao jogador otimizar a resposta para a regra.
+logun-contexts/*
+!logun-contexts/README.md
+
+# Local test suites
+__test__/
+__tests__/
+tests/
+test/
+teste/
+testes/
+
+# Testes dos servicos em VPS sao publicados (demonstram a engenharia)
+!vps-deployment/backend/tests/
+!vps-deployment/logun-ia/tests/
+
+# Infra de teste local e scripts pontuais que nao precisam ser publicados
+jest.setup.js
+database/ops/36_delete_all_test_users.sql
+
+
+# Private notes and generated review docs
+HANDOFF-*.md
+LOGS-PARA-REVISAR.md
+CLAUDE.md
+plano.md
+*-SKILL.md
+admin-service/__tests__/*[Dd][Ee][Bb][Uu][Gg]*.py
+admin-service/tests/manual_*.py
+admin-service/tests/verify_*.py
+admin-service/tests/TASK_*.md
+admin-service/tests/test_endpoints*.sh
+**/*[Ss][Uu][Mm][Mm][Aa][Rr][Yy]*.md
+**/*[Gg][Uu][Ii][Dd][Ee]*.md
+**/*[Cc][Hh][Ee][Cc][Kk][Ll][Ii][Ss][Tt]*.md
+**/*[Ss][Tt][Aa][Tt][Uu][Ss]*.md
+**/*[Rr][Ee][Pp][Oo][Rr][Tt]*.md
+**/*[Nn][Oo][Tt][Ee][Ss]*.md
+**/*[Ii][Mm][Pp][Ll][Ee][Mm][Ee][Nn][Tt][Aa][Tt][Ii][Oo][Nn]*.md
+**/*[Vv][Ee][Rr][Ii][Ff][Ii][Cc][Aa][Tt][Ii][Oo][Nn]*.md
+**/*[Tt][Aa][Ss][Kk]*.md
+**/*[Tt][Oo][Dd][Oo]*.md
+**/*[Rr][Oo][Aa][Dd][Mm][Aa][Pp]*.md
+**/*[Pp][Rr][Oo][Mm][Pp][Tt]*.md
+**/*[Aa][Uu][Dd][Ii][Tt]*.md
+**/*[Rr][Ee][Vv][Ii][Ee][Ww]*.md
+**/*[Dd][Ee][Bb][Uu][Gg]*.md
+**/*[Dd][Ee][Pp][Ll][Oo][Yy]*.md
+
+# Credentials and exported secret material
+**/*firebase-adminsdk*.json
+**/*service-account*.json
+**/*service_account*.json
+*SECRETS*.md
+API_KEYS_SETUP.md
+
+# Temporary and generated files
+*.backup.*
+**/*.backup.*
+*.bak
+*.tmp
+*.temp
+*.heapsnapshot
+*.tar.gz
+*.tgz
+*.zip
+*.7z
+tmp/
+temp/
+.tmp/
+.temp/
+.codex-backups/
+
+# Scratch tests and mock surfaces
+_teste_/
+test-*.json
+test-*.md
+test-*.js
+test-*.html
+debug-*.html
+debug-*.js
+debug-*.json
+_verify*.html
+_*redesign*.html
+_*.png

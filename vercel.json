@@ -1,0 +1,312 @@
+{
+  "functions": {
+    "api/validate-answer.js": {
+      "memory": 1024,
+      "maxDuration": 10
+    },
+    "api/validate-challenge-access.js": {
+      "memory": 512,
+      "maxDuration": 10
+    },
+    "api/check-invite.js": {
+      "memory": 1024,
+      "maxDuration": 10
+    },
+    "api/accept-invite.js": {
+      "memory": 1024,
+      "maxDuration": 10
+    },
+    "api/render-page.js": {
+      "memory": 1024,
+      "maxDuration": 10,
+      "includeFiles": "**/*.html"
+    },
+    "api/get-config.js": {
+      "memory": 512,
+      "maxDuration": 5
+    }
+  },
+  "redirects": [
+    {
+      "source": "/home",
+      "destination": "/app",
+      "permanent": false
+    },
+    {
+      "source": "/home.html",
+      "destination": "/app",
+      "permanent": false
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/api/render-page?page=index.html"
+    },
+    {
+      "source": "/index.html",
+      "destination": "/api/render-page?page=index.html"
+    },
+    {
+      "source": "/login",
+      "destination": "/api/render-page?page=login.html"
+    },
+    {
+      "source": "/login.html",
+      "destination": "/api/render-page?page=login.html"
+    },
+    {
+      "source": "/app",
+      "destination": "/api/render-page?page=app"
+    },
+    {
+      "source": "/app.html",
+      "destination": "/api/render-page?page=app"
+    },
+    {
+      "source": "/challenge",
+      "destination": "/api/render-page?page=challenge.html"
+    },
+    {
+      "source": "/challenge.html",
+      "destination": "/api/render-page?page=challenge.html"
+    },
+    {
+      "source": "/duelo-de-experiencia",
+      "destination": "/api/render-page?page=duelo-de-experiencia.html"
+    },
+    {
+      "source": "/duelo-de-experiencia.html",
+      "destination": "/api/render-page?page=duelo-de-experiencia.html"
+    },
+    {
+      "source": "/momento-critico",
+      "destination": "/api/render-page?page=momento-critico.html"
+    },
+    {
+      "source": "/momento-critico.html",
+      "destination": "/api/render-page?page=momento-critico.html"
+    },
+    {
+      "source": "/outside-window",
+      "destination": "/api/render-page?page=outside-window.html"
+    },
+    {
+      "source": "/outside-window.html",
+      "destination": "/api/render-page?page=outside-window.html"
+    },
+    {
+      "source": "/season-closed",
+      "destination": "/api/render-page?page=season-closed.html"
+    },
+    {
+      "source": "/season-closed.html",
+      "destination": "/api/render-page?page=season-closed.html"
+    },
+    {
+      "source": "/maintenance",
+      "destination": "/api/render-page?page=maintenance.html"
+    },
+    {
+      "source": "/maintenance.html",
+      "destination": "/api/render-page?page=maintenance.html"
+    },
+    {
+      "source": "/404",
+      "destination": "/api/render-page?page=404.html"
+    },
+    {
+      "source": "/404.html",
+      "destination": "/api/render-page?page=404.html"
+    },
+    {
+      "source": "/ranking",
+      "destination": "/api/render-page?page=ranking.html"
+    },
+    {
+      "source": "/ranking.html",
+      "destination": "/api/render-page?page=ranking.html"
+    },
+    {
+      "source": "/conquistas",
+      "destination": "/api/render-page?page=conquistas.html"
+    },
+    {
+      "source": "/conquistas.html",
+      "destination": "/api/render-page?page=conquistas.html"
+    },
+    {
+      "source": "/resgatar",
+      "destination": "/api/render-page?page=resgatar.html"
+    },
+    {
+      "source": "/resgatar.html",
+      "destination": "/api/render-page?page=resgatar.html"
+    },
+    {
+      "source": "/register",
+      "destination": "/api/render-page?page=register.html"
+    },
+    {
+      "source": "/register.html",
+      "destination": "/api/render-page?page=register.html"
+    },
+    {
+      "source": "/sobre",
+      "destination": "/api/render-page?page=sobre.html"
+    },
+    {
+      "source": "/sobre.html",
+      "destination": "/api/render-page?page=sobre.html"
+    },
+    {
+      "source": "/invite",
+      "destination": "/api/render-page?page=invite/index.html"
+    },
+    {
+      "source": "/invite/index.html",
+      "destination": "/api/render-page?page=invite/index.html"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/ecdesignsystem(\\.html)?",
+      "status": 404
+    },
+    {
+      "src": "/\\.git(/.*)?",
+      "status": 404
+    },
+    {
+      "src": "/.*\\.md$",
+      "status": 404
+    },
+    {
+      "src": "/.*\\.txt$",
+      "status": 404
+    },
+    {
+      "src": "/admin",
+      "dest": "/admin.html"
+    },
+    {
+      "src": "/preview/(.*)",
+      "status": 404
+    },
+    {
+      "src": "/frontend/.*demo\\.html",
+      "status": 404
+    },
+    {
+      "src": "/frontend/test-.*\\.html",
+      "status": 404
+    },
+    {
+      "src": "/invite/test-.*\\.html",
+      "status": 404
+    },
+    {
+      "src": "/invite/package\\.json",
+      "status": 404
+    },
+    {
+      "src": "/invite/package-lock\\.json",
+      "status": 404
+    },
+    {
+      "src": "/invite/jest\\.config\\.js",
+      "status": 404
+    },
+    {
+      "src": "/Logun-ia/desafio-preview.*\\.html",
+      "status": 404
+    },
+    {
+      "src": "/\\.env.*",
+      "status": 404
+    },
+    {
+      "src": "/frontend/js/local-env-loader\\.js",
+      "status": 404
+    },
+    {
+      "src": "/api/config",
+      "status": 404
+    },
+    {
+      "src": "/api/test-env",
+      "status": 404
+    },
+    {
+      "src": "/api/test-.*",
+      "status": 404
+    },
+    {
+      "src": "/api/verify-firebase-env",
+      "status": 404
+    },
+    {
+      "src": "/test-.*\\.html",
+      "status": 404
+    },
+    {
+      "src": "/\\.vercel-redeploy",
+      "status": 404
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)\\.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/frontend/assets/image/avatar/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=604800, stale-while-revalidate=86400"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains; preload"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "geolocation=(), microphone=(), camera=()"
+        },
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin"
+        },
+        {
+          "key": "Cross-Origin-Resource-Policy",
+          "value": "same-site"
+        }
+      ]
+    }
+  ],
+  "cleanUrls": true,
+  "trailingSlash": false
+}

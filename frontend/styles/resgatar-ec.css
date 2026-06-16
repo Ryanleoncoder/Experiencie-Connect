@@ -1,0 +1,151 @@
+/* ============================================================
+   Experience Connect — Resgatar Códigos (novo estilo EC)
+   Soft Neobrutalism · papel off-white + amarelo voltagem + tinta preta
+   Inclui o Action Morph Loader (AML) portado de login.css / showcase v7.0.
+   Requer landing.css + home-ec.css linkados ANTES deste.
+   ============================================================ */
+
+.main{padding:28px 0 72px}
+.rd-wrap{max-width:760px}
+
+/* CABEÇALHO */
+.rd-hero{text-align:center;margin-bottom:26px}
+.rd-hero__tag{display:inline-block;background:var(--k);color:var(--w);font-family:var(--fd);font-weight:700;
+  font-size:11px;letter-spacing:.14em;text-transform:uppercase;padding:5px 12px;border-radius:var(--r1);
+  box-shadow:var(--s2);transform:rotate(-1.5deg);margin-bottom:14px}
+.rd-hero__title{font-family:var(--fb);font-size:clamp(48px,9vw,76px);line-height:.84;
+  text-transform:uppercase;letter-spacing:.01em;color:var(--k)}
+.rd-hero__title .text-yellow{color:var(--y2)}
+.rd-hero__sub{font-family:var(--fd);font-size:15px;color:var(--n4);line-height:1.55;max-width:480px;margin:12px auto 0}
+
+/* CARD DE RESGATE */
+.rd-card{position:relative;background:var(--w);border:var(--b3);border-radius:var(--r4);box-shadow:var(--s4);
+  padding:28px;margin-bottom:34px;overflow:hidden}
+/* canto dobrado amarelo (motivo editorial) */
+.rd-card__fold{position:absolute;top:0;left:0;width:48px;height:48px;background:var(--y);
+  border-right:var(--b2);border-bottom:var(--b2);border-bottom-right-radius:var(--r3);
+  display:grid;place-items:center;color:var(--k)}
+.rd-card__fold svg{width:18px;height:18px}
+
+.rd-card__head{margin:0 0 20px 40px}
+.rd-card__title{font-family:var(--fb);font-size:30px;line-height:1;text-transform:uppercase;letter-spacing:.01em;color:var(--k)}
+.rd-card__sub{font-family:var(--fd);font-size:13px;color:var(--n4);margin-top:4px}
+
+.rd-form{display:flex;flex-direction:column;gap:8px}
+.rd-label{font-family:var(--fd);font-weight:700;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--n5)}
+
+/* input EC: borda preta, fundo branco, ícone à esquerda, sombra offset no focus */
+.rd-input{position:relative;display:flex;align-items:center}
+.rd-input__ic{position:absolute;left:14px;display:grid;place-items:center;color:var(--n4);pointer-events:none}
+.rd-input__ic svg{width:18px;height:18px}
+.rd-input__field{width:100%;height:54px;padding:0 16px 0 44px;background:var(--w);border:var(--b2);
+  border-radius:var(--r2);font-family:var(--fm);font-weight:700;font-size:15px;letter-spacing:.04em;
+  text-transform:uppercase;color:var(--k);box-shadow:var(--s1);transition:box-shadow 80ms,border-color 80ms}
+.rd-input__field::placeholder{color:var(--n3);letter-spacing:.06em}
+.rd-input__field:focus{outline:none;box-shadow:var(--s2)}
+.rd-input__field:focus-visible{box-shadow:var(--s2),0 0 0 2px var(--w),0 0 0 5px var(--info)}
+.rd-input:focus-within .rd-input__ic{color:var(--k)}
+
+.rd-hint{font-family:var(--fd);font-size:12px;color:var(--n4);margin-top:2px}
+.rd-hint.is-error{color:var(--er);font-weight:600}
+
+.rd-submit{width:100%;margin-top:14px;height:54px;font-size:15px;border-radius:var(--r2)}
+
+/* RESULTADO */
+.rd-result{display:flex;align-items:flex-start;gap:14px;margin-top:18px;padding:16px 18px;
+  border:var(--b2);border-radius:var(--r3);box-shadow:var(--s2);background:var(--info2);border-color:var(--info)}
+.rd-result[hidden]{display:none}
+.rd-result__ic{width:40px;height:40px;flex-shrink:0;border-radius:var(--r2);border:var(--b2);
+  display:grid;place-items:center;background:var(--w);color:var(--info)}
+.rd-result__ic svg{width:22px;height:22px}
+.rd-result__title{font-family:var(--fd);font-weight:800;font-size:15px;text-transform:uppercase;letter-spacing:.01em;color:var(--k)}
+.rd-result__msg{font-family:var(--fd);font-size:13.5px;color:var(--n5);line-height:1.5;margin-top:2px}
+/* variantes semânticas */
+.rd-result--ok{background:var(--ok2);border-color:var(--ok)}
+.rd-result--ok .rd-result__ic{color:var(--ok)}
+.rd-result--er{background:var(--er2);border-color:var(--er)}
+.rd-result--er .rd-result__ic{color:var(--er)}
+.rd-result--info{background:var(--info2);border-color:var(--info)}
+.rd-result--info .rd-result__ic{color:var(--info)}
+
+/* CARDS DE INFO */
+.rd-info{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:40px}
+.rd-info__card{background:var(--w);border:var(--b2);border-radius:var(--r3);box-shadow:var(--s2);padding:20px}
+.rd-info__ic{width:46px;height:46px;border-radius:var(--r2);background:var(--y);border:var(--b2);
+  box-shadow:2px 2px 0 var(--y2);display:grid;place-items:center;margin-bottom:14px;color:var(--k)}
+.rd-info__ic svg{width:24px;height:24px}
+.rd-info__title{font-family:var(--fb);font-size:22px;line-height:1;text-transform:uppercase;letter-spacing:.01em;color:var(--k)}
+.rd-info__text{font-family:var(--fd);font-size:13px;color:var(--n4);line-height:1.5;margin-top:8px}
+@media (max-width:680px){.rd-info{grid-template-columns:1fr}}
+
+/* HISTÓRICO DE CÓDIGOS */
+.rd-history{margin-bottom:40px}
+.rd-history__title{font-family:var(--fb);font-size:30px;line-height:1;text-transform:uppercase;
+  letter-spacing:.01em;color:var(--k);margin-bottom:16px}
+.rd-history__title .text-yellow{color:var(--y2)}
+
+.rd-history__table{width:100%;border-collapse:collapse;background:var(--w);border:var(--b2);
+  border-radius:var(--r3);box-shadow:var(--s2);overflow:hidden;font-family:var(--fd)}
+.rd-history__table thead{background:var(--k)}
+.rd-history__table thead th{padding:11px 16px;font-family:var(--fd);font-weight:700;font-size:10px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--y);text-align:left;white-space:nowrap}
+.rd-history__table tbody tr{border-bottom:1.5px solid var(--ow2)}
+.rd-history__table tbody tr:last-child{border-bottom:none}
+.rd-history__table td{padding:12px 16px;font-size:13px;color:var(--n5);vertical-align:middle}
+.rd-history__code{font-family:var(--fm);font-weight:700;font-size:12px;color:var(--k);
+  background:var(--ow2);border:var(--b1);border-radius:var(--r1);padding:2px 8px;display:inline-block}
+.rd-history__badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--fd);font-weight:700;
+  font-size:10px;letter-spacing:.06em;text-transform:uppercase;border-radius:var(--r1);padding:3px 8px}
+.rd-history__badge--xp{background:var(--ok2);color:var(--ok);border:1.5px solid var(--ok)}
+.rd-history__badge--brinde{background:var(--info2);color:var(--info);border:1.5px solid var(--info)}
+.rd-history__badge--conquista{background:#fef3c7;color:#92400e;border:1.5px solid #f59e0b}
+
+.rd-history__empty{padding:40px 24px;text-align:center}
+.rd-history__empty-icon{width:48px;height:48px;margin:0 auto 12px;background:var(--ow2);border:var(--b2);
+  border-radius:var(--r3);display:grid;place-items:center;color:var(--n3)}
+.rd-history__empty-icon svg{width:24px;height:24px}
+.rd-history__empty-text{font-family:var(--fd);font-weight:700;font-size:13px;text-transform:uppercase;
+  letter-spacing:.04em;color:var(--n4)}
+
+@media (max-width:520px){
+  .rd-history__table thead th:nth-child(3),
+  .rd-history__table td:nth-child(3){display:none}
+}
+
+/* FAQ */
+.rd-faq__title{font-family:var(--fb);font-size:34px;line-height:1;text-transform:uppercase;
+  letter-spacing:.01em;color:var(--k);margin-bottom:16px}
+.rd-faq__title .text-yellow{color:var(--y2)}
+.rd-faq__list{display:flex;flex-direction:column;gap:12px}
+.rd-faq__item{background:var(--w);border:var(--b2);border-radius:var(--r3);box-shadow:var(--s1);
+  padding:16px 18px;border-left:5px solid var(--y)}
+.rd-faq__q{font-family:var(--fd);font-weight:800;font-size:14px;text-transform:uppercase;letter-spacing:.01em;color:var(--k)}
+.rd-faq__a{font-family:var(--fd);font-size:13.5px;color:var(--n5);line-height:1.55;margin-top:5px}
+
+/* ============================================================
+   ACTION MORPH LOADER (AML) — portado de login.css / showcase v7.0
+   ============================================================ */
+.btn-aml{position:relative;overflow:hidden}
+.aml-text{transition:opacity .12s ease,transform .12s ease;display:inline-flex;align-items:center;gap:8px}
+.btn-aml.loading .aml-text{opacity:0;transform:scale(.9);pointer-events:none}
+.aml-stage{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none}
+.btn-aml.loading .aml-stage{opacity:1}
+
+.aml-sym{width:28px;height:28px;display:block}
+.aml-sym path,.aml-sym polyline,.aml-sym circle,.aml-sym line,.aml-sym rect{
+  stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.aml-sym text,.aml-sym .aml-letters{fill:currentColor;stroke:none}
+.aml-draw{stroke-dasharray:var(--len,120);stroke-dashoffset:var(--len,120);animation:amlDraw .42s ease forwards}
+.aml-pulse{animation:amlPulse .34s ease}
+.aml-spark{position:absolute;inset:0;opacity:0}
+.aml-spark.on{animation:amlSpark .42s ease}
+.aml-spark line{stroke:currentColor;stroke-width:1.6;stroke-linecap:round}
+@keyframes amlDraw{to{stroke-dashoffset:0}}
+@keyframes amlPulse{0%{transform:scale(.95)}45%{transform:scale(1.08)}100%{transform:scale(1)}}
+@keyframes amlSpark{0%{opacity:0;transform:scale(.6)}40%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.3)}}
+@media (prefers-reduced-motion:reduce){.aml-draw{animation:none;stroke-dashoffset:0}.aml-pulse,.aml-spark.on{animation:none}}
+
+@media (max-width:520px){
+  .rd-card{padding:22px 18px}
+  .rd-card__head{margin-left:36px}
+}

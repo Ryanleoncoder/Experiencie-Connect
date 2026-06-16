@@ -1,0 +1,586 @@
+/**
+ * CX GAME - Exclusive Avatar Reveal Flow - Responsive Styles
+ * 
+ * Este arquivo centraliza todos os estilos responsivos para o fluxo de revelação
+ * do avatar exclusivo, garantindo que todos os elementos se adaptem corretamente
+ * em diferentes tamanhos de tela.
+ * 
+ * Breakpoints:
+ * - Desktop: > 768px (padrão)
+ * - Tablet: ≤ 768px
+ * - Mobile: ≤ 480px
+ */
+
+/* ============================================================================
+   DESKTOP (> 768px) - Estilos padrão
+   ============================================================================ */
+
+/* Logum posicionado à esquerda do modal */
+#logum-reveal-container {
+  position: fixed;
+  top: 50%;
+  left: calc(50% - 300px);
+  transform: translate(-100%, -50%);
+  z-index: 10001;
+  display: none; /* Começa invisível, aparece quando necessário */
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  width: 200px;
+  opacity: 0;
+  transition: opacity 0.5s ease-out;
+}
+
+/* Logum visível */
+#logum-reveal-container.visible {
+  display: flex;
+  opacity: 1;
+}
+
+/* Splash screen overlay */
+.exclusive-splash-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 10, 0.95);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+}
+
+/* Splash content container */
+.exclusive-splash-content {
+  max-width: 600px;
+  max-width: min(600px, 90vw);
+  padding: 48px;
+  padding: clamp(24px, 5vw, 48px);
+  text-align: center;
+}
+
+/* Splash message */
+.exclusive-splash-message {
+  background: var(--yellow);
+  color: var(--black);
+  font-size: 2rem;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 800;
+  padding: 32px 40px;
+  padding: clamp(20px, 4vw, 32px) clamp(24px, 5vw, 40px);
+  border: 4px solid var(--black);
+  border-radius: var(--radius-md);
+  box-shadow: 8px 8px 0 var(--black);
+  /* Removed opacity and transform - controlled by inline styles */
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+/* Avatar card */
+.exclusive-avatar-card {
+  background: var(--black-card);
+  border: 2px solid var(--yellow);
+  border-radius: var(--radius-xl);
+  padding: 32px;
+  padding: clamp(20px, 4vw, 32px);
+  max-width: 90vw;
+  box-shadow: 
+    0 0 40px rgba(255, 214, 0, 0.3),
+    0 0 80px rgba(255, 214, 0, 0.15);
+  /* Default visible state - inline styles will override for animations */
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  transition: opacity 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), 
+              transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Avatar image container */
+.exclusive-avatar-card .avatar-image-container {
+  width: 200px;
+  width: min(200px, 60vw);
+  height: 200px;
+  height: min(200px, 60vw);
+  margin: 0 auto 24px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 2px solid var(--yellow);
+  box-shadow: 0 0 20px rgba(255, 214, 0, 0.2);
+}
+
+/* Avatar image */
+.exclusive-avatar-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Avatar name */
+.exclusive-avatar-card h2 {
+  font-size: 1.75rem;
+  font-size: clamp(1.25rem, 4vw, 1.75rem);
+  font-weight: 800;
+  color: var(--yellow);
+  margin-bottom: 12px;
+}
+
+/* Avatar description */
+.exclusive-avatar-card p {
+  font-size: 1rem;
+  font-size: clamp(0.875rem, 3vw, 1rem);
+  color: var(--gray-light);
+  line-height: 1.6;
+}
+
+/* Confirmation button */
+.exclusive-confirm-button {
+  padding: 16px 32px;
+  padding: clamp(12px, 3vw, 16px) clamp(24px, 5vw, 32px);
+  background: var(--yellow);
+  border: 3px solid var(--black);
+  border-radius: var(--radius-md);
+  color: var(--black);
+  font-family: var(--font);
+  font-size: 1.125rem;
+  font-size: clamp(1rem, 3vw, 1.125rem);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 4px 4px 0 var(--black);
+  margin-top: 24px;
+  opacity: 0;
+}
+
+.exclusive-confirm-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 6px 6px 0 var(--black);
+}
+
+.exclusive-confirm-button:active {
+  transform: translateY(0);
+  box-shadow: 2px 2px 0 var(--black);
+}
+
+/* Logum face */
+.logum-face {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: var(--black);
+  border: 3px solid var(--white);
+  box-shadow: 4px 4px 0 var(--black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  animation: breathing 4s ease-in-out infinite;
+}
+
+/* Logum message bubble */
+.logum-message {
+  background: rgba(0, 0, 0, 0.85); /* Fundo preto semi-transparente para melhor legibilidade */
+  color: var(--white);
+  padding: 16px 20px;
+  padding: clamp(12px, 3vw, 16px) clamp(16px, 4vw, 20px);
+  border: 3px solid var(--white);
+  border-radius: var(--radius-md);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5);
+  font-size: 15px;
+  font-size: clamp(13px, 3vw, 15px);
+  font-weight: 600;
+  line-height: 1.4;
+  margin-bottom: 12px;
+  width: 200px;
+  max-width: 200px;
+  min-width: 200px;
+  text-align: center;
+  word-wrap: break-word;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+/* Choice buttons container */
+.exclusive-choice-buttons {
+  display: flex;
+  gap: 16px;
+  gap: clamp(12px, 3vw, 16px);
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+
+/* Choice button */
+.exclusive-choice-button {
+  padding: 16px 32px;
+  padding: clamp(12px, 3vw, 16px) clamp(24px, 5vw, 32px);
+  background: var(--yellow);
+  border: 3px solid var(--black);
+  border-radius: var(--radius-md);
+  color: var(--black);
+  font-family: var(--font);
+  font-size: 1rem;
+  font-size: clamp(0.875rem, 3vw, 1rem);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 4px 4px 0 var(--black);
+  white-space: nowrap;
+}
+
+.exclusive-choice-button.secondary {
+  background: transparent;
+  color: var(--yellow);
+  border-color: var(--yellow);
+  box-shadow: none;
+}
+
+.exclusive-choice-button:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 6px 6px 0 var(--black);
+}
+
+.exclusive-choice-button.secondary:hover {
+  background: rgba(255, 214, 0, 0.1);
+}
+
+.exclusive-choice-button:active {
+  transform: scale(0.95);
+}
+
+/* Generation animation overlay */
+.generation-animation-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 10, 10, 0.8);
+  border-radius: var(--radius-xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+  z-index: 10;
+}
+
+/* Generation glow effect */
+.generation-glow {
+  position: absolute;
+  inset: -50%;
+  background: radial-gradient(circle, rgba(255, 214, 0, 0.3), transparent 70%);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Generation particles container */
+.generation-particles {
+  position: relative;
+  width: 100%;
+  height: 80px;
+  margin-bottom: 20px;
+}
+
+/* Generation message */
+.generation-message {
+  font-size: 1.1rem;
+  font-size: clamp(0.9rem, 3vw, 1.1rem);
+  font-weight: 600;
+  color: var(--yellow);
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================================
+   TABLET (≤ 768px)
+   ============================================================================ */
+
+@media (max-width: 768px) {
+  /* Logum reposicionado abaixo do avatar */
+  #logum-reveal-container {
+    top: auto !important;
+    bottom: 80px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 180px;
+  }
+  
+  /* Logum visível em tablet */
+  #logum-reveal-container.visible {
+    display: flex;
+  }
+
+  /* Splash content com padding reduzido */
+  .exclusive-splash-content {
+    padding: 32px;
+    max-width: 85vw;
+  }
+
+  /* Splash message com fonte menor */
+  .exclusive-splash-message {
+    font-size: 1.75rem;
+    padding: 24px 32px;
+    border: 3px solid var(--black);
+    box-shadow: 6px 6px 0 var(--black);
+  }
+
+  /* Avatar card com tamanho médio */
+  .exclusive-avatar-card {
+    padding: 24px;
+  }
+
+  .exclusive-avatar-card .avatar-image-container {
+    width: 180px;
+    height: 180px;
+    margin-bottom: 20px;
+  }
+
+  /* Avatar name com fonte menor */
+  .exclusive-avatar-card h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+
+  /* Avatar description com fonte menor */
+  .exclusive-avatar-card p {
+    font-size: 0.9375rem;
+  }
+
+  /* Confirmation button com padding reduzido */
+  .exclusive-confirm-button {
+    padding: 14px 28px;
+    font-size: 1.0625rem;
+    margin-top: 20px;
+  }
+
+  /* Logum face com tamanho médio */
+  .logum-face {
+    width: 90px;
+    height: 90px;
+  }
+
+  /* Logum message com largura reduzida */
+  .logum-message {
+    width: 180px;
+    max-width: 180px;
+    min-width: 180px;
+    font-size: 14px;
+    padding: 14px 18px;
+  }
+
+  /* Choice buttons com gap reduzido */
+  .exclusive-choice-buttons {
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  /* Choice button com padding reduzido */
+  .exclusive-choice-button {
+    padding: 14px 28px;
+    font-size: 0.9375rem;
+  }
+
+  /* Generation message com fonte menor */
+  .generation-message {
+    font-size: 1rem;
+  }
+}
+
+/* ============================================================================
+   MOBILE (≤ 480px)
+   ============================================================================ */
+
+@media (max-width: 480px) {
+  /* Logum reposicionado mais abaixo em mobile */
+  #logum-reveal-container {
+    bottom: 60px !important;
+    width: 180px !important;
+  }
+  
+  /* Logum visível em mobile */
+  #logum-reveal-container.visible {
+    display: flex;
+  }
+
+  /* Splash content com padding mínimo */
+  .exclusive-splash-content {
+    padding: 20px;
+    max-width: 90vw;
+  }
+
+  /* Splash message compacto */
+  .exclusive-splash-message {
+    font-size: 1.5rem;
+    padding: 20px 24px;
+    border: 2px solid var(--black);
+    box-shadow: 4px 4px 0 var(--black);
+  }
+
+  /* Avatar card compacto */
+  .exclusive-avatar-card {
+    padding: 20px;
+  }
+
+  .exclusive-avatar-card .avatar-image-container {
+    width: 150px;
+    height: 150px;
+    margin-bottom: 16px;
+  }
+
+  /* Avatar name compacto */
+  .exclusive-avatar-card h2 {
+    font-size: 1.25rem;
+    margin-bottom: 8px;
+  }
+
+  /* Avatar description compacto */
+  .exclusive-avatar-card p {
+    font-size: 0.875rem;
+  }
+
+  /* Confirmation button compacto */
+  .exclusive-confirm-button {
+    padding: 12px 24px;
+    font-size: 1rem;
+    margin-top: 16px;
+    width: 100%;
+    max-width: 280px;
+  }
+
+  /* Logum face pequeno */
+  .logum-face {
+    width: 80px !important;
+    height: 80px !important;
+  }
+
+  /* Logum message compacto */
+  .logum-message {
+    width: 180px !important;
+    max-width: 180px !important;
+    min-width: 180px !important;
+    font-size: 13px !important;
+    padding: 12px 16px;
+    border: 2px solid var(--black);
+    box-shadow: 3px 3px 0 var(--black);
+  }
+
+  /* Choice buttons em coluna ou full-width */
+  .exclusive-choice-buttons {
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+    width: 100%;
+    max-width: 280px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Choice button full-width */
+  .exclusive-choice-button {
+    padding: 12px 24px;
+    font-size: 0.875rem;
+    width: 100%;
+    box-shadow: 3px 3px 0 var(--black);
+  }
+
+  .exclusive-choice-button:hover {
+    box-shadow: 4px 4px 0 var(--black);
+  }
+
+  /* Generation particles menor */
+  .generation-particles {
+    height: 60px;
+    margin-bottom: 16px;
+  }
+
+  /* Generation message compacto */
+  .generation-message {
+    font-size: 0.9rem;
+  }
+}
+
+/* ============================================================================
+   ANIMAÇÕES
+   ============================================================================ */
+
+@keyframes breathing {
+  0%, 100% {
+    box-shadow: 4px 4px 0 var(--black), 0 0 20px rgba(255, 214, 0, 0.3);
+  }
+  50% {
+    box-shadow: 4px 4px 0 var(--black), 0 0 40px rgba(255, 214, 0, 0.6);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.1);
+  }
+}
+
+/* Particle animations (8 particles em círculo) */
+@keyframes particle-0 {
+  0%, 100% { transform: translate(-50%, -50%); opacity: 1; }
+  50% { transform: translate(calc(-50% + 40px), -50%); opacity: 0.3; }
+}
+
+@keyframes particle-1 {
+  0%, 100% { transform: translate(-50%, -50%); opacity: 1; }
+  50% { transform: translate(calc(-50% + 28px), calc(-50% + 28px)); opacity: 0.3; }
+}
+
+@keyframes particle-2 {
+  0%, 100% { transform: translate(-50%, -50%); opacity: 1; }
+  50% { transform: translate(-50%, calc(-50% + 40px)); opacity: 0.3; }
+}
+
+@keyframes particle-3 {
+  0%, 100% { transform: translate(-50%, -50%); opacity: 1; }
+  50% { transform: translate(calc(-50% - 28px), calc(-50% + 28px)); opacity: 0.3; }
+}
+
+@keyframes particle-4 {
+  0%, 100% { transform: translate(-50%, -50%); opacity: 1; }
+  50% { transform: translate(calc(-50% - 40px), -50%); opacity: 0.3; }
+}
+
+@keyframes particle-5 {
+  0%, 100% { transform: translate(-50%, -50%); opacity: 1; }
+  50% { transform: translate(calc(-50% - 28px), calc(-50% - 28px)); opacity: 0.3; }
+}
+
+@keyframes particle-6 {
+  0%, 100% { transform: translate(-50%, -50%); opacity: 1; }
+  50% { transform: translate(-50%, calc(-50% - 40px)); opacity: 0.3; }
+}
+
+@keyframes particle-7 {
+  0%, 100% { transform: translate(-50%, -50%); opacity: 1; }
+  50% { transform: translate(calc(-50% + 28px), calc(-50% - 28px)); opacity: 0.3; }
+}
+
+/* ============================================================================
+   ACESSIBILIDADE
+   ============================================================================ */
+
+/* Respeitar preferência de movimento reduzido */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus visible para navegação por teclado */
+.exclusive-confirm-button:focus-visible,
+.exclusive-choice-button:focus-visible {
+  outline: 3px solid var(--yellow);
+  outline-offset: 4px;
+}

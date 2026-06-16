@@ -1,0 +1,4 @@
+id;level;setor;season_id;titulo;descricao;tipo;alternativas;resposta_correta;xp;tempo_limite;tags;categoria
+sel-401;1;CX;S-2025-01;Teste de Upload CSV;Esta é uma questão de teste para validar o upload via CSV;seleção;{"A":"Opção A","B":"Opção B","C":"Opção C","D":"Opção D"};B;30;60;teste,csv,upload;Fundamentos CX
+sel-402;1;CX;S-2025-01;Segunda Questão Teste;Outra questão para testar o agrupamento por level;seleção;{"A":"Primeira","B":"Segunda","C":"Terceira"};A;25;45;teste,agrupamento;Fundamentos CX
+txt-401;2;CX;S-2025-01;Questão de Texto;Descreva o que você aprendeu sobre CX;texto;{};*;50;180;texto,descritiva;Estratégia & Inovação

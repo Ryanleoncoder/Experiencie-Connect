@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <script src="./frontend/js/console-control.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://favicon.rysn-craft.workers.dev">
+    <title>Sobre | Experience Connect</title>
+    <meta name="description" content="Entenda o Experience Connect — uma experiência gamificada que conecta CX e EX.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./frontend/styles/landing.css">
+    <script src="./frontend/js/env-loader.js"></script>
+
+    <style>
+
+        .hero-q{display:flex;align-items:center;gap:12px;margin-top:24px;
+            background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.12);
+            border-radius:var(--r3);padding:12px 16px;max-width:480px}
+        .hero-q p{margin:0;font-size:14px;color:rgba(255,255,255,.7)}
+        .badge-pulse{flex-shrink:0;font-family:var(--fd);font-weight:700;font-size:10px;
+            letter-spacing:.1em;text-transform:uppercase;color:var(--k);background:var(--y);
+            border:var(--b2);border-radius:var(--r1);padding:4px 9px;box-shadow:var(--s1)}
+
+        .hero-stats{display:flex;gap:14px;flex-wrap:wrap;margin-top:30px}
+        .hstat{display:flex;flex-direction:column;gap:2px}
+        .hstat .lbl{font-family:var(--fd);font-weight:700;font-size:10px;letter-spacing:.1em;
+            text-transform:uppercase;color:rgba(255,255,255,.4)}
+        .hstat strong{font-family:var(--fd);font-weight:700;font-size:14px;color:var(--w)}
+
+    
+        .jcard{background:var(--k2);border:2px solid var(--k4);border-radius:var(--r4);
+            box-shadow:8px 8px 0 var(--y2);padding:22px;color:var(--w)}
+        .jcard-hd{margin-bottom:18px}
+        .jcard-lbl{font-family:var(--fd);font-weight:700;font-size:10px;letter-spacing:.12em;
+            text-transform:uppercase;color:var(--y)}
+        .jcard-ti{font-family:var(--fb);font-size:32px;line-height:1;text-transform:uppercase;margin-top:4px}
+        .jcard-note{font-size:12px;color:rgba(255,255,255,.4);margin-top:4px}
+        .jstep{display:flex;align-items:center;gap:13px;padding:13px 0;border-top:1px solid rgba(255,255,255,.08)}
+        .jstep:first-of-type{border-top:0}
+        .jstep-ic{width:40px;height:40px;flex-shrink:0;border-radius:var(--r2);background:var(--y);
+            border:var(--b2);box-shadow:2px 2px 0 var(--y2);display:grid;place-items:center}
+        .jstep-ic svg{width:20px;height:20px;stroke:var(--k);stroke-width:2;fill:none}
+        .jstep-ct{flex:1;min-width:0}
+        .jstep-ct .t{font-family:var(--fd);font-weight:700;font-size:14px;color:var(--w)}
+        .jstep-ct small{display:block;font-size:12px;color:rgba(255,255,255,.45);margin-top:1px}
+        .jstep-pts{flex-shrink:0;font-family:var(--fm);font-weight:700;font-size:11px;color:var(--k);
+            background:var(--y);border:1.5px solid var(--k);border-radius:var(--r1);padding:3px 8px;box-shadow:2px 2px 0 var(--y2)}
+
+        /* ===== Pilares (como funciona) ===== */
+        .pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+        .pillar ul{list-style:none;margin-top:14px;display:flex;flex-direction:column;gap:8px}
+        .pillar li{font-size:13px;color:var(--n5);padding-left:20px;position:relative;line-height:1.4}
+        .pillar li::before{content:'';position:absolute;left:0;top:6px;width:9px;height:9px;
+            background:var(--y);border:1.5px solid var(--k);border-radius:2px}
+
+        @media (max-width:980px){.pillars{grid-template-columns:1fr}}
+    </style>
+</head>
+<body>
+   
+    <nav id="topnav">
+        <a class="n-logo" href="index.html">
+            <img class="n-mark" src="https://ec-cdn.rysn-craft.workers.dev" alt="Experience Connect" width="36" height="36">
+            <span class="n-name">Exp<span class="hl">Connect</span></span>
+        </a>
+        <div class="n-links">
+            <a class="nl" href="index.html">Início</a>
+            <a class="nl on" href="sobre.html">Sobre</a>
+        </div>
+        <div class="n-right">
+            <button class="btn btn-y" id="auth-action-btn">Entrar</button>
+            <button class="btn btn-out" id="logout-btn" style="display:none">Sair</button>
+        </div>
+    </nav>
+
+    
+    <header class="hero">
+        <div class="hero-dots" aria-hidden="true"></div>
+        <div class="hero-stripe" aria-hidden="true"></div>
+        <div class="wrap">
+            <div class="hero-c">
+                <div class="hero-text">
+                    <span class="hero-tg">Sobre a plataforma</span>
+                    <h1 class="hero-ti">UMA EXPERIÊNCIA</h1>
+                    <h1 class="hero-ti"><span class="hero-ti-y">QUE CONECTA CX E EX</span></h1>
+                    <p class="hero-sub">
+                        Experiência vai muito além do atendimento — e além do RH. Aqui, CX e EX
+                        se encontram em uma jornada com estratégia, dados, empatia e tecnologia.
+                    </p>
+                    <div class="hero-q">
+                        <span class="badge-pulse">Desafio</span>
+                        <p>Você está preparado para embarcar nessa jornada?</p>
+                    </div>
+                    <div class="hero-actions">
+                        
+                        <button class="btn btn-y btn-lg" id="cta-btn">Carregando...</button>
+                        <button class="btn btn-out btn-lg" id="secondary-btn">Ver trilha</button>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="hstat"><span class="lbl">Modo</span><strong>Gamificado</strong></div>
+                        <div class="hstat"><span class="lbl">Formato</span><strong>Missões curtas</strong></div>
+                        <div class="hstat"><span class="lbl">Ganhos</span><strong>XP · Badges · Ranking</strong></div>
+                    </div>
+                </div>
+
+              
+                <aside class="jcard">
+                    <div class="jcard-hd">
+                        <span class="jcard-lbl">Jornada EC</span>
+                        <div class="jcard-ti">Mapa da Jornada</div>
+                        <p class="jcard-note">Disponível na página de Conquistas</p>
+                    </div>
+                    <div class="jstep">
+                        <div class="jstep-ic">
+                            <svg viewBox="0 0 24 24"><polygon points="12 2 19 21 12 17 5 21 12 2"/></svg>
+                        </div>
+                        <div class="jstep-ct">
+                            <span class="t">Nivelar o mindset</span>
+                            <small>Entenda os fundamentos de CX e EX com casos reais.</small>
+                        </div>
+                        <span class="jstep-pts">+120 XP</span>
+                    </div>
+                    <div class="jstep">
+                        <div class="jstep-ic">
+                            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="9" y1="16" x2="9.01" y2="16"/></svg>
+                        </div>
+                        <div class="jstep-ct">
+                            <span class="t">Tomar decisões</span>
+                            <small>Escolha estratégias e veja o impacto imediato nas pessoas.</small>
+                        </div>
+                        <span class="jstep-pts">+250 XP</span>
+                    </div>
+                    <div class="jstep">
+                        <div class="jstep-ic">
+                            <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h11"/></svg>
+                        </div>
+                        <div class="jstep-ct">
+                            <span class="t">Evoluir e desbloquear</span>
+                            <small>Ganhe pontos, badges e libere novos desafios temáticos.</small>
+                        </div>
+                        <span class="jstep-pts">Boss</span>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </header>
+
+    <section class="sec sec-wt" id="como-funciona">
+        <div class="wrap">
+            <div class="sh">
+                <span class="sh-tag">Como funciona</span>
+                <h2 class="sh-title">Três pilares da <span class="hl">jornada</span></h2>
+                <p class="sh-sub">Cada bloco provoca decisões reais, ensina o essencial e mantém você evoluindo — em CX e EX.</p>
+            </div>
+
+            <div class="pillars">
+                <article class="feat pillar">
+                    <div class="feat-ic">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l3 3"/></svg>
+                    </div>
+                    <h3 class="feat-ti">Desafios</h3>
+                    <p class="feat-tx">Enfrente situações inspiradas em cenários reais e tome decisões rápidas.</p>
+                    <ul>
+                        <li>Cenários com pressão de tempo</li>
+                        <li>Feedback imediato</li>
+                        <li>Decisões que afetam o resultado</li>
+                    </ul>
+                </article>
+
+                <article class="feat pillar">
+                    <div class="feat-ic">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                    </div>
+                    <h3 class="feat-ti">Conhecimento</h3>
+                    <p class="feat-tx">Aprenda jornada, personalização, dados e técnicas para reduzir fricções.</p>
+                    <ul>
+                        <li>Micro-aulas interativas</li>
+                        <li>Visualização de jornada</li>
+                        <li>Doses curtas e acionáveis</li>
+                    </ul>
+                </article>
+
+                <article class="feat pillar">
+                    <div class="feat-ic">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>
+                    </div>
+                    <h3 class="feat-ti">Progressão</h3>
+                    <p class="feat-tx">Ganhe pontos, desbloqueie novos desafios e evolua na jornada.</p>
+                    <ul>
+                        <li>Badges e níveis claros</li>
+                        <li>Trilha com checkpoints</li>
+                        <li>Ranking para comparar evolução</li>
+                    </ul>
+                </article>
+            </div>
+        </div>
+    </section>
+
+   
+    <section class="cta-band">
+        <div class="hero-dots" aria-hidden="true"></div>
+        <div class="wrap">
+            <div class="cta-c">
+                <span class="sh-tag">Reflexão final</span>
+                <h2 class="cta-ti">VOCÊ VIVE A <span class="hl">EXPERIÊNCIA</span><br>OU SÓ ACHA QUE VIVE?</h2>
+                <p class="cta-sub">Entre agora e teste suas decisões em um ambiente seguro, com feedback imediato e progressão visível.</p>
+                <div class="hero-actions" style="justify-content:center">
+                    <button class="btn btn-y btn-lg" id="cta-bottom">Começar agora</button>
+                    <button class="btn btn-out btn-lg" id="cta-bottom-secondary">Ver desafios</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <footer class="ec-footer">
+        <div class="wrap">
+            <div class="ft-left">
+                <img class="ft-mark" src="https://ec-cdn.rysn-craft.workers.dev" alt="Experience Connect" width="30" height="30">
+                <span class="ft-name">Experience Connect</span>
+                <span class="ft-v">v2.0</span>
+            </div>
+            <nav class="ft-nav">
+                <a href="index.html">Início</a>
+<a href="login.html">Entrar</a>
+            </nav>
+            <div class="ft-right">
+                <span>© 2026 Experience Connect</span>
+                <a class="ft-credit" href="https://github.com/Ryanleoncoder" target="_blank" rel="noreferrer noopener">
+                    <img src="./frontend/assets/image/redesocial/github.svg" alt="GitHub">
+                    Desenvolvido por Ryan Cruz
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="./frontend/js/sobre.js"></script>
+</body>
+</html>

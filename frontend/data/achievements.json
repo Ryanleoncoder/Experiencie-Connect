@@ -1,0 +1,174 @@
+{
+  "version": "1.0",
+  "lastUpdated": "2026-05-16",
+  "achievements": [
+    {
+      "id": "xp-100",
+      "title": "Primeiros Passos",
+      "icon": "🎯",
+      "description": "Alcance 100 XP",
+      "type": "xp",
+      "target": 100
+    },
+    {
+      "id": "xp-500",
+      "title": "Aprendiz CX",
+      "icon": "📚",
+      "description": "Alcance 500 XP",
+      "type": "xp",
+      "target": 500
+    },
+    {
+      "id": "xp-1000",
+      "title": "Especialista",
+      "icon": "⚡",
+      "description": "Alcance 1000 XP",
+      "type": "xp",
+      "target": 1000
+    },
+    {
+      "id": "xp-2000",
+      "title": "Mestre CX",
+      "icon": "🏆",
+      "description": "Alcance 2000 XP",
+      "type": "xp",
+      "target": 2000
+    },
+    {
+      "id": "level-2",
+      "title": "Subindo de Nível",
+      "icon": "🔼",
+      "description": "Alcance o Nível 2",
+      "type": "level",
+      "target": 2
+    },
+    {
+      "id": "level-3",
+      "title": "Nível Máximo",
+      "icon": "👑",
+      "description": "Alcance o Nível 3",
+      "type": "level",
+      "target": 3
+    },
+    {
+      "id": "challenges-5",
+      "title": "Iniciante",
+      "icon": "🌱",
+      "description": "Complete 5 desafios",
+      "type": "challenges",
+      "target": 5
+    },
+    {
+      "id": "challenges-10",
+      "title": "Dedicado",
+      "icon": "💪",
+      "description": "Complete 10 desafios",
+      "type": "challenges",
+      "target": 10
+    },
+    {
+      "id": "challenges-20",
+      "title": "Persistente",
+      "icon": "🔥",
+      "description": "Complete 20 desafios",
+      "type": "challenges",
+      "target": 20
+    },
+    {
+      "id": "challenges-30",
+      "title": "Imparável",
+      "icon": "🚀",
+      "description": "Complete 30 desafios",
+      "type": "challenges",
+      "target": 30
+    },
+    {
+      "id": "minigames-1",
+      "title": "Jogador Casual",
+      "icon": "🎮",
+      "description": "Complete 1 minigame",
+      "type": "minigames",
+      "target": 1
+    },
+    {
+      "id": "minigames-3",
+      "title": "Gamer CX",
+      "icon": "🕹️",
+      "description": "Complete todos os minigames",
+      "type": "minigames",
+      "target": 3
+    },
+    {
+      "id": "failed-1",
+      "title": "Ninguém é Perfeito",
+      "icon": "💪",
+      "description": "Falhe 3 vezes em 1 desafio",
+      "type": "failed_challenges",
+      "target": 1
+    },
+    {
+      "id": "failed-3",
+      "title": "Aprendendo com Erros",
+      "icon": "📖",
+      "description": "Falhe 3 vezes em 3 desafios",
+      "type": "failed_challenges",
+      "target": 3
+    },
+    {
+      "id": "combined-15",
+      "title": "Versátil",
+      "icon": "🌟",
+      "description": "Complete 15 desafios + minigames",
+      "type": "combined",
+      "target": 15
+    },
+    {
+      "id": "combined-40",
+      "title": "Completista",
+      "icon": "💎",
+      "description": "Complete 40 desafios + minigames",
+      "type": "combined",
+      "target": 40
+    },
+    {
+      "id": "ultra-instinct",
+      "title": "Ultra Instinct",
+      "icon": "⚡",
+      "description": "Reflexos perfeitos. Decisões perfeitas. 100% de acertos em todos os desafios.",
+      "type": "all_levels_performance",
+      "target": 100
+    },
+    {
+      "id": "perfectly-balanced",
+      "title": "Perfeitamente Equilibrado",
+      "icon": "⚖️",
+      "description": "Perfeitamente equilibrado, como tudo deve ser.",
+      "type": "all_levels_performance",
+      "target": "balanced"
+    },
+    {
+      "id": "skill-issue",
+      "title": "Skill Issue",
+      "icon": "💀",
+      "description": "Acontece nas melhores famílias.",
+      "type": "all_levels_performance",
+      "target": 0
+    },
+    {
+      "id": "the-one-above-all",
+      "title": "The One Above All",
+      "icon": "☄️",
+      "description": "Um nível acima de todos os outros jogadores.",
+      "type": "ranking",
+      "target": 1
+    },
+    {
+      "id": "logum-validated",
+      "title": "Avaliado por Sentury IA",
+      "icon": "🤖",
+      "description": "Complete um desafio validado por inteligência artificial.",
+      "type": "logum_challenges",
+      "target": 1
+    }
+  ]
+}

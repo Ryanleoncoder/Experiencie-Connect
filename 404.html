@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<script src="./frontend/js/console-control.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>404 — EXP Connect</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --yellow: #F5C800;
+    --black: #0E0E0E;
+    --dark: #1A1A1A;
+    --cream: #F2EFE7;
+    --text-dark: #1A1A1A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    min-height: 100vh;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── NAVBAR ── */
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 48px;
+    background: var(--cream);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .logo-badge {
+    background: var(--black);
+    color: var(--yellow);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    padding: 4px 10px;
+    border: 2px solid var(--yellow);
+    letter-spacing: 0.1em;
+  }
+
+  .btn-home {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--black);
+    color: var(--yellow);
+    border: none;
+    padding: 12px 22px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-home:hover { background: #2a2a2a; transform: translateY(-1px); }
+
+  /* ── DECO DOTS ── */
+  .deco {
+    position: absolute;
+    pointer-events: none;
+    color: var(--black);
+    font-size: 18px;
+    opacity: 0.35;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 32px 48px 40px;
+  }
+
+  .hero-left { position: relative; z-index: 2; width: 100%; display: flex; flex-direction: column; align-items: center; }
+
+  .hero-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: 8px;
+  }
+
+  .tag-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 2px solid var(--black);
+    background: var(--cream);
+    padding: 6px 14px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border-radius: 4px;
+    margin-bottom: 16px;
+  }
+  .tag-pill .excl {
+    width: 18px; height: 18px;
+    background: var(--yellow);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 900; color: var(--black);
+    flex-shrink: 0;
+  }
+
+  .four04 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(120px, 14vw, 200px);
+    line-height: 0.88;
+    letter-spacing: -2px;
+    display: flex;
+    gap: 0;
+  }
+  .four04 .black { color: var(--black); }
+  .four04 .yellow { color: var(--yellow); }
+
+  .four04 span {
+    display: inline-block;
+    animation: popIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .four04 span:nth-child(1) { animation-delay: 0.05s; }
+  .four04 span:nth-child(2) { animation-delay: 0.18s; }
+  .four04 span:nth-child(3) { animation-delay: 0.31s; }
+
+  @keyframes popIn {
+    0%   { opacity: 0; transform: translateY(40px) scale(0.7); }
+    60%  { transform: translateY(-8px) scale(1.05); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .four04 span:hover {
+    animation: glitch 0.4s steps(2) infinite;
+    color: var(--yellow);
+    cursor: default;
+  }
+  @keyframes glitch {
+    0%   { transform: translate(0); }
+    25%  { transform: translate(-3px, 2px) skewX(-4deg); }
+    50%  { transform: translate(3px, -2px) skewX(4deg); }
+    75%  { transform: translate(-2px, 1px); }
+    100% { transform: translate(0); }
+  }
+
+  .headline {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(38px, 5vw, 64px);
+    line-height: 1;
+    letter-spacing: 1px;
+    margin-top: 6px;
+  }
+  .headline .accent { color: var(--yellow); }
+
+  .sub {
+    font-size: 14px;
+    font-weight: 400;
+    color: #444;
+    margin-top: 16px;
+    line-height: 1.6;
+    max-width: 480px;
+  }
+
+  .tagline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 18px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--black);
+  }
+  .tagline::before {
+    content: '✺';
+    color: var(--yellow);
+    font-size: 16px;
+    animation: spin 4s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── ROBOT ── */
+  .hero-right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin: 8px 0;
+  }
+
+  .blob {
+    position: absolute;
+    width: 420px;
+    height: 380px;
+    background: var(--yellow);
+    border-radius: 60% 40% 55% 45% / 50% 60% 40% 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    animation: blobFloat 6s ease-in-out infinite;
+  }
+  @keyframes blobFloat {
+    0%,100% { border-radius: 60% 40% 55% 45% / 50% 60% 40% 50%; transform: translate(-50%, -50%) scale(1); }
+    50% { border-radius: 45% 55% 40% 60% / 60% 40% 55% 45%; transform: translate(-50%, -52%) scale(1.03); }
+  }
+
+  /* ── SVG ROBOT ── */
+  .robot-wrap {
+    position: relative;
+    z-index: 2;
+  }
+
+  .speech-bubble {
+    position: absolute;
+    top: -10px;
+    right: -30px;
+    width: 70px;
+    height: 70px;
+    background: var(--cream);
+    border: 3px solid var(--black);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    color: var(--black);
+    z-index: 3;
+  }
+  .speech-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -14px;
+    left: 14px;
+    border: 7px solid transparent;
+    border-top-color: var(--black);
+  }
+  .speech-bubble::before {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 15px;
+    border: 6px solid transparent;
+    border-top-color: var(--cream);
+    z-index: 1;
+  }
+
+  /* Robot SVG inline */
+  .robot-svg { width: 280px; height: auto; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.25)); }
+
+  /* ── DECO PIXELS ── */
+  .px { position: absolute; width: 8px; height: 8px; background: var(--black); }
+  .px-group { position: absolute; display: grid; gap: 4px; }
+
+  /* ── QUICK LINKS SECTION ── */
+  .ql-section {
+    margin: 0 48px 32px;
+    border: 2px solid var(--black);
+    border-radius: 12px;
+    padding: 28px 32px;
+    background: var(--cream);
+  }
+
+  .ql-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .ql-label {
+    background: var(--black);
+    color: var(--yellow);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    padding: 5px 12px;
+    text-transform: uppercase;
+    border-radius: 4px;
+  }
+
+  .ql-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+
+  .ql-card {
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    padding: 20px 16px;
+    text-align: center;
+    background: #fff;
+    transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+    cursor: pointer;
+  }
+  .ql-card:hover {
+    border-color: var(--yellow);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.1);
+  }
+
+  .ql-icon {
+    width: 52px; height: 52px;
+    border: 2px solid #e0e0e0;
+    border-radius: 50%;
+    margin: 0 auto 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .ql-card:hover .ql-icon { border-color: var(--yellow); background: #FFF9E0; }
+
+  .ql-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .ql-desc {
+    font-size: 12px;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 14px;
+  }
+
+  .ql-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 2px solid var(--black);
+    background: transparent;
+    padding: 8px 14px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    color: var(--black);
+    transition: background 0.2s, color 0.2s;
+  }
+  .ql-btn.primary {
+    background: var(--yellow);
+    border-color: var(--yellow);
+  }
+  .ql-btn:hover { background: var(--black); color: var(--yellow); border-color: var(--black); }
+  .ql-btn.primary:hover { background: var(--black); color: var(--yellow); border-color: var(--black); }
+
+  /* ── LOGUM BANNER ── */
+  .logum-banner {
+    margin: 0 48px 0;
+    background: var(--black);
+    border-radius: 12px;
+    padding: 22px 32px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .logum-banner::before {
+    content: '';
+    position: absolute;
+    right: 200px;
+    top: 0; bottom: 0;
+    width: 1px;
+    background: #2a2a2a;
+  }
+
+  .logum-face {
+    width: 52px;
+    height: 52px;
+    background: #ffffff;
+    border: 3px solid #e0e0e0;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+    box-shadow: 0 0 0 4px rgba(255,255,255,0.1);
+  }
+  .logum-eyes {
+    display: flex; gap: 7px; align-items: center;
+  }
+  .l-eye {
+    width: 7px; height: 11px;
+    background: #1A1A1A;
+    border-radius: 2px;
+    animation: blink 3s ease-in-out infinite;
+  }
+  .l-eye:nth-child(2) { animation-delay: 0.1s; }
+  @keyframes blink {
+    0%,90%,100% { transform: scaleY(1); }
+    95% { transform: scaleY(0.1); }
+  }
+
+  .logum-text { flex: 1; }
+  .logum-text strong {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.02em;
+  }
+  .logum-text strong .hl { color: var(--yellow); }
+  .logum-text p {
+    font-size: 12px;
+    color: #888;
+    margin-top: 3px;
+  }
+
+  .ticket {
+    background: var(--yellow);
+    border-radius: 8px;
+    padding: 10px 18px;
+    text-align: center;
+    position: relative;
+    flex-shrink: 0;
+    min-width: 110px;
+  }
+  .ticket::before, .ticket::after {
+    content: '';
+    position: absolute;
+    top: 50%; transform: translateY(-50%);
+    width: 14px; height: 14px;
+    background: var(--black);
+    border-radius: 50%;
+  }
+  .ticket::before { left: -7px; }
+  .ticket::after { right: -7px; }
+  .ticket .exp { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; }
+  .ticket .pts { font-family: 'Bebas Neue', sans-serif; font-size: 26px; line-height: 1; }
+  .ticket .reason { font-size: 9px; font-weight: 600; opacity: 0.7; }
+
+  /* ── FOOTER ── */
+  footer {
+    margin-top: auto;
+    background: var(--black);
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .footer-top {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 24px 48px;
+  }
+
+  /* ── LOGUM BANNER ── */
+  .logum-banner {
+    margin: 0 48px 20px;
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 12px;
+    padding: 18px 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .footer-bottom {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 18px 48px;
+    border-top: 1px solid #1e1e1e;
+  }
+
+  .footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 160px;
+  }
+  .footer-logo-badge {
+    background: transparent;
+    border: 2px solid var(--yellow);
+    color: var(--yellow);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    padding: 4px 10px;
+    letter-spacing: 0.1em;
+    border-radius: 6px;
+  }
+  .footer-brand {
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .footer-brand span { color: var(--yellow); }
+
+  .footer-divider {
+    width: 1px; height: 36px;
+    background: #333;
+  }
+
+  .footer-taglines {
+    font-size: 11px;
+    font-weight: 700;
+    color: #888;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1.8;
+    flex: 1;
+  }
+  .footer-taglines span { color: var(--yellow); }
+
+  .footer-copy {
+    font-size: 10px;
+    color: #555;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-align: right;
+    line-height: 1.8;
+  }
+
+  .footer-pixels {
+    display: grid;
+    grid-template-columns: repeat(3, 6px);
+    gap: 3px;
+    margin-left: 16px;
+  }
+  .fp { width: 6px; height: 6px; background: var(--yellow); }
+  .fp.off { background: #333; }
+
+  /* ── PIXEL DECO ── */
+  .hero-deco {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .cross {
+    position: absolute;
+    color: var(--black);
+    opacity: 0.25;
+    font-size: 18px;
+    font-weight: 300;
+  }
+
+  /* Pixel grid deco */
+  .pixel-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 7px);
+    gap: 3px;
+    position: absolute;
+  }
+  .pg-dot { width: 7px; height: 7px; background: var(--black); opacity: 0.3; border-radius: 1px; }
+  .pg-dot.y { background: var(--yellow); opacity: 0.7; }
+
+  /* ── SPARKLES ── */
+  .sparkle {
+    position: absolute;
+    pointer-events: none;
+  }
+  .sparkle svg { display: block; }
+
+  /* ── DASHED PATH ── */
+  .dashed-path {
+    position: absolute;
+    pointer-events: none;
+  }
+
+  /* ── MOTION LINES ── */
+  .motion-lines {
+    position: absolute;
+    pointer-events: none;
+  }
+
+  /* ── DOODLE LINES ── */
+  .doodle {
+    position: absolute;
+    pointer-events: none;
+  }
+
+  /* float sparkle slow pulse */
+  @keyframes sparklePulse {
+    0%,100% { opacity: 0.7; transform: scale(1) rotate(0deg); }
+    50% { opacity: 1; transform: scale(1.2) rotate(15deg); }
+  }
+  @keyframes sparklePulse2 {
+    0%,100% { opacity: 0.5; transform: scale(1) rotate(0deg); }
+    50% { opacity: 0.9; transform: scale(1.15) rotate(-12deg); }
+  }
+  .sp1 { animation: sparklePulse 3s ease-in-out infinite; }
+  .sp2 { animation: sparklePulse2 4s ease-in-out infinite; }
+  .sp3 { animation: sparklePulse 2.5s ease-in-out infinite 0.8s; }
+  .sp4 { animation: sparklePulse2 3.5s ease-in-out infinite 1.2s; }
+
+  @media (max-width: 900px) {
+    nav { padding: 16px 20px; }
+    .hero { grid-template-columns: 1fr; padding: 20px 20px 0; min-height: auto; }
+    .hero-right { margin-top: 24px; min-height: 280px; }
+    .blob { width: 280px; height: 260px; }
+    .robot-svg { width: 200px; }
+    .ql-section { margin: 0 20px 24px; padding: 20px; }
+    .ql-grid { grid-template-columns: repeat(2, 1fr); }
+    .logum-banner { margin: 0 20px; flex-wrap: wrap; }
+    footer { padding: 20px; flex-wrap: wrap; gap: 16px; }
+    .footer-copy { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">
+    <span class="logo-badge">EXP</span>
+    EXPERIENCE CONNECT
+  </div>
+  <a href="/" class="btn-home">Voltar ao início</a>
+</nav>
+
+<section class="hero" style="position:relative;">
+
+  <div class="hero-deco">
+
+    <div class="pixel-grid" style="top:18px;right:7%;grid-template-columns:repeat(3,7px);">
+      <div class="pg-dot"></div><div class="pg-dot" style="opacity:0"></div><div class="pg-dot"></div>
+      <div class="pg-dot" style="opacity:0"></div><div class="pg-dot"></div><div class="pg-dot" style="opacity:0"></div>
+      <div class="pg-dot"></div><div class="pg-dot" style="opacity:0"></div><div class="pg-dot"></div>
+    </div>
+    <div class="pixel-grid" style="top:70px;left:5%;grid-template-columns:repeat(4,7px);">
+      <div class="pg-dot"></div><div class="pg-dot"></div><div class="pg-dot"></div><div class="pg-dot"></div>
+      <div class="pg-dot"></div><div class="pg-dot"></div><div class="pg-dot"></div><div class="pg-dot"></div>
+      <div class="pg-dot"></div><div class="pg-dot"></div><div class="pg-dot"></div><div class="pg-dot"></div>
+    </div>
+    <div class="pixel-grid" style="bottom:80px;right:5%;grid-template-columns:repeat(2,7px);">
+      <div class="pg-dot y"></div><div class="pg-dot y"></div>
+      <div class="pg-dot y"></div><div class="pg-dot y"></div>
+    </div>
+    <div class="pixel-grid" style="bottom:120px;left:7%;grid-template-columns:repeat(3,6px);gap:4px;">
+      <div class="pg-dot" style="opacity:0"></div><div class="pg-dot"></div><div class="pg-dot" style="opacity:0"></div>
+      <div class="pg-dot"></div><div class="pg-dot" style="opacity:0"></div><div class="pg-dot"></div>
+      <div class="pg-dot" style="opacity:0"></div><div class="pg-dot"></div><div class="pg-dot" style="opacity:0"></div>
+    </div>
+
+    <span class="cross" style="top:28px;left:13%;font-size:22px;opacity:0.3">+</span>
+    <span class="cross" style="top:90px;right:11%;font-size:16px;opacity:0.2">+</span>
+    <span class="cross" style="bottom:50px;left:9%;font-size:20px;opacity:0.25">+</span>
+    <span class="cross" style="top:45%;right:6%;font-size:28px;color:#F5C800;opacity:0.6">+</span>
+    <span class="cross" style="bottom:30%;left:4%;font-size:24px;color:#F5C800;opacity:0.5">+</span>
+    <span class="cross" style="top:15%;left:42%;font-size:14px;opacity:0.2">+</span>
+
+    <div class="sparkle sp1" style="top:60px;left:8%;">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <path d="M14 2 L15.5 12 L26 14 L15.5 16 L14 26 L12.5 16 L2 14 L12.5 12 Z" fill="#1A1A1A" opacity="0.7"/>
+      </svg>
+    </div>
+    <div class="sparkle sp2" style="top:40px;right:9%;">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+        <path d="M11 1 L12.2 9.5 L20 11 L12.2 12.5 L11 21 L9.8 12.5 L2 11 L9.8 9.5 Z" fill="#F5C800"/>
+      </svg>
+    </div>
+    <div class="sparkle sp3" style="top:48%;left:3%;">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <path d="M9 1 L10 7.5 L16 9 L10 10.5 L9 17 L8 10.5 L2 9 L8 7.5 Z" fill="#1A1A1A" opacity="0.5"/>
+      </svg>
+    </div>
+    <div class="sparkle sp4" style="bottom:100px;right:7%;">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <path d="M16 2 L17.8 13.5 L29 16 L17.8 18.5 L16 30 L14.2 18.5 L3 16 L14.2 13.5 Z" fill="#F5C800" opacity="0.8"/>
+      </svg>
+    </div>
+    <div class="sparkle sp1" style="top:20px;left:48%;">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <path d="M7 1 L7.9 5.5 L12 7 L7.9 8.5 L7 13 L6.1 8.5 L2 7 L6.1 5.5 Z" fill="#F5C800"/>
+      </svg>
+    </div>
+    <div class="sparkle sp2" style="bottom:70px;left:20%;">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M8 1 L9 6 L14 8 L9 10 L8 15 L7 10 L2 8 L7 6 Z" fill="#1A1A1A" opacity="0.4"/>
+      </svg>
+    </div>
+
+    <div class="dashed-path" style="top:55%;left:1%;">
+      <svg width="90" height="40" viewBox="0 0 90 40" fill="none">
+        <path d="M5 20 Q22 5 40 20 Q58 35 75 20" stroke="#1A1A1A" stroke-width="2" stroke-dasharray="5 4" fill="none" opacity="0.25" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="dashed-path" style="bottom:150px;right:2%;">
+      <svg width="70" height="30" viewBox="0 0 70 30" fill="none">
+        <path d="M5 15 Q25 5 45 15 Q55 20 62 12" stroke="#F5C800" stroke-width="2" stroke-dasharray="4 3" fill="none" opacity="0.5" stroke-linecap="round"/>
+        <path d="M57 8 L64 13 L57 18" stroke="#F5C800" stroke-width="2" fill="none" opacity="0.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="dashed-path" style="top:10px;right:20%;">
+      <svg width="60" height="10" viewBox="0 0 60 10" fill="none">
+        <line x1="0" y1="5" x2="60" y2="5" stroke="#1A1A1A" stroke-width="2" stroke-dasharray="4 4" opacity="0.2"/>
+      </svg>
+    </div>
+
+    <div class="motion-lines" style="top:38%;left:1%;">
+      <svg width="50" height="50" viewBox="0 0 50 50" fill="none">
+        <line x1="25" y1="25" x2="5"  y2="10" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" opacity="0.2"/>
+        <line x1="25" y1="25" x2="2"  y2="25" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" opacity="0.2"/>
+        <line x1="25" y1="25" x2="5"  y2="40" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" opacity="0.2"/>
+        <line x1="25" y1="25" x2="15" y2="3"  stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" opacity="0.15"/>
+        <line x1="25" y1="25" x2="15" y2="47" stroke="#1A1A1A" stroke-width="1.5" stroke-linecap="round" opacity="0.15"/>
+      </svg>
+    </div>
+    <div class="motion-lines" style="top:30%;right:2%;">
+      <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+        <line x1="24" y1="24" x2="44" y2="10" stroke="#F5C800" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+        <line x1="24" y1="24" x2="46" y2="24" stroke="#F5C800" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+        <line x1="24" y1="24" x2="44" y2="38" stroke="#F5C800" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+        <line x1="24" y1="24" x2="33" y2="4"  stroke="#F5C800" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
+        <line x1="24" y1="24" x2="33" y2="44" stroke="#F5C800" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
+      </svg>
+    </div>
+
+    <div class="doodle" style="top:22px;left:22%;">
+      <svg width="50" height="22" viewBox="0 0 50 22" fill="none">
+        <path d="M3 5 Q12 18 25 18 Q38 18 47 5" stroke="#1A1A1A" stroke-width="2.5" fill="none" opacity="0.18" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="doodle" style="bottom:88px;right:12%;">
+      <svg width="44" height="18" viewBox="0 0 44 18" fill="none">
+        <path d="M2 14 Q11 2 22 2 Q33 2 42 14" stroke="#1A1A1A" stroke-width="2.5" fill="none" opacity="0.15" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="doodle" style="top:52%;right:1%;">
+      <svg width="30" height="50" viewBox="0 0 30 50" fill="none">
+        <path d="M15 3 Q25 12 15 22 Q5 32 15 42 Q20 47 22 48" stroke="#F5C800" stroke-width="2" fill="none" opacity="0.4" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="doodle" style="bottom:40%;left:2%;">
+      <svg width="30" height="20" viewBox="0 0 30 20" fill="none">
+        <path d="M3 10 Q8 2 12 2 Q16 2 14 8" stroke="#1A1A1A" stroke-width="2" fill="none" opacity="0.2" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+  </div>
+
+  <div class="hero-left">
+    <div class="tag-pill">
+      <span class="excl">!</span>
+      OPS! PÁGINA NÃO ENCONTRADA
+    </div>
+
+    <div class="four04">
+      <span class="black">4</span><span class="yellow">0</span><span class="black">4</span>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="robot-wrap">
+      <img
+        src="https://error404.rysn-craft.workers.dev"
+        alt="Robô 404"
+        class="robot-svg"
+        style="width:320px;height:auto;object-fit:contain;"
+      />
+    </div>
+  </div>
+
+  <div class="hero-bottom">
+    <div class="headline">
+      ESSA PÁGINA<br>
+      <span class="accent">FOI PRO OUTRO NÍVEL.</span>
+    </div>
+
+    <p class="sub">
+      Parece que você entrou em uma rota inexistente ou que ainda está sendo desenvolvida.
+    </p>
+
+    <div class="tagline">MAS RELAXA, O JOGO CONTINUA!</div>
+  </div>
+
+</section>
+
+
+
+<footer>
+  <div class="footer-bottom">
+    <div class="footer-logo">
+      <span class="footer-logo-badge">EC</span>
+      <div class="footer-brand">
+        EXPERIENCE<br><span>CONNECT</span>
+      </div>
+    </div>
+
+    <div class="footer-divider"></div>
+
+    <div class="footer-taglines">
+      CONECTANDO PESSOAS.<br>
+      TRANSFORMANDO <span>EXPERIÊNCIAS.</span>
+    </div>
+
+    <div style="flex:1"></div>
+
+    <div class="footer-copy">
+      © 2026 EXPERIENCE CONNECT. TODOS OS DIREITOS RESERVADOS.
+    </div>
+
+    <div class="footer-pixels">
+      <div class="fp"></div><div class="fp off"></div><div class="fp"></div>
+      <div class="fp off"></div><div class="fp"></div><div class="fp off"></div>
+      <div class="fp"></div><div class="fp off"></div><div class="fp"></div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

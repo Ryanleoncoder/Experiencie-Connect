@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <script src="./frontend/js/console-control.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://favicon.rysn-craft.workers.dev">
+    <meta name="description" content="Experience Connect - Desafio Interativo">
+    <title>Experience Connect — Desafio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./frontend/styles/landing.css">
+    <link rel="stylesheet" href="./frontend/styles/challenge-ec.css?v=20260614-coral">
+
+    <link rel="stylesheet" href="./frontend/styles/intermission-game.css?v=20260614-phasegen-ui">
+    <link rel="stylesheet" href="./frontend/styles/intermission-redesign.css?v=20260614-redesign-v3">
+
+    <link rel="stylesheet" href="./frontend/css/components/logun-modal.css?v=20260517-003">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./frontend/js/env-loader.js"></script>
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+        import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+        
+        const appConfig = await window.__APP_CONFIG_READY__;
+        const firebaseConfig = {
+            apiKey: appConfig.FIREBASE_API_KEY,
+            authDomain: appConfig.FIREBASE_AUTH_DOMAIN,
+            projectId: appConfig.FIREBASE_PROJECT_ID,
+            storageBucket: appConfig.FIREBASE_STORAGE_BUCKET,
+            messagingSenderId: appConfig.FIREBASE_MESSAGING_SENDER_ID,
+            appId: appConfig.FIREBASE_APP_ID
+        };
+
+        if (!firebaseConfig.apiKey || !firebaseConfig.projectId || !firebaseConfig.appId) {
+            throw new Error('Firebase public config is incomplete');
+        }
+        
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        // Make Firebase available globally
+        window.firebaseApp = app;
+        window.firebaseDb = db;
+    </script>
+    <script src="./frontend/js/shared/cx-session.js"></script>
+    <script>
+        window.CxSession.bootstrapPage({
+            mode: 'protected',
+            redirectUnauthenticatedTo: 'login.html'
+        });
+    </script>
+</head>
+<body class="challenge-hydrating">
+
+    <div class="bg-effects" id="bg-effects" aria-hidden="true">
+        <div class="bg-glow bg-glow--1"></div>
+        <div class="bg-glow bg-glow--2"></div>
+        <div class="bg-grid"></div>
+    </div>
+
+    <div class="logum-splash" id="logum-splash">
+        <div class="logum-splash__content">
+            <div class="logum-splash__face">
+                <span class="logum-eye"></span>
+                <span class="logum-eye"></span>
+            </div>
+            <div class="logum-splash__badge">⭐ FASE ESPECIAL</div>
+            <h2 class="logum-splash__title">Bem-vindo ao Sentury IA</h2>
+            <p class="logum-splash__message">Esta é uma fase de avaliação por inteligência artificial.</p>
+            <p class="logum-splash__submessage">Suas respostas serão analisadas com base em empatia, clareza e próximo passo.</p>
+        </div>
+    </div>
+
+    <header class="header" id="header">
+        <div class="header__inner">
+            <a href="/app" class="header__brand">
+                <span class="header__brand-logo">
+                    <img class="brand-mark" src="https://ec-cdn.rysn-craft.workers.dev" alt="Experience Connect" width="32" height="32" loading="eager" decoding="async">
+                </span>
+                <span class="header__brand-text">Exp<span class="text-yellow">Connect</span></span>
+            </a>
+            <div class="header__meta">
+                <div class="xp-indicator" id="xp-indicator">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                    </svg>
+                    <span id="xp-count"></span><span class="xp-unit"> XP</span>
+                </div>
+                <a href="/app" class="header__exit" id="btn-exit" title="Sair">
+                    <span>SAIR</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="main" id="main-content">
+
+        <div class="challenge-info" id="challenge-info">
+            <div class="challenge-info__left">
+                <span class="challenge-badge challenge-badge--medium" id="challenge-badge"></span>
+                <h1 class="challenge-name" id="challenge-name"></h1>
+            </div>
+            <div class="challenge-info__right">
+                <div class="progress-indicator" id="progress-indicator">
+                    <span class="progress-current" id="progress-current"></span>
+                    <span class="progress-sep">/</span>
+                    <span class="progress-total" id="progress-total"></span>
+                </div>
+                <div class="timer" id="timer">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                    </svg>
+                    <span id="timer-display"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="challenge-progress-bar" id="challenge-progress-bar">
+            <div class="mystery-progress-bar" id="mystery-progress-bar"></div>
+        </div>
+
+        <section class="challenge-loading" id="challenge-loading" role="status" aria-live="polite" aria-busy="true" aria-hidden="false">
+            <div class="ec-loader" style="width:88px;height:88px;color:var(--k)" aria-hidden="true">
+                <svg viewBox="0 0 100 100">
+                    <g class="ecl-rays" stroke="var(--y)" stroke-width="3" stroke-linecap="round">
+                        <line x1="50" y1="6" x2="50" y2="15"/><line x1="94" y1="50" x2="85" y2="50"/>
+                        <line x1="50" y1="94" x2="50" y2="85"/><line x1="6" y1="50" x2="15" y2="50"/>
+                        <line x1="81" y1="19" x2="75" y2="25"/><line x1="81" y1="81" x2="75" y2="75"/>
+                        <line x1="19" y1="81" x2="25" y2="75"/><line x1="19" y1="19" x2="25" y2="25"/>
+                    </g>
+                    <circle class="ecl-orbit" cx="50" cy="50" r="44"/>
+                    <circle class="ecl-dot" cx="50" cy="6" r="4.5"/>
+                    <g class="ecl-mark">
+                        <path class="ecl-crown" d="M61 28 l3 -7 4 4.5 4 -7 3 8.5 z" fill="var(--y)" stroke="var(--y)" stroke-width="1" stroke-linejoin="round"/>
+                        <rect class="ecl-mark-rect" x="30" y="34" width="40" height="36" rx="5"/>
+                        <text class="ecl-mark-txt" x="50" y="59" font-family="DM Sans" font-weight="800" font-size="20" text-anchor="middle">EC</text>
+                    </g>
+                </svg>
+            </div>
+            <h2 class="challenge-loading__title">Carregando seu desafio</h2>
+            <p class="challenge-loading__copy">Preparando a próxima pergunta…</p>
+        </section>
+
+        <div class="question-container" id="question-container">
+
+            <div class="question-card" id="question-card">
+                <div class="logum-stripe" id="logum-stripe" style="display: none;"></div>
+                
+                <div class="question-card__header">
+                    <div class="question-number" id="question-number">
+                        <span>Questão</span>
+                        <strong>01</strong>
+                    </div>
+                    
+                    <div class="logum-special-badge" id="logum-special-badge" style="display: none;">
+                        ⭐ FASE ESPECIAL
+                    </div>
+                    
+                    <!-- Attempts Indicator - REMOVED per Bug 1 fix (Sistema de Tentativas do Sentury) -->
+                    <!-- User can now always progress regardless of correct/incorrect answers -->
+                    <div class="attempts-indicator" id="attempts-indicator" style="display: none;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                            <polyline points="22 4 12 14.01 9 11.01"/>
+                        </svg>
+                        <span id="attempts-text">Tentativa 1/3</span>
+                    </div>
+                    
+                    <div class="question-points" id="question-points">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                        </svg>
+                            <span class="question-points__loading" aria-hidden="true"></span>
+                    </div>
+                </div>
+
+                <div class="question-body" id="question-body">
+                    <h2 class="question-title" id="question-title"></h2>
+                    <p class="question-desc" id="question-desc"></p>
+                </div>
+
+                <div class="options-grid" id="options-grid"></div>
+
+                <div class="text-answer-area" id="text-answer-area" style="display:none;">
+                    <label for="text-answer" class="text-answer-label">Sua Resposta</label>
+                    <div class="text-answer-wrapper">
+                        <textarea id="text-answer" class="text-answer-input" placeholder="Digite sua resposta aqui..." rows="4"></textarea>
+                        <span class="char-count" id="char-count">0 / 500</span>
+                    </div>
+                </div>
+                
+                <div class="logum-footer" id="logum-footer" style="display: none;">
+                    <div class="logum-face">
+                        <span class="logum-eye"></span>
+                        <span class="logum-eye"></span>
+                    </div>
+                    <span class="logum-footer-text">Avaliado por Sentury IA — escreva com empatia, clareza e próximo passo</span>
+                </div>
+            <div class="feedback-overlay" id="feedback-overlay">
+                <div class="feedback-card" id="feedback-card">
+                    <div class="feedback-icon feedback-icon--correct" id="feedback-icon-correct">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                            <polyline points="22 4 12 14.01 9 11.01"/>
+                        </svg>
+                    </div>
+                    <div class="feedback-icon feedback-icon--wrong" id="feedback-icon-wrong" style="display: none;">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="15" y1="9" x2="9" y2="15"/>
+                            <line x1="9" y1="9" x2="15" y2="15"/>
+                        </svg>
+                    </div>
+                    <h3 class="feedback-title" id="feedback-title"></h3>
+                    <p class="feedback-text" id="feedback-text"></p>
+                    <div class="feedback-xp" id="feedback-xp"></div>
+
+                    <div class="next-bar" id="next-bar" style="display:none; width: 100%; margin-top: 10px;">
+                        <button class="action-btn action-btn--primary action-btn--next" id="btn-next" onclick="nextQuestion()">
+                            <span class="btn-text">Próxima Questão</span>
+                            <svg class="btn-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                            </svg>
+                            <div class="btn-shine"></div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-bar" id="action-bar">
+            <div class="action-bar__left">
+            </div>
+            <div class="action-bar__right">
+                <button class="action-btn action-btn--primary btn-aml" id="btn-submit" onclick="submitAnswer()" disabled>
+                    <span class="aml-text">Enviar Resposta
+                        <svg class="btn-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                        </svg>
+                    </span>
+                    <span class="aml-stage"></span>
+                    <div class="btn-shine"></div>
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <div class="completion-overlay" id="completion-overlay">
+        <div class="completion-card" id="completion-card">
+            <div class="completion-icon">
+                <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="8" r="7"/>
+                    <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
+                </svg>
+            </div>
+            <h2 class="completion-title">Desafio Completo!</h2>
+            <p class="completion-subtitle">Você finalizou o Desafio EC</p>
+
+            <div class="completion-stats">
+                <div class="comp-stat">
+                    <span class="comp-stat__number" id="comp-correct">4</span>
+                    <span class="comp-stat__label">Acertos</span>
+                </div>
+                <div class="comp-stat-divider"></div>
+                <div class="comp-stat">
+                    <span class="comp-stat__number comp-stat__number--yellow" id="comp-xp">120</span>
+                    <span class="comp-stat__label">XP Ganhos</span>
+                </div>
+                <div class="comp-stat-divider"></div>
+                <div class="comp-stat">
+                    <span class="comp-stat__number" id="comp-time">3:24</span>
+                    <span class="comp-stat__label">Tempo</span>
+                </div>
+            </div>
+
+            <div class="completion-actions">
+                <a href="/app" class="action-btn action-btn--ghost">Voltar ao Início</a>
+                <button class="action-btn action-btn--primary" onclick="restartChallenge()">
+                    <span class="btn-text">Jogar Novamente</span>
+                    <svg class="btn-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                    <div class="btn-shine"></div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="./frontend/js/firebase-loader.js"></script>
+    <script src="./frontend/js/services/ProgressFlow.js"></script>
+    <script src="./frontend/js/challenge-randomizer.js"></script>
+    
+    <script src="./frontend/js/shared/achievement-notifications.js"></script>
+    
+    <script src="./frontend/js/progress-sync-service.js"></script>
+    
+    <script src="./frontend/js/utils/idempotency.js"></script>
+    <script src="./frontend/js/utils/infrastructureErrorUI.js"></script>
+    
+    <script src="./frontend/js/challenge-validator.js?v=20260523-level-fix"></script>
+    <script src="./frontend/js/services/IntermissionFlowService.js?v=20260611-loopfix"></script>
+    <script src="./frontend/js/services/IntermissionGameCatalog.js?v=20260614-coral"></script>
+    <script src="./frontend/js/services/ScoreTracker.js?v=20260518-001"></script>
+    <script src="./frontend/js/services/HintSystem.js?v=20260614-phasegen-ui"></script>
+    <script src="./frontend/js/services/KeyboardNavigation.js?v=20260518-001"></script>
+    <script src="./frontend/js/services/IntermissionGameRuntime.js?v=20260614-redesign-v3"></script>
+    
+    <script src="./frontend/js/components/MysteryProgressBar.js?v=20260518-001"></script>
+    <script src="./frontend/js/components/LogunModal.js?v=20260517-003"></script>
+    <script src="./frontend/js/components/LogunModalIntegration.js?v=20260517-003"></script>
+    
+    <!-- Intermission Game Logic - OLD SYSTEM REMOVED (using IntermissionGameRuntime.js now) -->
+    
+    <script src="./frontend/js/challenge.js?v=20260613-compact-all"></script>
+</body>
+</html>

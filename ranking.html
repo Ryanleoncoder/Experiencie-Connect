@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <script src="./frontend/js/console-control.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://favicon.rysn-craft.workers.dev">
+    <meta name="description" content="Experience Connect - Ranking de jogadores">
+    <title>Experience Connect — Ranking</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./frontend/styles/landing.css">
+    <link rel="stylesheet" href="./frontend/styles/home-ec.css">
+    <link rel="stylesheet" href="./frontend/styles/ranking-ec.css">
+    <script src="./frontend/js/shared/cx-session.js"></script>
+    <script>
+        window.CxSession.bootstrapPage({
+            mode: 'protected',
+            redirectUnauthenticatedTo: 'login.html'
+        });
+    </script>
+</head>
+<body>
+
+    <header class="header" id="header">
+        <div class="header__inner">
+            <a href="/app" class="header__brand" id="header-brand">
+                <div class="header__logo">
+                    <img class="brand-mark" src="https://ec-cdn.rysn-craft.workers.dev" alt="Experience Connect" width="28" height="28" loading="eager" decoding="async">
+                </div>
+                <span class="header__brand-text">Experience<br><span class="text-yellow">Connect</span></span>
+            </a>
+
+            <nav class="header__nav" id="header-nav">
+                <a href="/app" class="nav-link" id="nav-desafios">Desafios</a>
+                <a href="ranking.html" class="nav-link nav-link--active" id="nav-ranking">Ranking</a>
+                <a href="conquistas.html" class="nav-link" id="nav-conquistas" title="Conquistas">Conquistas</a>
+                <a href="resgatar.html" class="nav-link" id="nav-resgatar">Resgate</a>
+            </nav>
+
+            <div class="header__user" id="header-user">
+                <div class="sync-indicator" id="sync-indicator" title="Sincronização">
+                    <svg class="sync-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+                    </svg>
+                    <span class="sync-text">Conectando...</span>
+                </div>
+
+                <div class="user-info">
+                    <div class="user-avatar" id="header-user-avatar">
+                        <span class="user-avatar__initials" id="header-user-avatar-text"></span>
+                        <div class="avatar-status"></div>
+                    </div>
+                    <div class="user-details">
+                        <span class="user-name">Olá, <span id="header-user-name" class="home-skeleton-text home-skeleton-text--name"></span>!</span>
+                        <div class="user-meta">
+                            <span class="user-level home-skeleton-text home-skeleton-text--level" id="header-user-level"></span>
+                            <span class="user-xp home-skeleton-text home-skeleton-text--xp" id="header-user-xp"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="header__bell" type="button" title="Notificações" aria-label="Notificações">
+                    <span class="dot"></span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                    </svg>
+                </button>
+
+                <button class="btn-logout" id="btn-logout" title="Sair" onclick="handleLogout()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                        <polyline points="16 17 21 12 16 7"/>
+                        <line x1="21" y1="12" x2="9" y2="12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <button class="mobile-menu-btn" id="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Abrir menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="mobile-nav-overlay" id="mobile-nav-overlay" onclick="toggleMobileMenu()" aria-hidden="true"></div>
+    <nav class="mobile-nav" id="mobile-nav">
+        <div class="mobile-nav__user">
+            <div class="user-avatar user-avatar--lg" id="mobile-user-avatar">
+                <span class="user-avatar__initials" id="mobile-user-avatar-text"></span>
+            </div>
+            <span class="user-name home-skeleton-text home-skeleton-text--name" id="mobile-user-name"></span>
+            <span class="user-level home-skeleton-text home-skeleton-text--level" id="mobile-user-level"></span>
+        </div>
+        <div class="mobile-nav__links">
+            <a href="/app" class="mobile-nav-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                Níveis
+            </a>
+            <a href="ranking.html" class="mobile-nav-link mobile-nav-link--active">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                Ranking
+            </a>
+            <a href="conquistas.html" class="mobile-nav-link" title="Conquistas">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+                Conquistas
+            </a>
+            <a href="resgatar.html" class="mobile-nav-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="12" rx="2" ry="2"/><path d="M7 8V6a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
+                Resgatar
+            </a>
+        </div>
+        <button class="mobile-nav__logout" onclick="handleLogout()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Sair da conta
+        </button>
+    </nav>
+
+    <main class="main" id="main-content">
+        <div class="wrapx">
+
+            <section class="rank-hero">
+                <div class="rank-hero__text">
+                    <span class="rank-hero__tag">Temporada 01</span>
+                    <h1 class="rank-hero__title">Ranking <span class="text-yellow">EC</span></h1>
+                    <p class="rank-hero__sub">Atualização a cada 5 minutos</p>
+                </div>
+                <div class="rank-status">
+                    <span class="rank-status__badge" id="ranking-status-badge">Carregando...</span>
+                    <span class="rank-status__time" id="ranking-timestamp"></span>
+                </div>
+            </section>
+
+            <section class="rank-kpis" aria-label="Resumo de ranking">
+                <article class="rank-kpi">
+                    <div class="rank-kpi__ic rank-kpi__ic--k">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <div class="rank-kpi__data">
+                        <span class="rank-kpi__value" id="ranking-total-players">0</span>
+                        <span class="rank-kpi__label">Jogadores</span>
+                    </div>
+                </article>
+                <article class="rank-kpi rank-kpi--accent">
+                    <div class="rank-kpi__ic rank-kpi__ic--y">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+                    </div>
+                    <div class="rank-kpi__data">
+                        <span class="rank-kpi__value" id="ranking-my-position">--</span>
+                        <span class="rank-kpi__label">Sua posição</span>
+                    </div>
+                </article>
+                <article class="rank-kpi">
+                    <div class="rank-kpi__ic rank-kpi__ic--g">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                    </div>
+                    <div class="rank-kpi__data">
+                        <span class="rank-kpi__value" id="ranking-my-xp">0</span>
+                        <span class="rank-kpi__label">Seu XP</span>
+                    </div>
+                </article>
+            </section>
+
+            <section class="rank-podium" id="ranking-podium" aria-label="Pódio - Top 3">
+                <!-- Populado por ranking.js -->
+            </section>
+
+            <section class="rank-board" aria-label="Classificação geral">
+                <header class="rank-board__head">
+                    <h2 class="rank-board__title">Classificação <span class="text-yellow">Geral</span></h2>
+                    <span class="rank-board__count" id="ranking-count">—</span>
+                </header>
+                <div class="rank-list" id="ranking-list">
+                    <!-- Populado por ranking.js -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="./frontend/js/ranking.js"></script>
+</body>
+</html>

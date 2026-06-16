@@ -1,0 +1,191 @@
+/**
+ * Mystery Progress Bar CSS
+ * 
+ * Barra de progresso com revelação progressiva de tipos de fase
+ */
+
+.mystery-progress-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  padding: 0;
+  margin: 0;
+  height: 18px;
+}
+
+.mystery-step-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  position: relative;
+  flex: 1;
+  height: 18px;
+  min-width: 0;
+}
+
+.mystery-step-icon {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+}
+
+.mystery-step-icon:not(:empty) {
+  opacity: 1;
+}
+
+/* SVG icon styling */
+.mystery-step-icon svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+.mystery-step-icon .mystery-icon-game {
+  color: #D85A30;
+}
+
+.mystery-step-icon .mystery-icon-logum {
+  color: #7c6ff7;
+}
+
+.mystery-step-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.mystery-step-dot--done {
+  transform: scale(1);
+}
+
+.mystery-step-dot--current {
+  animation: mysteryPulse 2s ease-in-out infinite;
+}
+
+.mystery-step-dot--future {
+  opacity: 0.6;
+}
+
+.mystery-step-connector {
+  position: absolute;
+  top: 50%;
+  left: calc(50% + 8px);
+  right: calc(-50% + 8px);
+  height: 2px;
+  z-index: 1;
+  transform: translateY(-50%);
+  transition: background 0.3s ease-out;
+}
+
+/* Animações */
+@keyframes mysteryRevealDot {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes mysteryRevealIcon {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes mysteryRevealConnector {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes mysteryPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 3px rgba(240, 192, 0, 0.19);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(240, 192, 0, 0.1);
+  }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .mystery-step-dot {
+    width: 10px;
+    height: 10px;
+  }
+
+  .mystery-step-dot--current {
+    width: 14px;
+    height: 14px;
+  }
+
+  .mystery-progress-bar,
+  .mystery-step-col {
+    height: 16px;
+  }
+
+  .mystery-step-connector {
+    top: 50%;
+    left: calc(50% + 7px);
+    right: calc(-50% + 7px);
+  }
+}
+
+/* Integração com challenge.css */
+.challenge-progress-bar {
+  position: relative;
+  height: 18px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0 2px;
+  margin: 8px 0 22px;
+  overflow: visible;
+}
+
+.challenge-progress-bar .mystery-progress-bar {
+  min-height: 18px;
+  height: 18px;
+}
+
+/* Modo Sentury - ajusta cores quando em fase Sentury */
+.challenge-progress-bar.logum-mode .mystery-step-dot--current {
+  background: #7c6ff7;
+  box-shadow: 0 0 0 3px rgba(124, 111, 247, 0.19);
+}
+
+.challenge-progress-bar.logum-mode .mystery-step-dot--current {
+  animation: mysteryPulseLogum 2s ease-in-out infinite;
+}
+
+@keyframes mysteryPulseLogum {
+  0%, 100% {
+    box-shadow: 0 0 0 3px rgba(124, 111, 247, 0.19);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(124, 111, 247, 0.1);
+  }
+}

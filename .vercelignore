@@ -1,0 +1,67 @@
+# Local secrets and environment files
+.env
+.env.*
+frontend/.env
+frontend/.env.*
+
+# Dependencies and build outputs (regenerate on CI)
+node_modules
+.npm
+.pnpm
+.pnp*
+.next
+dist
+build
+.turbo
+
+# Tests and local QA assets
+api/__tests__/
+api/test-*
+**/*.test.*
+**/*.test.js
+**/*.property.test.js
+**/*-exploration.test.js
+**/*-preservation.test.js
+**/bug*.test.js
+**/__tests__/
+frontend/__tests__/
+frontend/js/services/__tests__/
+TESTES_MANUAIS.md
+test-*.html
+test-*.js
+.vercel-redeploy
+
+# Documentation and database artifacts (not needed at runtime)
+docs/
+database/
+design/
+preview/
+vps-deployment/
+vps-deployment-updates/
+
+# Legacy/back-office code not deployed on Vercel
+backend/
+serverless/
+config/
+Logun-ia/
+logun-contexts/
+
+# Local tooling/state
+.vercel
+firebase.json
+firestore.rules
+*.log
+
+# OpenClaude (Python router code - not needed in Vercel)
+openclaude/
+**/openclaude_backup/
+
+# Local demos and throwaway HTML test surfaces
+frontend/*demo.html
+frontend/test-*.html
+invite/test-*.html
+Logun-ia/desafio-preview*.html
+invite/package.json
+invite/package-lock.json
+invite/jest.config.js
+invite/node_modules/

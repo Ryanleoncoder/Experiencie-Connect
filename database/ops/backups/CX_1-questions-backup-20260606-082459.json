@@ -1,0 +1,615 @@
+{
+ "path": "seasons/S-2025-01/levels/CX_1",
+ "challenge_count": 27,
+ "questions": [
+  {
+   "ordem": 1,
+   "resposta_correta": "B",
+   "descricao": "Customer Experience (CX) abrange todas as interações que um cliente tem com uma empresa. Qual alternativa melhor define CX?",
+   "id": "sel-101",
+   "tags": [
+    "fundamentos",
+    "conceito",
+    "definição"
+   ],
+   "categoria": "Fundamentos CX",
+   "tempo_limite": 60,
+   "tipo": "seleção",
+   "titulo": "O que é Customer Experience?",
+   "xp": 25,
+   "ativo": true,
+   "alternativas": {
+    "A": "Apenas o atendimento ao cliente por telefone",
+    "D": "O preço dos produtos oferecidos",
+    "C": "O design visual do site da empresa",
+    "B": "A percepção total do cliente sobre a marca em todos os pontos de contato"
+   }
+  },
+  {
+   "ordem": 2,
+   "resposta_correta": "A",
+   "descricao": "Em CX, os 'touchpoints' são fundamentais para mapear a experiência. Qual destes é um exemplo de touchpoint?",
+   "id": "sel-102",
+   "tags": [
+    "touchpoints",
+    "jornada",
+    "interação"
+   ],
+   "categoria": "Jornada do Cliente",
+   "tempo_limite": 60,
+   "tipo": "seleção",
+   "titulo": "Pontos de Contato (Touchpoints)",
+   "xp": 25,
+   "ativo": true,
+   "alternativas": {
+    "D": "Contrato de trabalho dos funcionários",
+    "A": "E-mail de boas-vindas após o cadastro",
+    "C": "Relatório financeiro trimestral",
+    "B": "Reunião interna entre gestores"
+   }
+  },
+  {
+   "ordem": 3,
+   "resposta_correta": "B",
+   "descricao": "O NPS é uma das métricas mais usadas em CX. Qual é a pergunta clássica do NPS?",
+   "id": "sel-103",
+   "tags": [
+    "nps",
+    "métricas",
+    "pesquisa"
+   ],
+   "categoria": "Métricas & KPIs",
+   "tempo_limite": 60,
+   "tipo": "seleção",
+   "titulo": "NPS: Net Promoter Score",
+   "xp": 30,
+   "ativo": true,
+   "alternativas": {
+    "D": "Qual seu nível de renda mensal?",
+    "A": "Você está satisfeito com nosso produto?",
+    "C": "Quantas vezes você comprou conosco este mês?",
+    "B": "De 0 a 10, o quanto você recomendaria nossa empresa a um amigo?"
+   }
+  },
+  {
+   "ordem": 4,
+   "resposta_correta": "A",
+   "descricao": "Customer Experience (CX) e Customer Success (CS) são conceitos relacionados, mas distintos. Qual é a principal diferença?",
+   "id": "sel-104",
+   "tags": [
+    "cx",
+    "cs",
+    "diferenças"
+   ],
+   "tempo_limite": 90,
+   "categoria": "Fundamentos CX",
+   "tipo": "seleção",
+   "titulo": "Diferença entre CX e CS",
+   "xp": 30,
+   "ativo": true,
+   "alternativas": {
+    "D": "CX é apenas para e-commerce; CS é para SaaS",
+    "A": "CX foca na experiência total; CS foca em garantir que o cliente atinja seus objetivos com o produto",
+    "C": "CS é mais importante que CX em todas as empresas",
+    "B": "São a mesma coisa, apenas nomes diferentes"
+   }
+  },
+  {
+   "ordem": 5,
+   "tags": [
+    "fundamentos",
+    "conceito",
+    "definição"
+   ],
+   "descricao": "Customer Experience (CX) abrange todas as interações que um cliente tem com uma empresa. Qual alternativa melhor define CX?",
+   "id": "sel-101-v1",
+   "resposta_correta": "B",
+   "categoria": "Fundamentos CX",
+   "tempo_limite": 60,
+   "tipo": "seleção",
+   "titulo": "O que é Customer Experience?",
+   "xp": 25,
+   "ativo": true,
+   "alternativas": {
+    "D": "O preço dos produtos oferecidos",
+    "A": "Apenas o atendimento ao cliente por telefone",
+    "C": "O design visual do site da empresa",
+    "B": "A percepção total do cliente sobre a marca em todos os pontos de contato"
+   }
+  },
+  {
+   "ordem": 6,
+   "tags": [
+    "touchpoints",
+    "jornada",
+    "interação"
+   ],
+   "descricao": "Em CX, os 'touchpoints' são fundamentais para mapear a experiência. Qual destes é um exemplo de touchpoint?",
+   "id": "sel-102-v1",
+   "resposta_correta": "A",
+   "tempo_limite": 60,
+   "categoria": "Jornada do Cliente",
+   "tipo": "seleção",
+   "titulo": "Pontos de Contato (Touchpoints)",
+   "xp": 25,
+   "ativo": true,
+   "alternativas": {
+    "A": "E-mail de boas-vindas após o cadastro",
+    "D": "Contrato de trabalho dos funcionários",
+    "C": "Relatório financeiro trimestral",
+    "B": "Reunião interna entre gestores"
+   }
+  },
+  {
+   "ordem": 7,
+   "tags": [
+    "nps",
+    "métricas",
+    "pesquisa"
+   ],
+   "descricao": "O NPS é uma das métricas mais usadas em CX. Qual é a pergunta clássica do NPS?",
+   "id": "sel-103-v1",
+   "resposta_correta": "B",
+   "categoria": "Métricas & KPIs",
+   "tempo_limite": 60,
+   "tipo": "seleção",
+   "titulo": "NPS: Net Promoter Score",
+   "xp": 30,
+   "ativo": true,
+   "alternativas": {
+    "A": "Você está satisfeito com nosso produto?",
+    "D": "Qual seu nível de renda mensal?",
+    "C": "Quantas vezes você comprou conosco este mês?",
+    "B": "De 0 a 10, o quanto você recomendaria nossa empresa a um amigo?"
+   }
+  },
+  {
+   "ordem": 8,
+   "resposta_correta": "A",
+   "descricao": "Customer Experience (CX) e Customer Success (CS) são conceitos relacionados, mas distintos. Qual é a principal diferença?",
+   "id": "sel-104-v1",
+   "tags": [
+    "cx",
+    "cs",
+    "diferenças"
+   ],
+   "categoria": "Fundamentos CX",
+   "tempo_limite": 90,
+   "tipo": "seleção",
+   "titulo": "Diferença entre CX e CS",
+   "xp": 30,
+   "ativo": true,
+   "alternativas": {
+    "A": "CX foca na experiência total; CS foca em garantir que o cliente atinja seus objetivos com o produto",
+    "D": "CX é apenas para e-commerce; CS é para SaaS",
+    "C": "CS é mais importante que CX em todas as empresas",
+    "B": "São a mesma coisa, apenas nomes diferentes"
+   }
+  },
+  {
+   "ordem": 9,
+   "resposta_correta": "B",
+   "descricao": "Customer Experience (CX) abrange todas as interações que um cliente tem com uma empresa. Qual alternativa melhor define CX?",
+   "id": "sel-101-v2",
+   "tags": [
+    "fundamentos",
+    "conceito",
+    "definição"
+   ],
+   "tempo_limite": 60,
+   "categoria": "Fundamentos CX",
+   "tipo": "seleção",
+   "titulo": "O que é Customer Experience?",
+   "xp": 25,
+   "ativo": true,
+   "alternativas": {
+    "A": "Apenas o atendimento ao cliente por telefone",
+    "D": "O preço dos produtos oferecidos",
+    "C": "O design visual do site da empresa",
+    "B": "A percepção total do cliente sobre a marca em todos os pontos de contato"
+   }
+  },
+  {
+   "description": "Intermission game na Fase 1, Posição 1",
+   "type": "intermission",
+   "points": 100,
+   "setor": "CX",
+   "id": "ig-L1-slot1",
+   "titulo": "Desafio Especial - Fase 1",
+   "xp": 100,
+   "challenge_id": "ig-L1-slot1",
+   "alternativas": {},
+   "ordem": 10,
+   "slot_index": 1,
+   "descricao": "Intermission game na Fase 1, Posição 1",
+   "tempo_limite": 180,
+   "tipo": "intermission",
+   "level": 1,
+   "title": "Desafio Especial - Fase 1",
+   "ativo": true
+  },
+  {
+   "ordem": 11,
+   "resposta_correta": null,
+   "descricao": "**Situação:** Um cliente entrou em contato muito chateado porque seu produto de aniversário foi entregue com atraso e com a embalagem danificada.\n\n**Sua tarefa:** Escreva uma resposta de atendimento para este cliente de forma altamente empática, propondo uma solução clara e informando um prazo para acompanhamento.",
+   "id": "lg-101",
+   "tags": [
+    "atendimento",
+    "atraso",
+    "urgencia",
+    "logun"
+   ],
+   "tempo_limite": 180,
+   "categoria": "Atendimento ao Cliente",
+   "tipo": "texto",
+   "titulo": "Atendimento: Atraso na Entrega (Melhorado)",
+   "xp": 35,
+   "ativo": true,
+   "alternativas": {}
+  },
+  {
+   "ordem": 12,
+   "resposta_correta": "A",
+   "descricao": "Em CX, os 'touchpoints' são fundamentais para mapear a experiência. Qual destes é um exemplo de touchpoint?",
+   "id": "sel-102-v2",
+   "tags": [
+    "touchpoints",
+    "jornada",
+    "interação"
+   ],
+   "categoria": "Jornada do Cliente",
+   "tempo_limite": 60,
+   "tipo": "seleção",
+   "titulo": "Pontos de Contato (Touchpoints)",
+   "xp": 25,
+   "ativo": true,
+   "alternativas": {
+    "A": "E-mail de boas-vindas após o cadastro",
+    "D": "Contrato de trabalho dos funcionários",
+    "C": "Relatório financeiro trimestral",
+    "B": "Reunião interna entre gestores"
+   }
+  },
+  {
+   "ordem": 13,
+   "tags": [
+    "nps",
+    "métricas",
+    "pesquisa"
+   ],
+   "descricao": "O NPS é uma das métricas mais usadas em CX. Qual é a pergunta clássica do NPS?",
+   "id": "sel-103-v2",
+   "resposta_correta": "B",
+   "categoria": "Métricas & KPIs",
+   "tempo_limite": 60,
+   "tipo": "seleção",
+   "titulo": "NPS: Net Promoter Score",
+   "xp": 30,
+   "ativo": true,
+   "alternativas": {
+    "A": "Você está satisfeito com nosso produto?",
+    "D": "Qual seu nível de renda mensal?",
+    "C": "Quantas vezes você comprou conosco este mês?",
+    "B": "De 0 a 10, o quanto você recomendaria nossa empresa a um amigo?"
+   }
+  },
+  {
+   "ordem": 14,
+   "resposta_correta": "A",
+   "descricao": "Customer Experience (CX) e Customer Success (CS) são conceitos relacionados, mas distintos. Qual é a principal diferença?",
+   "id": "sel-104-v2",
+   "tags": [
+    "cx",
+    "cs",
+    "diferenças"
+   ],
+   "categoria": "Fundamentos CX",
+   "tempo_limite": 90,
+   "tipo": "seleção",
+   "titulo": "Diferença entre CX e CS",
+   "xp": 30,
+   "ativo": true,
+   "alternativas": {
+    "D": "CX é apenas para e-commerce; CS é para SaaS",
+    "A": "CX foca na experiência total; CS foca em garantir que o cliente atinja seus objetivos com o produto",
+    "C": "CS é mais importante que CX em todas as empresas",
+    "B": "São a mesma coisa, apenas nomes diferentes"
+   }
+  },
+  {
+   "ordem": 15,
+   "tags": [
+    "fundamentos",
+    "conceito",
+    "definição"
+   ],
+   "descricao": "Customer Experience (CX) abrange todas as interações que um cliente tem com uma empresa. Qual alternativa melhor define CX?",
+   "id": "sel-101-v3",
+   "resposta_correta": "B",
+   "tempo_limite": 60,
+   "categoria": "Fundamentos CX",
+   "tipo": "seleção",
+   "titulo": "O que é Customer Experience?",
+   "xp": 25,
+   "ativo": true,
+   "alternativas": {
+    "A": "Apenas o atendimento ao cliente por telefone",
+    "D": "O preço dos produtos oferecidos",
+    "C": "O design visual do site da empresa",
+    "B": "A percepção total do cliente sobre a marca em todos os pontos de contato"
+   }
+  },
+  {
+   "ordem": 16,
+   "tags": [
+    "touchpoints",
+    "jornada",
+    "interação"
+   ],
+   "descricao": "Em CX, os 'touchpoints' são fundamentais para mapear a experiência. Qual destes é um exemplo de touchpoint?",
+   "id": "sel-102-v3",
+   "resposta_correta": "A",
+   "tempo_limite": 60,
+   "categoria": "Jornada do Cliente",
+   "tipo": "seleção",
+   "titulo": "Pontos de Contato (Touchpoints)",
+   "xp": 25,
+   "ativo": true,
+   "alternativas": {
+    "D": "Contrato de trabalho dos funcionários",
+    "A": "E-mail de boas-vindas após o cadastro",
+    "C": "Relatório financeiro trimestral",
+    "B": "Reunião interna entre gestores"
+   }
+  },
+  {
+   "ordem": 17,
+   "resposta_correta": "B",
+   "descricao": "O NPS é uma das métricas mais usadas em CX. Qual é a pergunta clássica do NPS?",
+   "id": "sel-103-v3",
+   "tags": [
+    "nps",
+    "métricas",
+    "pesquisa"
+   ],
+   "categoria": "Métricas & KPIs",
+   "tempo_limite": 60,
+   "tipo": "seleção",
+   "titulo": "NPS: Net Promoter Score",
+   "xp": 30,
+   "ativo": true,
+   "alternativas": {
+    "A": "Você está satisfeito com nosso produto?",
+    "D": "Qual seu nível de renda mensal?",
+    "C": "Quantas vezes você comprou conosco este mês?",
+    "B": "De 0 a 10, o quanto você recomendaria nossa empresa a um amigo?"
+   }
+  },
+  {
+   "ordem": 18,
+   "resposta_correta": "A",
+   "descricao": "Customer Experience (CX) e Customer Success (CS) são conceitos relacionados, mas distintos. Qual é a principal diferença?",
+   "id": "sel-104-v3",
+   "tags": [
+    "cx",
+    "cs",
+    "diferenças"
+   ],
+   "categoria": "Fundamentos CX",
+   "tempo_limite": 90,
+   "tipo": "seleção",
+   "titulo": "Diferença entre CX e CS",
+   "xp": 30,
+   "ativo": true,
+   "alternativas": {
+    "D": "CX é apenas para e-commerce; CS é para SaaS",
+    "A": "CX foca na experiência total; CS foca em garantir que o cliente atinja seus objetivos com o produto",
+    "C": "CS é mais importante que CX em todas as empresas",
+    "B": "São a mesma coisa, apenas nomes diferentes"
+   }
+  },
+  {
+   "ordem": 19,
+   "tags": [
+    "fundamentos",
+    "conceito",
+    "definição"
+   ],
+   "descricao": "Customer Experience (CX) abrange todas as interações que um cliente tem com uma empresa. Qual alternativa melhor define CX?",
+   "id": "sel-101-v4",
+   "resposta_correta": "B",
+   "categoria": "Fundamentos CX",
+   "tempo_limite": 60,
+   "tipo": "seleção",
+   "titulo": "O que é Customer Experience?",
+   "xp": 25,
+   "ativo": true,
+   "alternativas": {
+    "D": "O preço dos produtos oferecidos",
+    "A": "Apenas o atendimento ao cliente por telefone",
+    "C": "O design visual do site da empresa",
+    "B": "A percepção total do cliente sobre a marca em todos os pontos de contato"
+   }
+  },
+  {
+   "points": 100,
+   "type": "intermission",
+   "description": "Intermission game na Fase 1, Posição 2",
+   "setor": "CX",
+   "id": "ig-L1-slot2",
+   "titulo": "Desafio Especial - Fase 1",
+   "xp": 100,
+   "challenge_id": "ig-L1-slot2",
+   "alternativas": {},
+   "ordem": 20,
+   "descricao": "Intermission game na Fase 1, Posição 2",
+   "slot_index": 2,
+   "tempo_limite": 180,
+   "tipo": "intermission",
+   "level": 1,
+   "title": "Desafio Especial - Fase 1",
+   "ativo": true
+  },
+  {
+   "ordem": 21,
+   "tags": [
+    "touchpoints",
+    "jornada",
+    "interação"
+   ],
+   "descricao": "Em CX, os 'touchpoints' são fundamentais para mapear a experiência. Qual destes é um exemplo de touchpoint?",
+   "id": "sel-102-v4",
+   "resposta_correta": "A",
+   "tempo_limite": 60,
+   "categoria": "Jornada do Cliente",
+   "tipo": "seleção",
+   "titulo": "Pontos de Contato (Touchpoints)",
+   "xp": 25,
+   "ativo": true,
+   "alternativas": {
+    "D": "Contrato de trabalho dos funcionários",
+    "A": "E-mail de boas-vindas após o cadastro",
+    "C": "Relatório financeiro trimestral",
+    "B": "Reunião interna entre gestores"
+   }
+  },
+  {
+   "ordem": 22,
+   "resposta_correta": "B",
+   "descricao": "O NPS é uma das métricas mais usadas em CX. Qual é a pergunta clássica do NPS?",
+   "id": "sel-103-v4",
+   "tags": [
+    "nps",
+    "métricas",
+    "pesquisa"
+   ],
+   "tempo_limite": 60,
+   "categoria": "Métricas & KPIs",
+   "tipo": "seleção",
+   "titulo": "NPS: Net Promoter Score",
+   "xp": 30,
+   "ativo": true,
+   "alternativas": {
+    "D": "Qual seu nível de renda mensal?",
+    "A": "Você está satisfeito com nosso produto?",
+    "C": "Quantas vezes você comprou conosco este mês?",
+    "B": "De 0 a 10, o quanto você recomendaria nossa empresa a um amigo?"
+   }
+  },
+  {
+   "ordem": 23,
+   "tags": [
+    "cx",
+    "cs",
+    "diferenças"
+   ],
+   "descricao": "Customer Experience (CX) e Customer Success (CS) são conceitos relacionados, mas distintos. Qual é a principal diferença?",
+   "id": "sel-104-v4",
+   "resposta_correta": "A",
+   "categoria": "Fundamentos CX",
+   "tempo_limite": 90,
+   "tipo": "seleção",
+   "titulo": "Diferença entre CX e CS",
+   "xp": 30,
+   "ativo": true,
+   "alternativas": {
+    "A": "CX foca na experiência total; CS foca em garantir que o cliente atinja seus objetivos com o produto",
+    "D": "CX é apenas para e-commerce; CS é para SaaS",
+    "C": "CS é mais importante que CX em todas as empresas",
+    "B": "São a mesma coisa, apenas nomes diferentes"
+   }
+  },
+  {
+   "ordem": 24,
+   "resposta_correta": "B",
+   "descricao": "Customer Experience (CX) abrange todas as interações que um cliente tem com uma empresa. Qual alternativa melhor define CX?",
+   "id": "sel-101-v5",
+   "tags": [
+    "fundamentos",
+    "conceito",
+    "definição"
+   ],
+   "categoria": "Fundamentos CX",
+   "tempo_limite": 60,
+   "tipo": "seleção",
+   "titulo": "O que é Customer Experience?",
+   "xp": 25,
+   "ativo": true,
+   "alternativas": {
+    "A": "Apenas o atendimento ao cliente por telefone",
+    "D": "O preço dos produtos oferecidos",
+    "C": "O design visual do site da empresa",
+    "B": "A percepção total do cliente sobre a marca em todos os pontos de contato"
+   }
+  },
+  {
+   "ordem": 25,
+   "tags": [
+    "touchpoints",
+    "jornada",
+    "interação"
+   ],
+   "descricao": "Em CX, os 'touchpoints' são fundamentais para mapear a experiência. Qual destes é um exemplo de touchpoint?",
+   "id": "sel-102-v5",
+   "resposta_correta": "A",
+   "tempo_limite": 60,
+   "categoria": "Jornada do Cliente",
+   "tipo": "seleção",
+   "titulo": "Pontos de Contato (Touchpoints)",
+   "xp": 25,
+   "ativo": true,
+   "alternativas": {
+    "D": "Contrato de trabalho dos funcionários",
+    "A": "E-mail de boas-vindas após o cadastro",
+    "C": "Relatório financeiro trimestral",
+    "B": "Reunião interna entre gestores"
+   }
+  },
+  {
+   "ordem": 26,
+   "resposta_correta": "B",
+   "descricao": "O NPS é uma das métricas mais usadas em CX. Qual é a pergunta clássica do NPS?",
+   "id": "sel-103-v5",
+   "tags": [
+    "nps",
+    "métricas",
+    "pesquisa"
+   ],
+   "categoria": "Métricas & KPIs",
+   "tempo_limite": 60,
+   "tipo": "seleção",
+   "titulo": "NPS: Net Promoter Score",
+   "xp": 30,
+   "ativo": true,
+   "alternativas": {
+    "D": "Qual seu nível de renda mensal?",
+    "A": "Você está satisfeito com nosso produto?",
+    "C": "Quantas vezes você comprou conosco este mês?",
+    "B": "De 0 a 10, o quanto você recomendaria nossa empresa a um amigo?"
+   }
+  },
+  {
+   "ordem": 27,
+   "resposta_correta": "A",
+   "descricao": "Customer Experience (CX) e Customer Success (CS) são conceitos relacionados, mas distintos. Qual é a principal diferença?",
+   "id": "sel-104-v5",
+   "tags": [
+    "cx",
+    "cs",
+    "diferenças"
+   ],
+   "tempo_limite": 90,
+   "categoria": "Fundamentos CX",
+   "tipo": "seleção",
+   "titulo": "Diferença entre CX e CS",
+   "xp": 30,
+   "ativo": true,
+   "alternativas": {
+    "A": "CX foca na experiência total; CS foca em garantir que o cliente atinja seus objetivos com o produto",
+    "D": "CX é apenas para e-commerce; CS é para SaaS",
+    "C": "CS é mais importante que CX em todas as empresas",
+    "B": "São a mesma coisa, apenas nomes diferentes"
+   }
+  }
+ ]
+}

@@ -1,0 +1,22 @@
+{
+  "note": "This is a fallback file for when Firebase is unavailable",
+  "schema_version": 1,
+  "challenges": [
+    {
+      "id": "CX-101",
+      "titulo": "Qual é o principal objetivo do CX?",
+      "alternativas": {
+        "A": "Reduzir custos operacionais",
+        "B": "Aumentar a satisfação do cliente",
+        "C": "Automatizar processos internos",
+        "D": "Melhorar o marketing da empresa"
+      },
+      "xp": 50,
+      "level": 1,
+      "setor": "CX",
+      "ordem": 1,
+      "ativo": true
+    }
+  ],
+  "instructions": "Add actual challenge data here before production deployment"
+}

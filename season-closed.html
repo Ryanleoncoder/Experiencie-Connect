@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <script src="./frontend/js/console-control.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://favicon.rysn-craft.workers.dev">
+    <meta name="description" content="Experience Connect - Temporada Encerrada. Parabéns por participar!">
+    <title>Evento Encerrado — Experience Connect</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./frontend/styles/landing.css">
+    <link rel="stylesheet" href="./frontend/styles/status-ec.css">
+</head>
+<body>
+    <canvas id="confetti-canvas" aria-hidden="true"></canvas>
+
+    <main class="status-container" role="main">
+
+        <div class="season-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+            Temporada 2025 · Encerrada
+        </div>
+
+        <div class="status-icon status-icon--trophy" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+        </div>
+
+        <h1 class="status-title">Evento Encerrado</h1>
+
+        <p class="status-message">
+            A temporada atual do <strong>Experience Connect</strong> foi encerrada.<br>
+            Obrigado por participar da jornada!
+        </p>
+
+        <div class="info-box info-box--success">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+            <span><strong>Parabéns!</strong> Você fez parte desta jornada incrível de aprendizado em Customer Experience.</span>
+        </div>
+
+        <div id="user-stats-section" style="display:none">
+            <div class="user-stats">
+                <div class="user-stat">
+                    <span class="user-stat__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
+                    <span class="user-stat__value" id="stat-xp">0</span>
+                    <span class="user-stat__label">XP Total</span>
+                </div>
+                <div class="user-stat">
+                    <span class="user-stat__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+                    <span class="user-stat__value" id="stat-challenges">0</span>
+                    <span class="user-stat__label">Desafios</span>
+                </div>
+                <div class="user-stat">
+                    <span class="user-stat__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg></span>
+                    <span class="user-stat__value" id="stat-achievements">0</span>
+                    <span class="user-stat__label">Conquistas</span>
+                </div>
+            </div>
+
+            <div class="xp-bar-section" id="xp-bar-section">
+                <div class="xp-bar-header">
+                    <span class="xp-bar-label">Progresso XP da Temporada</span>
+                    <span class="xp-bar-value" id="xp-bar-pct">0%</span>
+                </div>
+                <div class="xp-bar-track">
+                    <div class="xp-bar-fill" id="xp-bar-fill"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="login-prompt" class="login-prompt" style="display:none">
+            <div class="login-prompt__msg">Faça login para ver suas conquistas da temporada</div>
+            <form id="season-login-form" class="season-login" autocomplete="on">
+                <input type="text" id="sl-nick" class="season-login__input" placeholder="Usuário" autocomplete="username" required>
+                <input type="password" id="sl-pass" class="season-login__input" placeholder="Senha" autocomplete="current-password" required>
+                <input type="text" id="sl-website" tabindex="-1" autocomplete="off" aria-hidden="true" class="season-login__hp">
+                <button type="submit" class="status-btn status-btn--primary" id="sl-submit" style="min-width:100%">Entrar</button>
+                <div class="season-login__error" id="sl-error" role="alert"></div>
+            </form>
+        </div>
+
+        <div class="status-actions">
+            <button class="status-btn status-btn--primary" id="btn-rewind" style="border:none;cursor:pointer;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+                Ver Meu Rewind 2025
+            </button>
+            <a href="ranking.html" class="status-btn status-btn--secondary" id="btn-ranking">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="20" x2="18" y2="10"/>
+                    <line x1="12" y1="20" x2="12" y2="4"/>
+                    <line x1="6" y1="20" x2="6" y2="14"/>
+                </svg>
+                Ranking Final
+            </a>
+        </div>
+
+        <div class="status-divider"></div>
+
+        <div class="next-season-box" id="next-season-box">
+            <span class="next-season-box__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+            <div class="next-season-box__text">
+                <div class="next-season-box__title">Próxima Temporada</div>
+                <div class="next-season-box__date" id="next-season-date">Em breve — fique atento!</div>
+            </div>
+        </div>
+
+        <div class="share-row">
+            <span class="share-label">Compartilhe sua conquista nas redes sociais</span>
+            <div class="share-buttons">
+                <button class="share-btn copy" id="btn-copy-result" title="Copiar texto">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2"/>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                    </svg>
+                    Copiar Texto
+                </button>
+                <a class="share-btn linkedin" id="btn-share-linkedin" href="#" target="_blank" rel="noopener noreferrer" title="Compartilhar no LinkedIn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    </svg>
+                    LinkedIn
+                </a>
+                <a class="share-btn twitter" id="btn-share-twitter" href="#" target="_blank" rel="noopener noreferrer" title="Compartilhar no Twitter/X">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    </svg>
+                    Twitter
+                </a>
+                <a class="share-btn whatsapp" id="btn-share-whatsapp" href="#" target="_blank" rel="noopener noreferrer" title="Compartilhar no WhatsApp">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                    </svg>
+                    WhatsApp
+                </a>
+            </div>
+        </div>
+
+        <footer class="status-footer" style="margin-top:24px">
+            <p>Fique atento aos nossos canais para novidades sobre a próxima temporada!</p>
+        </footer>
+    </main>
+
+    <div class="rewind-overlay" id="rewindOverlay">
+        <div class="rewind-container">
+            <div class="rewind-progress">
+                <div class="rewind-progress-bar" id="rewindProgress"></div>
+            </div>
+
+            <button class="rewind-close" id="rewindClose" aria-label="Fechar">×</button>
+
+            <div class="rewind-slide active" data-slide="1">
+                <div class="rewind-title">Seu Rewind 2025</div>
+                <div class="rewind-subtitle">Uma jornada incrível em Customer Experience</div>
+                <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="#FFC700" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="margin:34px 0"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            </div>
+
+            <div class="rewind-slide" data-slide="2">
+                <div class="rewind-title">Você conquistou</div>
+                <div class="rewind-stat-big" id="rewindXP">0</div>
+                <div class="rewind-subtitle">pontos de experiência</div>
+            </div>
+
+            <div class="rewind-slide" data-slide="3">
+                <div class="rewind-title">Completou</div>
+                <div class="rewind-stat-big" id="rewindChallenges">0</div>
+                <div class="rewind-subtitle">desafios de EC</div>
+            </div>
+
+            <div class="rewind-slide" data-slide="4">
+                <div class="rewind-title">Suas Conquistas</div>
+                <div class="rewind-subtitle">Badges desbloqueados</div>
+                <div class="rewind-achievements-grid" id="rewindAchievements">
+                    <!-- DADOS FICTÍCIOS - Será preenchido dinamicamente -->
+                    <div class="rewind-achievement">
+                        <div class="rewind-achievement-icon">🔥</div>
+                        <div class="rewind-achievement-name">First Blood</div>
+                    </div>
+                    <div class="rewind-achievement">
+                        <div class="rewind-achievement-icon">🎯</div>
+                        <div class="rewind-achievement-name">Sharpshooter</div>
+                    </div>
+                    <div class="rewind-achievement">
+                        <div class="rewind-achievement-icon">💎</div>
+                        <div class="rewind-achievement-name">Elite</div>
+                    </div>
+                    <div class="rewind-achievement">
+                        <div class="rewind-achievement-icon">🛡️</div>
+                        <div class="rewind-achievement-name">Defender</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="rewind-slide" data-slide="5">
+                <div class="rewind-title">Sua Colocação</div>
+                <div class="rewind-rank-display">
+                    <div class="rewind-rank-number" id="rewindRank">#1</div>
+                    <div class="rewind-rank-label">no ranking final</div>
+                </div>
+            </div>
+
+            <div class="rewind-slide" data-slide="6">
+                <div class="rewind-title">Parabéns!</div>
+                <div class="rewind-subtitle">Você fez parte desta jornada incrível</div>
+                <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="#FFC700" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="margin:34px 0"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                <div class="rewind-subtitle">Compartilhe sua conquista!</div>
+            </div>
+
+            <div class="rewind-controls">
+                <button class="rewind-btn" id="rewindPrev">← Anterior</button>
+                <button class="rewind-btn rewind-btn-primary" id="rewindNext">Próximo →</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="./frontend/js/shared/cx-session.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./frontend/js/env-loader.js"></script>
+    <script src="./frontend/js/progress-sync-service.js"></script>
+
+    <script>
+    (function () {
+        
+        const XP_MAX_SEASON = 4140; 
+
+        function getStorage() {
+            if (localStorage.getItem('cx_logged_in_user')) return localStorage;
+            if (sessionStorage.getItem('cx_logged_in_user')) return sessionStorage;
+            return null;
+        }
+
+        function loadUserStats() {
+            const storage = getStorage();
+            if (!storage) return null;
+
+            const userKey = storage.getItem('cx_logged_in_user');
+            if (!userKey) return null;
+
+            try {
+                const users = JSON.parse(storage.getItem('cx_users') || '{}');
+                return users[userKey] || null;
+            } catch (_) { return null; }
+        }
+
+        const user = loadUserStats();
+
+        if (user) {
+            document.getElementById('user-stats-section').style.display = 'block';
+
+            const xp          = Number(user.xp || 0);
+            const challenges  = Array.isArray(user.completedChallenges) ? user.completedChallenges.length : 0;
+            const minigames   = Array.isArray(user.completedMinigames)  ? user.completedMinigames.length  : 0;
+            const achievements= Array.isArray(user.achievements)        ? user.achievements.length         : 0;
+
+            document.getElementById('stat-xp').textContent          = xp.toLocaleString('pt-BR');
+            document.getElementById('stat-challenges').textContent   = challenges + minigames;
+            document.getElementById('stat-achievements').textContent = achievements;
+
+            // XP bar
+            const pct = Math.min(100, Math.round((xp / XP_MAX_SEASON) * 100));
+            document.getElementById('xp-bar-pct').textContent = `${pct}%`;
+            requestAnimationFrame(() => {
+                document.getElementById('xp-bar-fill').style.width = `${pct}%`;
+            });
+        } else {
+            
+            const prompt = document.getElementById('login-prompt');
+            if (prompt) prompt.style.display = 'flex';
+            document.querySelectorAll('.status-actions, .share-row').forEach(el => { el.style.display = 'none'; });
+            setupInlineLogin();
+        }
+
+        
+        async function storeSessionAndSync(data, usernameInput) {
+            const u = data.user;
+            const uid = u.id || usernameInput;
+            const storage = window.CxSession?.getPrimaryStorage?.() || sessionStorage;
+
+            ['localStorage', 'sessionStorage'].forEach((s) => {
+                const st = window[s];
+                ['cx_logged_in_user', 'cx_session_token', 'cx_ranking_code', 'cx_display_name', 'loggedIn'].forEach(k => st.removeItem(k));
+            });
+
+            storage.setItem('cx_logged_in_user', uid);
+            storage.setItem('cx_logged_in_user_email', u.nickname || usernameInput.toLowerCase());
+            if (u.ranking_code) storage.setItem('cx_ranking_code', u.ranking_code);
+            if (u.display_name) storage.setItem('cx_display_name', u.display_name);
+            storage.setItem('loggedIn', 'true');
+            if (data.sessionToken) storage.setItem('cx_session_token', data.sessionToken);
+
+            const users = JSON.parse(storage.getItem('cx_users') || '{}');
+            if (!users[uid]) {
+                users[uid] = {
+                    nickname: u.nickname || usernameInput,
+                    display_name: u.display_name || null,
+                    ranking_code: u.ranking_code || null,
+                    avatar_file_name: u.avatar_file_name || null,
+                    level: 1, xp: 0, completedChallenges: []
+                };
+            }
+            try {
+                if (window.progressSync) {
+                    await window.progressSync.initialize();
+                    const rp = await window.progressSync.loadProgressFromSupabase(uid);
+                    if (rp) {
+                        users[uid] = {
+                            ...users[uid],
+                            xp: rp.xp, level: rp.level,
+                            completedChallenges: rp.completed_challenges,
+                            completedMinigames: rp.completed_minigames,
+                            attemptHistory: rp.attempt_history,
+                            display_name: rp.display_name || users[uid].display_name || null,
+                            ranking_code: rp.ranking_code || users[uid].ranking_code || null,
+                            avatar_file_name: rp.avatar_file_name || users[uid].avatar_file_name || null
+                        };
+                    }
+                }
+            } catch (e) { }
+            storage.setItem('cx_users', JSON.stringify(users));
+        }
+
+        function setupInlineLogin() {
+            const form = document.getElementById('season-login-form');
+            if (!form) return;
+            const errEl = document.getElementById('sl-error');
+            const btn = document.getElementById('sl-submit');
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                errEl.textContent = '';
+                const nickname = document.getElementById('sl-nick').value.trim();
+                const password = document.getElementById('sl-pass').value;
+                const website = document.getElementById('sl-website').value || '';
+                if (!nickname || !password) { errEl.textContent = 'Preencha usuário e senha.'; return; }
+
+                btn.disabled = true;
+                const label = btn.textContent;
+                btn.textContent = 'Entrando...';
+                try {
+                    const res = await fetch('/api/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ nickname, password, website })
+                    });
+                    const data = await res.json();
+                    if (res.ok && data.success) {
+                        await storeSessionAndSync(data, nickname);
+                        location.reload();
+                        return;
+                    }
+                    errEl.textContent = data.error || 'Usuário ou senha inválidos.';
+                } catch (_) {
+                    errEl.textContent = 'Erro de conexão. Tente novamente.';
+                }
+                btn.disabled = false;
+                btn.textContent = label;
+            });
+        }
+
+        // Next Season Date 
+        const urlParams        = new URLSearchParams(window.location.search);
+        const nextSeasonDate   = urlParams.get('next_season_date');
+        const nextSeasonInfo   = urlParams.get('next_season_info');
+        const dateEl           = document.getElementById('next-season-date');
+
+        if (nextSeasonInfo) {
+            dateEl.textContent = nextSeasonInfo;
+        } else if (nextSeasonDate) {
+            try {
+                const d = new Date(nextSeasonDate);
+                dateEl.textContent = d.toLocaleDateString('pt-BR', {
+                    day: '2-digit', month: 'long', year: 'numeric'
+                });
+            } catch (_) {}
+        }
+
+        
+        document.getElementById('btn-copy-result').addEventListener('click', function () {
+            const xp         = user ? Number(user.xp || 0) : 0;
+            const challenges = user && Array.isArray(user.completedChallenges) ? user.completedChallenges.length : 0;
+            const achievements = user && Array.isArray(user.achievements) ? user.achievements.length : 0;
+            
+const text = `🏆 Participei da Temporada 2025 do Experience Connect!
+
+⚡ ${xp.toLocaleString('pt-BR')} XP conquistados
+✅ ${challenges} desafios concluídos
+🏅 ${achievements} conquistas desbloqueadas
+
+Uma jornada incrível de aprendizado em Customer Experience!
+
+#ExperienceConnect #EC #CustomerExperience`;
+
+            navigator.clipboard.writeText(text).then(() => {
+                const originalHTML = this.innerHTML;
+                this.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copiado!`;
+                setTimeout(() => {
+                    this.innerHTML = originalHTML;
+                }, 2500);
+            }).catch(() => {
+                this.textContent = '❌ Erro ao copiar';
+            });
+        });
+
+        
+        const xp = user ? Number(user.xp || 0) : 0;
+        const challenges = user && Array.isArray(user.completedChallenges) ? user.completedChallenges.length : 0;
+        const achievements = user && Array.isArray(user.achievements) ? user.achievements.length : 0;
+        
+        const shareText = `🏆 Participei da Temporada 2025 do Experience Connect e conquistei ${xp.toLocaleString('pt-BR')} XP, completei ${challenges} desafios e desbloqueei ${achievements} conquistas! Uma jornada incrível de aprendizado em Customer Experience. #ExperienceConnect #EC #CustomerExperience`;
+        const shareUrl = 'https://cxgame.vercel.app';
+        
+       
+        const liText = encodeURIComponent(shareText);
+        document.getElementById('btn-share-linkedin').href =
+            `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}&summary=${liText}`;
+
+       
+        const twitterText = encodeURIComponent(shareText);
+        document.getElementById('btn-share-twitter').href =
+            `https://twitter.com/intent/tweet?text=${twitterText}&url=${encodeURIComponent(shareUrl)}`;
+
+      
+        const whatsappText = encodeURIComponent(`${shareText}\n\n${shareUrl}`);
+        document.getElementById('btn-share-whatsapp').href =
+            `https://wa.me/?text=${whatsappText}`;
+
+        
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx    = canvas.getContext('2d');
+        let particles = [];
+        let animId;
+
+        function resize() {
+            canvas.width  = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        const COLORS = ['#FFD600','#FFE548','#FFFFFF','#00E676','#FF9100','#B388FF'];
+
+        function createParticle() {
+            return {
+                x:     Math.random() * canvas.width,
+                y:     -10,
+                w:     6 + Math.random() * 8,
+                h:     3 + Math.random() * 4,
+                color: COLORS[Math.floor(Math.random() * COLORS.length)],
+                rot:   Math.random() * Math.PI * 2,
+                rotV:  (Math.random() - 0.5) * 0.12,
+                vx:    (Math.random() - 0.5) * 2,
+                vy:    1.5 + Math.random() * 2.5,
+                alpha: 1
+            };
+        }
+
+        
+        for (let i = 0; i < 160; i++) {
+            const p = createParticle();
+            p.y = Math.random() * -canvas.height; 
+            particles.push(p);
+        }
+
+        let stopSpawning = false;
+        setTimeout(() => { stopSpawning = true; }, 3000);
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            
+            if (!stopSpawning && Math.random() < 0.35) {
+                particles.push(createParticle());
+            }
+
+            particles.forEach(p => {
+                p.x   += p.vx;
+                p.y   += p.vy;
+                p.rot += p.rotV;
+                if (p.y > canvas.height * 0.7) p.alpha -= 0.018;
+
+                ctx.save();
+                ctx.translate(p.x, p.y);
+                ctx.rotate(p.rot);
+                ctx.globalAlpha = Math.max(0, p.alpha);
+                ctx.fillStyle = p.color;
+                ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+                ctx.restore();
+            });
+
+          
+            particles = particles.filter(p => p.alpha > 0 && p.y < canvas.height + 20);
+
+            if (particles.length > 0) {
+                animId = requestAnimationFrame(animate);
+            } else {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        animate();
+    })();
+
+    
+    function showScToast(msg) {
+        const t = document.createElement('div');
+        t.setAttribute('role', 'status');
+        t.style.cssText = 'position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-8px);background:#0A0A0A;color:#fff;font-family:\'DM Sans\',system-ui,sans-serif;font-size:14px;font-weight:600;padding:12px 22px;border-radius:8px;border:2px solid #0A0A0A;box-shadow:4px 4px 0 #0A0A0A;white-space:nowrap;z-index:9999;opacity:0;transition:opacity .15s,transform .15s;pointer-events:none;max-width:calc(100vw - 32px);text-align:center';
+        t.textContent = msg;
+        document.body.appendChild(t);
+        requestAnimationFrame(() => { t.style.opacity = '1'; t.style.transform = 'translateX(-50%) translateY(0)'; });
+        setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(-50%) translateY(-8px)'; setTimeout(() => t.remove(), 150); }, 3500);
+    }
+
+    (function() {
+        const overlay = document.getElementById('rewindOverlay');
+        const btnRewind = document.getElementById('btn-rewind');
+        const btnClose = document.getElementById('rewindClose');
+        const btnNext = document.getElementById('rewindNext');
+        const btnPrev = document.getElementById('rewindPrev');
+        const progressBar = document.getElementById('rewindProgress');
+
+        let currentSlide = 1;
+        const totalSlides = 6;
+
+        
+        function getStorageRewind() {
+            if (localStorage.getItem('cx_logged_in_user')) return localStorage;
+            if (sessionStorage.getItem('cx_logged_in_user')) return sessionStorage;
+            return null;
+        }
+
+        function loadRewindData() {
+            const storage = getStorageRewind();
+            if (!storage) return null;
+
+            const userKey = storage.getItem('cx_logged_in_user');
+            if (!userKey) return null;
+
+            try {
+                const users = JSON.parse(storage.getItem('cx_users') || '{}');
+                return users[userKey] || null;
+            } catch (_) { return null; }
+        }
+
+        
+        if (!btnRewind) {
+            console.error('Botão rewind não encontrado!');
+            return;
+        }
+
+       
+        btnRewind.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            const userData = loadRewindData();
+
+            if (!userData) {
+                showScToast('Faça login para ver seu Rewind 2025!');
+                return;
+            }
+
+            
+            const xp = Number(userData.xp || 0);
+            const challenges = Array.isArray(userData.completedChallenges) ? userData.completedChallenges.length : 0;
+            const minigames = Array.isArray(userData.completedMinigames) ? userData.completedMinigames.length : 0;
+            const achievements = Array.isArray(userData.achievements) ? userData.achievements : [];
+
+            document.getElementById('rewindXP').textContent = xp.toLocaleString('pt-BR');
+            document.getElementById('rewindChallenges').textContent = challenges + minigames;
+            
+            
+            const mockRank = Math.floor(Math.random() * 50) + 1;
+            document.getElementById('rewindRank').textContent = `#${mockRank}`;
+
+            
+            const achievementsGrid = document.getElementById('rewindAchievements');
+            achievementsGrid.innerHTML = '';
+            
+            const achievementIcons = {
+                'first_blood': '🔥',
+                'speed_demon': '⚡',
+                'perfectionist': '💎',
+                'explorer': '🗺️',
+                'champion': '👑',
+                'warrior': '⚔️',
+                'defender': '🛡️',
+                'master': '🎯'
+            };
+
+            const displayAchievements = achievements.slice(0, 4);
+            if (displayAchievements.length === 0) {
+               
+                achievementsGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #666;">Nenhuma conquista desbloqueada ainda</div>';
+            } else {
+                displayAchievements.forEach((ach, index) => {
+                    const icon = achievementIcons[ach.id] || '🏅';
+                    const div = document.createElement('div');
+                    div.className = 'rewind-achievement';
+                    div.style.animationDelay = `${index * 0.1}s`;
+                    div.innerHTML = `
+                        <div class="rewind-achievement-icon">${icon}</div>
+                        <div class="rewind-achievement-name">${ach.name || ach.id}</div>
+                    `;
+                    achievementsGrid.appendChild(div);
+                });
+            }
+
+            
+            currentSlide = 1;
+            updateSlide();
+            overlay.classList.add('active');
+        });
+
+       
+        function closeRewind() {
+            overlay.classList.remove('active');
+            currentSlide = 1;
+            setTimeout(() => {
+                document.querySelectorAll('.rewind-slide').forEach(slide => {
+                    slide.classList.remove('active', 'exit');
+                });
+                document.querySelector('.rewind-slide[data-slide="1"]').classList.add('active');
+            }, 400);
+        }
+
+        btnClose.addEventListener('click', closeRewind);
+        overlay.addEventListener('click', function(e) {
+            if (e.target === overlay) closeRewind();
+        });
+
+       
+        btnNext.addEventListener('click', function() {
+            if (currentSlide < totalSlides) {
+                currentSlide++;
+                updateSlide();
+            } else {
+                closeRewind();
+            }
+        });
+
+        btnPrev.addEventListener('click', function() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                updateSlide();
+            }
+        });
+
+        
+        function updateSlide() {
+            const slides = document.querySelectorAll('.rewind-slide');
+            
+            slides.forEach(slide => {
+                const slideNum = parseInt(slide.dataset.slide);
+                
+                if (slideNum === currentSlide) {
+                    slide.classList.remove('exit');
+                    slide.classList.add('active');
+                } else if (slideNum < currentSlide) {
+                    slide.classList.remove('active');
+                    slide.classList.add('exit');
+                } else {
+                    slide.classList.remove('active', 'exit');
+                }
+            });
+
+           
+            const progress = (currentSlide / totalSlides) * 100;
+            progressBar.style.width = `${progress}%`;
+
+            
+            btnPrev.style.display = currentSlide === 1 ? 'none' : 'block';
+            btnNext.textContent = currentSlide === totalSlides ? 'Fechar' : 'Próximo →';
+        }
+
+        
+        document.addEventListener('keydown', function(e) {
+            if (!overlay.classList.contains('active')) return;
+            
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                btnNext.click();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                btnPrev.click();
+            } else if (e.key === 'Escape') {
+                closeRewind();
+            }
+        });
+    })();
+    </script>
+</body>
+</html>

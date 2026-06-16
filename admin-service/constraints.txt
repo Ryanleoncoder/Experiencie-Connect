@@ -1,0 +1,3 @@
+# Constraint file to ensure compatible pydantic-core versions
+# Only versions >= 2.35.0 are available on PyPI
+pydantic-core>=2.35.0

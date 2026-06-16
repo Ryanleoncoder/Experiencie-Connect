@@ -1,0 +1,516 @@
+{
+ "path": "seasons/S-2025-01/levels/CX_3",
+ "challenge_count": 22,
+ "questions": [
+  {
+   "ordem": 1,
+   "tags": [
+    "roi",
+    "clv",
+    "financeiro"
+   ],
+   "descricao": "Qual métrica conecta diretamente a melhoria de CX ao resultado financeiro da empresa?",
+   "id": "sel-301",
+   "resposta_correta": "A",
+   "tempo_limite": 90,
+   "categoria": "Estratégia & Inovação",
+   "tipo": "seleção",
+   "titulo": "ROI de Customer Experience",
+   "xp": 60,
+   "ativo": true,
+   "alternativas": {
+    "F": "Número de reuniões realizadas",
+    "D": "Número de funcionários na empresa",
+    "A": "Customer Lifetime Value (CLV)",
+    "C": "Quantidade de e-mails enviados",
+    "B": "Número de seguidores nas redes sociais",
+    "E": "Taxa de abertura de e-mails"
+   }
+  },
+  {
+   "ordem": 2,
+   "resposta_correta": "B",
+   "descricao": "Para criar uma cultura verdadeiramente centrada no cliente, qual é o fator mais importante?",
+   "id": "sel-302",
+   "tags": [
+    "cultura",
+    "liderança",
+    "customer-centric"
+   ],
+   "categoria": "Cultura Centrada no Cliente",
+   "tempo_limite": 90,
+   "tipo": "seleção",
+   "titulo": "Cultura Customer Centric",
+   "xp": 60,
+   "ativo": true,
+   "alternativas": {
+    "D": "Oferecer os menores preços do mercado",
+    "A": "Ter o maior orçamento de marketing do mercado",
+    "C": "Contratar mais atendentes para o call center",
+    "B": "Engajamento e alinhamento de toda a liderança com os valores de CX, refletidos em processos e decisões"
+   }
+  },
+  {
+   "ordem": 3,
+   "tags": [
+    "voc",
+    "feedback",
+    "pesquisa"
+   ],
+   "descricao": "Um programa de Voice of Customer (VoC) eficaz deve incluir qual elemento essencial?",
+   "id": "sel-303",
+   "resposta_correta": "B",
+   "tempo_limite": 90,
+   "categoria": "Cultura Centrada no Cliente",
+   "tipo": "seleção",
+   "titulo": "Voice of Customer (VoC)",
+   "xp": 55,
+   "ativo": true,
+   "alternativas": {
+    "D": "Focar exclusivamente em pesquisas por e-mail",
+    "A": "Coletar feedback apenas uma vez por ano",
+    "C": "Ignorar feedbacks negativos para manter a moral da equipe",
+    "E": "Delegar toda responsabilidade para o time de marketing",
+    "B": "Capturar, analisar e agir sobre o feedback do cliente de forma contínua em múltiplos canais"
+   }
+  },
+  {
+   "ordem": 4,
+   "resposta_correta": "A",
+   "descricao": "Qual métrica conecta diretamente a melhoria de CX ao resultado financeiro da empresa?",
+   "id": "sel-301-v1",
+   "tags": [
+    "roi",
+    "clv",
+    "financeiro"
+   ],
+   "categoria": "Estratégia & Inovação",
+   "tempo_limite": 90,
+   "tipo": "seleção",
+   "titulo": "ROI de Customer Experience",
+   "xp": 60,
+   "ativo": true,
+   "alternativas": {
+    "F": "Número de reuniões realizadas",
+    "D": "Número de funcionários na empresa",
+    "A": "Customer Lifetime Value (CLV)",
+    "C": "Quantidade de e-mails enviados",
+    "E": "Taxa de abertura de e-mails",
+    "B": "Número de seguidores nas redes sociais"
+   }
+  },
+  {
+   "ordem": 5,
+   "tags": [
+    "cultura",
+    "liderança",
+    "customer-centric"
+   ],
+   "descricao": "Para criar uma cultura verdadeiramente centrada no cliente, qual é o fator mais importante?",
+   "id": "sel-302-v1",
+   "resposta_correta": "B",
+   "tempo_limite": 90,
+   "categoria": "Cultura Centrada no Cliente",
+   "tipo": "seleção",
+   "titulo": "Cultura Customer Centric",
+   "xp": 60,
+   "ativo": true,
+   "alternativas": {
+    "D": "Oferecer os menores preços do mercado",
+    "A": "Ter o maior orçamento de marketing do mercado",
+    "C": "Contratar mais atendentes para o call center",
+    "B": "Engajamento e alinhamento de toda a liderança com os valores de CX, refletidos em processos e decisões"
+   }
+  },
+  {
+   "ordem": 6,
+   "resposta_correta": "B",
+   "descricao": "Um programa de Voice of Customer (VoC) eficaz deve incluir qual elemento essencial?",
+   "id": "sel-303-v1",
+   "tags": [
+    "voc",
+    "feedback",
+    "pesquisa"
+   ],
+   "categoria": "Cultura Centrada no Cliente",
+   "tempo_limite": 90,
+   "tipo": "seleção",
+   "titulo": "Voice of Customer (VoC)",
+   "xp": 55,
+   "ativo": true,
+   "alternativas": {
+    "D": "Focar exclusivamente em pesquisas por e-mail",
+    "A": "Coletar feedback apenas uma vez por ano",
+    "C": "Ignorar feedbacks negativos para manter a moral da equipe",
+    "B": "Capturar, analisar e agir sobre o feedback do cliente de forma contínua em múltiplos canais",
+    "E": "Delegar toda responsabilidade para o time de marketing"
+   }
+  },
+  {
+   "ordem": 7,
+   "tags": [
+    "roi",
+    "clv",
+    "financeiro"
+   ],
+   "descricao": "Qual métrica conecta diretamente a melhoria de CX ao resultado financeiro da empresa?",
+   "id": "sel-301-v2",
+   "resposta_correta": "A",
+   "tempo_limite": 90,
+   "categoria": "Estratégia & Inovação",
+   "tipo": "seleção",
+   "titulo": "ROI de Customer Experience",
+   "xp": 60,
+   "ativo": true,
+   "alternativas": {
+    "F": "Número de reuniões realizadas",
+    "D": "Número de funcionários na empresa",
+    "A": "Customer Lifetime Value (CLV)",
+    "C": "Quantidade de e-mails enviados",
+    "E": "Taxa de abertura de e-mails",
+    "B": "Número de seguidores nas redes sociais"
+   }
+  },
+  {
+   "points": 200,
+   "type": "intermission",
+   "description": "Intermission game na Fase 3, Posição 1",
+   "setor": "CX",
+   "id": "ig-L3-slot1",
+   "titulo": "Desafio Especial - Fase 3",
+   "xp": 200,
+   "challenge_id": "ig-L3-slot1",
+   "alternativas": {},
+   "ordem": 8,
+   "slot_index": 1,
+   "descricao": "Intermission game na Fase 3, Posição 1",
+   "tempo_limite": 180,
+   "tipo": "intermission",
+   "level": 3,
+   "title": "Desafio Especial - Fase 3",
+   "ativo": true
+  },
+  {
+   "ordem": 9,
+   "resposta_correta": "B",
+   "descricao": "Para criar uma cultura verdadeiramente centrada no cliente, qual é o fator mais importante?",
+   "id": "sel-302-v2",
+   "tags": [
+    "cultura",
+    "liderança",
+    "customer-centric"
+   ],
+   "categoria": "Cultura Centrada no Cliente",
+   "tempo_limite": 90,
+   "tipo": "seleção",
+   "titulo": "Cultura Customer Centric",
+   "xp": 60,
+   "ativo": true,
+   "alternativas": {
+    "D": "Oferecer os menores preços do mercado",
+    "A": "Ter o maior orçamento de marketing do mercado",
+    "C": "Contratar mais atendentes para o call center",
+    "B": "Engajamento e alinhamento de toda a liderança com os valores de CX, refletidos em processos e decisões"
+   }
+  },
+  {
+   "ordem": 10,
+   "resposta_correta": "B",
+   "descricao": "Um programa de Voice of Customer (VoC) eficaz deve incluir qual elemento essencial?",
+   "id": "sel-303-v2",
+   "tags": [
+    "voc",
+    "feedback",
+    "pesquisa"
+   ],
+   "categoria": "Cultura Centrada no Cliente",
+   "tempo_limite": 90,
+   "tipo": "seleção",
+   "titulo": "Voice of Customer (VoC)",
+   "xp": 55,
+   "ativo": true,
+   "alternativas": {
+    "D": "Focar exclusivamente em pesquisas por e-mail",
+    "A": "Coletar feedback apenas uma vez por ano",
+    "C": "Ignorar feedbacks negativos para manter a moral da equipe",
+    "E": "Delegar toda responsabilidade para o time de marketing",
+    "B": "Capturar, analisar e agir sobre o feedback do cliente de forma contínua em múltiplos canais"
+   }
+  },
+  {
+   "ordem": 11,
+   "resposta_correta": null,
+   "descricao": "**Situação:** Um cliente VIP de alto valor está extremamente irritado após três falhas de atendimento consecutivas no último mês e ameaça cancelar o contrato imediatamente.\n\n**Sua tarefa:** Como gerente de contas, escreva uma resposta de contenção de crise que assuma a responsabilidade, apresente um plano de ação e ofereça uma compensação comercial.",
+   "id": "lg-301",
+   "tags": [
+    "atendimento",
+    "crise",
+    "vip",
+    "gestao",
+    "logun"
+   ],
+   "tempo_limite": 240,
+   "categoria": "Gestão de Crise",
+   "tipo": "texto",
+   "titulo": "Atendimento: Crise com Cliente VIP",
+   "xp": 80,
+   "ativo": true,
+   "alternativas": {}
+  },
+  {
+   "ordem": 12,
+   "tags": [
+    "roi",
+    "clv",
+    "financeiro"
+   ],
+   "descricao": "Qual métrica conecta diretamente a melhoria de CX ao resultado financeiro da empresa?",
+   "id": "sel-301-v3",
+   "resposta_correta": "A",
+   "tempo_limite": 90,
+   "categoria": "Estratégia & Inovação",
+   "tipo": "seleção",
+   "titulo": "ROI de Customer Experience",
+   "xp": 60,
+   "ativo": true,
+   "alternativas": {
+    "F": "Número de reuniões realizadas",
+    "D": "Número de funcionários na empresa",
+    "A": "Customer Lifetime Value (CLV)",
+    "C": "Quantidade de e-mails enviados",
+    "B": "Número de seguidores nas redes sociais",
+    "E": "Taxa de abertura de e-mails"
+   }
+  },
+  {
+   "ordem": 13,
+   "tags": [
+    "cultura",
+    "liderança",
+    "customer-centric"
+   ],
+   "descricao": "Para criar uma cultura verdadeiramente centrada no cliente, qual é o fator mais importante?",
+   "id": "sel-302-v3",
+   "resposta_correta": "B",
+   "tempo_limite": 90,
+   "categoria": "Cultura Centrada no Cliente",
+   "tipo": "seleção",
+   "titulo": "Cultura Customer Centric",
+   "xp": 60,
+   "ativo": true,
+   "alternativas": {
+    "D": "Oferecer os menores preços do mercado",
+    "A": "Ter o maior orçamento de marketing do mercado",
+    "C": "Contratar mais atendentes para o call center",
+    "B": "Engajamento e alinhamento de toda a liderança com os valores de CX, refletidos em processos e decisões"
+   }
+  },
+  {
+   "ordem": 14,
+   "tags": [
+    "voc",
+    "feedback",
+    "pesquisa"
+   ],
+   "descricao": "Um programa de Voice of Customer (VoC) eficaz deve incluir qual elemento essencial?",
+   "id": "sel-303-v3",
+   "resposta_correta": "B",
+   "categoria": "Cultura Centrada no Cliente",
+   "tempo_limite": 90,
+   "tipo": "seleção",
+   "titulo": "Voice of Customer (VoC)",
+   "xp": 55,
+   "ativo": true,
+   "alternativas": {
+    "D": "Focar exclusivamente em pesquisas por e-mail",
+    "A": "Coletar feedback apenas uma vez por ano",
+    "C": "Ignorar feedbacks negativos para manter a moral da equipe",
+    "E": "Delegar toda responsabilidade para o time de marketing",
+    "B": "Capturar, analisar e agir sobre o feedback do cliente de forma contínua em múltiplos canais"
+   }
+  },
+  {
+   "ordem": 15,
+   "tags": [
+    "roi",
+    "clv",
+    "financeiro"
+   ],
+   "descricao": "Qual métrica conecta diretamente a melhoria de CX ao resultado financeiro da empresa?",
+   "id": "sel-301-v4",
+   "resposta_correta": "A",
+   "tempo_limite": 90,
+   "categoria": "Estratégia & Inovação",
+   "tipo": "seleção",
+   "titulo": "ROI de Customer Experience",
+   "xp": 60,
+   "ativo": true,
+   "alternativas": {
+    "F": "Número de reuniões realizadas",
+    "D": "Número de funcionários na empresa",
+    "A": "Customer Lifetime Value (CLV)",
+    "C": "Quantidade de e-mails enviados",
+    "E": "Taxa de abertura de e-mails",
+    "B": "Número de seguidores nas redes sociais"
+   }
+  },
+  {
+   "points": 200,
+   "type": "intermission",
+   "description": "Intermission game na Fase 3, Posição 2",
+   "id": "ig-L3-slot2",
+   "setor": "CX",
+   "titulo": "Desafio Especial - Fase 3",
+   "xp": 200,
+   "challenge_id": "ig-L3-slot2",
+   "alternativas": {},
+   "ordem": 16,
+   "descricao": "Intermission game na Fase 3, Posição 2",
+   "slot_index": 2,
+   "tempo_limite": 180,
+   "tipo": "intermission",
+   "level": 3,
+   "title": "Desafio Especial - Fase 3",
+   "ativo": true
+  },
+  {
+   "ordem": 17,
+   "tags": [
+    "cultura",
+    "liderança",
+    "customer-centric"
+   ],
+   "descricao": "Para criar uma cultura verdadeiramente centrada no cliente, qual é o fator mais importante?",
+   "id": "sel-302-v4",
+   "resposta_correta": "B",
+   "tempo_limite": 90,
+   "categoria": "Cultura Centrada no Cliente",
+   "tipo": "seleção",
+   "titulo": "Cultura Customer Centric",
+   "xp": 60,
+   "ativo": true,
+   "alternativas": {
+    "D": "Oferecer os menores preços do mercado",
+    "A": "Ter o maior orçamento de marketing do mercado",
+    "C": "Contratar mais atendentes para o call center",
+    "B": "Engajamento e alinhamento de toda a liderança com os valores de CX, refletidos em processos e decisões"
+   }
+  },
+  {
+   "ordem": 18,
+   "tags": [
+    "voc",
+    "feedback",
+    "pesquisa"
+   ],
+   "descricao": "Um programa de Voice of Customer (VoC) eficaz deve incluir qual elemento essencial?",
+   "id": "sel-303-v4",
+   "resposta_correta": "B",
+   "tempo_limite": 90,
+   "categoria": "Cultura Centrada no Cliente",
+   "tipo": "seleção",
+   "titulo": "Voice of Customer (VoC)",
+   "xp": 55,
+   "ativo": true,
+   "alternativas": {
+    "D": "Focar exclusivamente em pesquisas por e-mail",
+    "A": "Coletar feedback apenas uma vez por ano",
+    "C": "Ignorar feedbacks negativos para manter a moral da equipe",
+    "B": "Capturar, analisar e agir sobre o feedback do cliente de forma contínua em múltiplos canais",
+    "E": "Delegar toda responsabilidade para o time de marketing"
+   }
+  },
+  {
+   "ordem": 19,
+   "resposta_correta": "A",
+   "descricao": "Qual métrica conecta diretamente a melhoria de CX ao resultado financeiro da empresa?",
+   "id": "sel-301-v5",
+   "tags": [
+    "roi",
+    "clv",
+    "financeiro"
+   ],
+   "categoria": "Estratégia & Inovação",
+   "tempo_limite": 90,
+   "tipo": "seleção",
+   "titulo": "ROI de Customer Experience",
+   "xp": 60,
+   "ativo": true,
+   "alternativas": {
+    "F": "Número de reuniões realizadas",
+    "D": "Número de funcionários na empresa",
+    "A": "Customer Lifetime Value (CLV)",
+    "C": "Quantidade de e-mails enviados",
+    "E": "Taxa de abertura de e-mails",
+    "B": "Número de seguidores nas redes sociais"
+   }
+  },
+  {
+   "ordem": 20,
+   "tags": [
+    "cultura",
+    "liderança",
+    "customer-centric"
+   ],
+   "descricao": "Para criar uma cultura verdadeiramente centrada no cliente, qual é o fator mais importante?",
+   "id": "sel-302-v5",
+   "resposta_correta": "B",
+   "tempo_limite": 90,
+   "categoria": "Cultura Centrada no Cliente",
+   "tipo": "seleção",
+   "titulo": "Cultura Customer Centric",
+   "xp": 60,
+   "ativo": true,
+   "alternativas": {
+    "D": "Oferecer os menores preços do mercado",
+    "A": "Ter o maior orçamento de marketing do mercado",
+    "C": "Contratar mais atendentes para o call center",
+    "B": "Engajamento e alinhamento de toda a liderança com os valores de CX, refletidos em processos e decisões"
+   }
+  },
+  {
+   "ordem": 21,
+   "resposta_correta": null,
+   "descricao": "**Situação:** O índice de turnover (rotatividade) na sua equipe de atendimento ao cliente subiu 15% no último trimestre, impactando o clima da equipe.\n\n**Sua tarefa:** Como líder, escreva um plano estratégico de Employee Experience para diagnosticar as causas desse turnover, desenvolver a equipe e motivar os talentos.",
+   "id": "lg-302",
+   "tags": [
+    "lideranca",
+    "turnover",
+    "retencao-talentos",
+    "ex",
+    "logun"
+   ],
+   "tempo_limite": 240,
+   "categoria": "Liderança e Gestão",
+   "tipo": "texto",
+   "titulo": "Liderança: Retenção de Talentos (EX)",
+   "xp": 80,
+   "ativo": true,
+   "alternativas": {}
+  },
+  {
+   "ordem": 22,
+   "resposta_correta": "B",
+   "descricao": "Um programa de Voice of Customer (VoC) eficaz deve incluir qual elemento essencial?",
+   "id": "sel-303-v5",
+   "tags": [
+    "voc",
+    "feedback",
+    "pesquisa"
+   ],
+   "categoria": "Cultura Centrada no Cliente",
+   "tempo_limite": 90,
+   "tipo": "seleção",
+   "titulo": "Voice of Customer (VoC)",
+   "xp": 55,
+   "ativo": true,
+   "alternativas": {
+    "D": "Focar exclusivamente em pesquisas por e-mail",
+    "A": "Coletar feedback apenas uma vez por ano",
+    "C": "Ignorar feedbacks negativos para manter a moral da equipe",
+    "B": "Capturar, analisar e agir sobre o feedback do cliente de forma contínua em múltiplos canais",
+    "E": "Delegar toda responsabilidade para o time de marketing"
+   }
+  }
+ ]
+}

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <script src="./frontend/js/console-control.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://favicon.rysn-craft.workers.dev">
+    <meta name="description" content="Experience Connect - Fora do Horário">
+    <title>Hora de pausa! — Experience Connect</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./frontend/styles/landing.css">
+
+    <style>
+       
+        body{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px 20px;position:relative}
+       
+        body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+            background-image:radial-gradient(circle,rgba(10,10,10,.05) 1.5px,transparent 1.5px);background-size:26px 26px}
+
+        .status-card{
+            position:relative;z-index:1;width:100%;max-width:520px;
+            background:var(--w);border:var(--b3);border-radius:var(--r4);
+            box-shadow:var(--s4);padding:36px 34px;text-align:center;
+        }
+        
+        .status-icon{
+            width:72px;height:72px;margin:0 auto 22px;border-radius:var(--r3);
+            background:var(--k);border:var(--b2);box-shadow:var(--s3);
+            display:grid;place-items:center;
+        }
+        .status-icon svg{width:36px;height:36px;stroke:var(--y);stroke-width:1.8;fill:none}
+
+        .status-tag{display:inline-block;background:var(--k);color:var(--w);
+            font-family:var(--fd);font-weight:700;font-size:10px;letter-spacing:.12em;
+            text-transform:uppercase;padding:4px 10px;border-radius:var(--r1);margin-bottom:14px}
+        .status-title{font-family:var(--fb);font-size:clamp(40px,8vw,56px);line-height:.9;
+            text-transform:uppercase;letter-spacing:.01em}
+        .status-message{margin-top:12px;font-size:15px;color:var(--n5);line-height:1.6}
+        .status-message strong{color:var(--k);font-weight:700}
+
+        
+        .hours-bar-section{margin-top:28px;text-align:left}
+        .hours-bar-label{font-family:var(--fd);font-weight:700;font-size:10px;letter-spacing:.1em;
+            text-transform:uppercase;color:var(--n4);margin-bottom:10px}
+        .hours-bar-track{height:12px;background:var(--ow2);border:var(--b2);border-radius:var(--rp);position:relative}
+        .hours-bar-active{position:absolute;top:-2px;bottom:-2px;background:var(--y);border:var(--b2);
+            border-radius:var(--rp);left:29.17%;width:50%}
+        .hours-bar-now{position:absolute;top:50%;transform:translate(-50%,-50%);width:16px;height:16px;
+            background:var(--k);border:2.5px solid var(--y);border-radius:50%;display:none;z-index:2;box-shadow:var(--s1)}
+        .hours-bar-times{display:flex;justify-content:space-between;margin-top:9px;
+            font-family:var(--fm);font-size:11px;color:var(--n4)}
+        .hours-bar-times .active-range{color:var(--k);font-weight:700}
+
+        
+        .countdown-section{margin-top:30px}
+        .countdown-label{font-family:var(--fd);font-weight:700;font-size:10px;letter-spacing:.12em;
+            text-transform:uppercase;color:var(--n4);margin-bottom:14px}
+        .countdown-cols{display:flex;align-items:flex-start;justify-content:center;gap:8px}
+        .countdown-unit{display:flex;flex-direction:column;align-items:center;gap:7px;min-width:64px}
+        .countdown-digit{font-family:var(--fb);font-size:clamp(40px,9vw,54px);line-height:.85;color:var(--k);
+            background:var(--ow);border:var(--b2);border-radius:var(--r2);box-shadow:var(--s2);
+            padding:10px 0;width:100%;font-variant-numeric:tabular-nums}
+        .countdown-unit-label{font-family:var(--fd);font-weight:700;font-size:9.5px;letter-spacing:.1em;
+            text-transform:uppercase;color:var(--n4)}
+        .countdown-sep{font-family:var(--fb);font-size:40px;line-height:1;color:var(--n3);padding-top:14px}
+        .opening-time{margin-top:16px;font-size:13px;color:var(--n5)}
+        .opening-time strong{font-family:var(--fm);font-weight:700;color:var(--k);
+            background:var(--y4);border:var(--b1);border-radius:var(--r1);padding:2px 8px}
+
+       
+        .info-box{display:flex;align-items:flex-start;gap:12px;text-align:left;margin-top:28px;
+            background:var(--ow);border:var(--b2);border-radius:var(--r3);box-shadow:var(--s1);padding:14px 16px}
+        .info-box-icon{flex-shrink:0;width:34px;height:34px;border-radius:var(--r2);background:var(--y);
+            border:var(--b2);box-shadow:2px 2px 0 var(--y2);display:grid;place-items:center}
+        .info-box-icon svg{width:17px;height:17px;stroke:var(--k);stroke-width:2;fill:none}
+        .info-box-text{font-size:13.5px;color:var(--n5);line-height:1.55}
+        .info-box-text strong{color:var(--k);font-weight:700}
+
+        
+        .status-footer{margin-top:26px;font-size:12px;color:var(--n4)}
+        .status-footer a{color:var(--k);font-weight:700;border-bottom:2px solid var(--y)}
+
+        @media (max-width:480px){
+            .status-card{padding:28px 20px}
+            .countdown-unit{min-width:50px}
+            .countdown-sep{font-size:30px;padding-top:10px}
+        }
+    </style>
+</head>
+<body>
+    
+    <main class="status-card" role="main">
+
+       
+        <div class="status-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+        </div>
+
+        <span class="status-tag">Fora do horário</span>
+        <h1 class="status-title">Hora de pausa!</h1>
+
+        <p class="status-message">
+            O <strong>Experience Connect</strong> está ativo das <strong>07h às 19h</strong> (horário de Brasília).<br>
+            Volte amanhã para continuar sua jornada!
+        </p>
+
+        
+        <div class="hours-bar-section" aria-label="Janela de horário de funcionamento">
+            <div class="hours-bar-label">Janela de funcionamento</div>
+            <div class="hours-bar-track" role="presentation">
+                <div class="hours-bar-active"></div>
+                <div class="hours-bar-now" id="hours-bar-now"></div>
+            </div>
+            <div class="hours-bar-times">
+                <span>00h</span>
+                <span class="active-range">07h – 19h</span>
+                <span>24h</span>
+            </div>
+        </div>
+
+        
+        <div class="countdown-section">
+            <div class="countdown-label">Próxima abertura em</div>
+            <div class="countdown-timer" id="countdown-timer" aria-live="polite" aria-atomic="true">
+                <div class="countdown-cols" id="countdown-cols">
+                    <div class="countdown-unit">
+                        <span class="countdown-digit" id="cd-hours">--</span>
+                        <span class="countdown-unit-label">horas</span>
+                    </div>
+                    <span class="countdown-sep">:</span>
+                    <div class="countdown-unit">
+                        <span class="countdown-digit" id="cd-mins">--</span>
+                        <span class="countdown-unit-label">min</span>
+                    </div>
+                    <span class="countdown-sep">:</span>
+                    <div class="countdown-unit">
+                        <span class="countdown-digit" id="cd-secs">--</span>
+                        <span class="countdown-unit-label">seg</span>
+                    </div>
+                </div>
+            </div>
+            <div class="opening-time" id="opening-time">
+                Abre às <strong id="open-time-display">07:00</strong>
+            </div>
+        </div>
+
+        
+        <div class="info-box">
+            <div class="info-box-icon" aria-hidden="true">
+                
+                <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 18h6M10 22h4M12 2a7 7 0 0 1 7 7c0 2.386-1.17 4.5-3 5.793V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.207C6.17 13.5 5 11.386 5 9a7 7 0 0 1 7-7z"/>
+                </svg>
+            </div>
+            <p class="info-box-text">
+                <strong>Dica:</strong> Todos os jogadores competem no mesmo horário para garantir uma competição justa!
+            </p>
+        </div>
+
+        
+        <footer class="status-footer">
+            <p>Dúvidas? Entre em contato com o <a href="#">suporte</a>.</p>
+        </footer>
+    </main>
+
+   
+    <script type="module">
+        import StatusCheckService from './frontend/js/services/StatusCheckService.js';
+
+        (function() {
+            const OPEN_HOUR = 7;   
+            const CLOSE_HOUR = 19; 
+            const FORCE_REFRESH_INTERVAL_MS = 5 * 60 * 1000;
+            let isNavigating = false;
+            let openingCheckQueued = false;
+
+            async function fetchPlatformStatus(forceRefresh = false) {
+                try {
+                    return await StatusCheckService.checkPlatformStatus({ forceRefresh });
+                } catch (error) {
+                    console.warn('[outside-window] Platform status check failed, staying on status page:', error.message);
+                    return null;
+                }
+            }
+
+            function getStatusScreenUrl(status) {
+                const redirects = {
+                    maintenance: '/maintenance.html',
+                    platform_disabled: '/maintenance.html',
+                    season_closed: '/season-closed.html',
+                    outside_window: '/outside-window.html'
+                };
+
+                const baseUrl = redirects[status.reason] || '/maintenance.html';
+                const url = new URL(baseUrl, window.location.origin);
+
+                if (status.reason) url.searchParams.set('reason', status.reason);
+                if (status.message) url.searchParams.set('message', status.message);
+                if (status.next_open_time) url.searchParams.set('next_open', status.next_open_time);
+
+                return url.toString();
+            }
+
+            
+            function isWithinOperatingHours() {
+                const now = new Date();
+                const hour = now.getHours();
+                return hour >= OPEN_HOUR && hour < CLOSE_HOUR;
+            }
+
+            
+            async function checkAndRedirect(forceRefresh = false) {
+                if (isNavigating) return true;
+
+                const status = await fetchPlatformStatus(forceRefresh);
+                if (!status) return false;
+
+                if (status.allowed) {
+                    isNavigating = true;
+                    console.log('[outside-window] Platform access allowed, redirecting to index...');
+                    window.location.replace('/index.html');
+                    return true;
+                }
+
+                if (status.reason && status.reason !== 'outside_window') {
+                    isNavigating = true;
+                    const redirectUrl = getStatusScreenUrl(status);
+                    console.log('[outside-window] Redirecting to status page:', redirectUrl);
+                    window.location.replace(redirectUrl);
+                    return true;
+                }
+
+                if (isWithinOperatingHours()) {
+                    console.log('[outside-window] Local time is within hours, but platform status is still closed. Staying to avoid redirect loop.');
+                }
+
+                return false;
+            }
+
+            
+            checkAndRedirect(true);
+
+            
+            const statusCheckInterval = setInterval(() => { checkAndRedirect(true); }, FORCE_REFRESH_INTERVAL_MS);
+
+            
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) {
+                    console.log('[outside-window] Page became visible, checking hours...');
+                    checkAndRedirect(true);
+                }
+            });
+
+           
+            window.addEventListener('focus', () => {
+                console.log('[outside-window] Window focused, checking hours...');
+                checkAndRedirect(true);
+            });
+
+            
+            const now = new Date();
+            const currentHour = now.getHours();
+            let targetTime;
+
+            if (currentHour < OPEN_HOUR) {
+                
+                targetTime = new Date(now);
+                targetTime.setHours(OPEN_HOUR, 0, 0, 0);
+            } else {
+                
+                targetTime = new Date(now);
+                targetTime.setDate(targetTime.getDate() + 1);
+                targetTime.setHours(OPEN_HOUR, 0, 0, 0);
+            }
+
+            
+            (function positionNowDot() {
+                const totalMins = 24 * 60;
+                const nowMins = now.getHours() * 60 + now.getMinutes();
+                const pct = (nowMins / totalMins) * 100;
+                const dot = document.getElementById('hours-bar-now');
+                dot.style.left = pct + '%';
+                dot.style.display = 'block';
+            })();
+
+            const hoursEl = document.getElementById('cd-hours');
+            const minsEl  = document.getElementById('cd-mins');
+            const secsEl  = document.getElementById('cd-secs');
+
+            function pad(n) { return String(n).padStart(2, '0'); }
+
+            function updateCountdown() {
+                const now = new Date();
+                const diff = targetTime - now;
+
+                if (diff <= 0) {
+                    hoursEl.textContent = '00';
+                    minsEl.textContent  = '00';
+                    secsEl.textContent  = '00';
+                    
+                    if (!openingCheckQueued) {
+                        openingCheckQueued = true;
+                        setTimeout(async () => {
+                            openingCheckQueued = false;
+                            await checkAndRedirect(true);
+                        }, 1500);
+                    }
+                    return;
+                }
+
+                const hours   = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                hoursEl.textContent = pad(hours);
+                minsEl.textContent  = pad(minutes);
+                secsEl.textContent  = pad(seconds);
+            }
+
+            updateCountdown();
+            const interval = setInterval(updateCountdown, 1000);
+
+            window.addEventListener('beforeunload', () => {
+                clearInterval(interval);
+                clearInterval(statusCheckInterval);
+            });
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Admin — Experience Connect</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --y: #FFC700;
+            --y2: #E5A800;
+            --k: #0A0A0A;
+            --k2: #161616;
+            --k3: #222;
+            --k4: #333;
+            --ow: #F5F0E6;
+            --w: #fff;
+            --ok: #16BF5C;
+            --s2: 3px 3px 0 #0A0A0A;
+            --s3: 5px 5px 0 #0A0A0A;
+            --s4: 8px 8px 0 #0A0A0A;
+            --sy: 6px 6px 0 #E5A800;
+            --r2: 8px;
+            --r3: 12px;
+            --r4: 18px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', system-ui, sans-serif;
+            background: var(--k2);
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ── Header ── */
+        .adm-header {
+            background: var(--k);
+            border-bottom: 2px solid var(--k4);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .adm-header-icon {
+            width: 28px;
+            height: 28px;
+            background: var(--y);
+            border: 2px solid var(--k);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .adm-header-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 18px;
+            color: var(--w);
+            letter-spacing: 0.04em;
+        }
+
+        .adm-header-badge {
+            margin-left: auto;
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--y);
+            background: rgba(255,199,0,.08);
+            border: 1.5px solid rgba(255,199,0,.25);
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+
+        /* ── Main ── */
+        .adm-main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 16px;
+        }
+
+        /* ── Card ── */
+        .adm-card {
+            background: var(--ow);
+            border: 3px solid var(--k);
+            border-radius: var(--r4);
+            box-shadow: var(--s4);
+            width: 100%;
+            max-width: 420px;
+            overflow: hidden;
+        }
+
+        .adm-card-head {
+            background: var(--k);
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        /* Sentury face */
+        .sentury {
+            width: 44px;
+            height: 44px;
+            background: var(--k3);
+            border-radius: 50%;
+            border: 2px solid var(--y);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            flex-shrink: 0;
+        }
+
+        .s-bar {
+            width: 4px;
+            height: 14px;
+            background: var(--w);
+            border-radius: 2px;
+            animation: barBlink 7s ease-in-out infinite;
+        }
+
+        .s-bar:nth-child(2) { animation-delay: 3.5s; }
+
+        @keyframes barBlink {
+            0%, 84%, 100% { transform: scaleY(1); opacity: 1; }
+            88% { transform: scaleY(0.35); opacity: 0.5; }
+            94% { transform: scaleY(1.2); opacity: 1; }
+        }
+
+        .adm-card-head-info h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 22px;
+            color: var(--w);
+            letter-spacing: 0.02em;
+            line-height: 1;
+        }
+
+        .adm-card-head-info p {
+            margin-top: 3px;
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            color: rgba(255,255,255,.4);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .adm-card-body {
+            padding: 28px 24px 24px;
+        }
+
+        /* Status pill */
+        .adm-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(22,191,92,.08);
+            border: 1.5px solid rgba(22,191,92,.35);
+            border-radius: var(--r2);
+            padding: 8px 12px;
+            margin-bottom: 24px;
+        }
+
+        .adm-status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--ok);
+            animation: dotPulse 2s ease-in-out infinite;
+            flex-shrink: 0;
+        }
+
+        @keyframes dotPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.45; transform: scale(0.8); }
+        }
+
+        .adm-status-text {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--ok);
+        }
+
+        /* Fields */
+        .adm-field { margin-bottom: 16px; }
+
+        .adm-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--k);
+            margin-bottom: 6px;
+        }
+
+        .adm-input {
+            width: 100%;
+            height: 48px;
+            background: var(--w);
+            border: 2px solid var(--k);
+            border-radius: var(--r2);
+            padding: 0 14px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            color: var(--k);
+            outline: none;
+            transition: box-shadow 150ms;
+        }
+
+        .adm-input:focus { box-shadow: var(--s2); }
+        .adm-input::placeholder { color: #B5B0A5; }
+
+        /* Button */
+        .adm-btn {
+            width: 100%;
+            height: 52px;
+            background: var(--y);
+            border: 2px solid var(--k);
+            border-radius: var(--r2);
+            box-shadow: var(--s2);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            text-transform: uppercase;
+            color: var(--k);
+            cursor: pointer;
+            margin-top: 8px;
+            transition: transform 80ms, box-shadow 80ms, background 200ms;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .adm-btn:hover:not(:disabled) {
+            transform: translate(-1px, -1px);
+            box-shadow: var(--s3);
+        }
+
+        .adm-btn:active:not(:disabled) {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 var(--k);
+        }
+
+        .adm-btn:disabled { cursor: not-allowed; }
+
+        .adm-note {
+            text-align: center;
+            margin-top: 16px;
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            color: #7A7570;
+            letter-spacing: 0.04em;
+        }
+
+        /* ── Footer ── */
+        .adm-footer {
+            background: var(--k);
+            border-top: 2px solid rgba(255,199,0,.18);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .adm-footer span {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            color: rgba(255,255,255,.3);
+            letter-spacing: 0.04em;
+        }
+
+        /* ── Troll overlay ── */
+        .troll {
+            position: fixed;
+            inset: 0;
+            background: var(--k);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 350ms ease;
+        }
+
+        .troll.on {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .troll-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(24px, 5vw, 40px);
+            color: var(--y);
+            letter-spacing: 0.04em;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .troll-sub {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: rgba(255,255,255,.35);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .troll-frame {
+            width: min(640px, 92vw);
+            aspect-ratio: 16 / 9;
+            border: 3px solid var(--y);
+            border-radius: var(--r3);
+            box-shadow: var(--sy);
+        }
+    </style>
+</head>
+<body>
+
+    <header class="adm-header">
+        <div class="adm-header-icon">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+        </div>
+        <span class="adm-header-title">Experience Connect — Admin</span>
+        <span class="adm-header-badge">Restrito</span>
+    </header>
+
+    <main class="adm-main">
+        <div class="adm-card">
+            <div class="adm-card-head">
+                <div class="sentury">
+                    <div class="s-bar"></div>
+                    <div class="s-bar"></div>
+                </div>
+                <div class="adm-card-head-info">
+                    <h2>Painel Administrativo</h2>
+                    <p>Sentury · Secure Access v2.1</p>
+                </div>
+            </div>
+
+            <div class="adm-card-body">
+                <div class="adm-status">
+                    <div class="adm-status-dot"></div>
+                    <span class="adm-status-text">Sistema operacional</span>
+                </div>
+
+                <div class="adm-field">
+                    <label class="adm-label" for="adm-user">Identificador</label>
+                    <input class="adm-input" id="adm-user" type="text" placeholder="administrador" autocomplete="off" spellcheck="false">
+                </div>
+
+                <div class="adm-field">
+                    <label class="adm-label" for="adm-pass">Senha de acesso</label>
+                    <input class="adm-input" id="adm-pass" type="password" placeholder="••••••••••••" autocomplete="off">
+                </div>
+
+                <button class="adm-btn" id="adm-btn" onclick="handleLogin()">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>
+                    </svg>
+                    <span id="btn-label">Entrar</span>
+                </button>
+
+                <p class="adm-note">Acesso monitorado · EC-SEC-2026</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="adm-footer">
+        <span>Experience Connect · Painel Interno</span>
+        <span>v2.1.0 · build 20260611</span>
+    </footer>
+
+    <div class="troll" id="troll">
+        <p class="troll-title">Você não deveria estar aqui.</p>
+        <p class="troll-sub">acesso negado · esta área não existe</p>
+        <iframe
+            class="troll-frame"
+            id="troll-frame"
+            src=""
+            allow="autoplay; encrypted-media"
+            allowfullscreen
+            sandbox="allow-scripts allow-same-origin allow-presentation"
+        ></iframe>
+    </div>
+
+    <script>
+        function handleLogin() {
+            var btn = document.getElementById('adm-btn');
+            var label = document.getElementById('btn-label');
+
+            btn.disabled = true;
+            label.textContent = 'Verificando...';
+
+            setTimeout(function() {
+                label.textContent = 'Acesso concedido...';
+                btn.style.background = '#16BF5C';
+            }, 1600);
+
+            setTimeout(function() {
+                var troll = document.getElementById('troll');
+                var frame = document.getElementById('troll-frame');
+                frame.src = 'https://www.youtube.com/embed/gUkaoy1Pr7E?autoplay=1&rel=0';
+                troll.classList.add('on');
+            }, 2400);
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') handleLogin();
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,627 @@
+{
+ "path": "seasons/S-2025-01/levels/CX_2",
+ "challenge_count": 27,
+ "questions": [
+  {
+   "ordem": 1,
+   "tags": [
+    "nps",
+    "cálculo",
+    "métricas"
+   ],
+   "descricao": "Em uma pesquisa NPS com 200 respondentes: 120 deram notas 9-10, 40 deram notas 7-8 e 40 deram notas 0-6. Qual é o NPS?",
+   "id": "sel-201",
+   "resposta_correta": "B",
+   "tempo_limite": 120,
+   "categoria": "Métricas & KPIs",
+   "tipo": "seleção",
+   "titulo": "Cálculo do NPS",
+   "xp": 40,
+   "ativo": true,
+   "alternativas": {
+    "A": "NPS = 60",
+    "D": "NPS = 20",
+    "C": "NPS = 80",
+    "B": "NPS = 40"
+   }
+  },
+  {
+   "ordem": 2,
+   "tags": [
+    "ces",
+    "esforço",
+    "métricas"
+   ],
+   "descricao": "O CES mede um aspecto específico da experiência do cliente. O que ele avalia?",
+   "id": "sel-202",
+   "resposta_correta": "B",
+   "categoria": "Métricas & KPIs",
+   "tempo_limite": 90,
+   "tipo": "seleção",
+   "titulo": "Customer Effort Score (CES)",
+   "xp": 40,
+   "ativo": true,
+   "alternativas": {
+    "A": "A satisfação geral com a marca",
+    "D": "O tempo médio de resposta do suporte",
+    "C": "A probabilidade de indicar a empresa",
+    "E": "O valor médio gasto pelo cliente",
+    "B": "O esforço que o cliente precisa fazer para resolver um problema ou completar uma tarefa"
+   }
+  },
+  {
+   "ordem": 3,
+   "tags": [
+    "jornada",
+    "mapa",
+    "touchpoints"
+   ],
+   "descricao": "Qual é o principal objetivo de criar um Mapa de Jornada do Cliente (Customer Journey Map)?",
+   "id": "sel-203",
+   "resposta_correta": "B",
+   "categoria": "Jornada do Cliente",
+   "tempo_limite": 90,
+   "tipo": "seleção",
+   "titulo": "Mapa de Jornada do Cliente",
+   "xp": 45,
+   "ativo": true,
+   "alternativas": {
+    "D": "Criar um fluxograma do sistema de TI",
+    "A": "Definir o organograma da empresa",
+    "C": "Calcular o ROI de campanhas de marketing",
+    "B": "Visualizar e entender cada etapa da experiência do cliente com a marca, identificando dores e oportunidades"
+   }
+  },
+  {
+   "ordem": 4,
+   "tags": [
+    "churn",
+    "retenção",
+    "métricas"
+   ],
+   "descricao": "O Churn Rate é uma métrica crítica em CX. O que um Churn Rate alto indica?",
+   "id": "sel-204",
+   "resposta_correta": "C",
+   "tempo_limite": 60,
+   "categoria": "Métricas & KPIs",
+   "tipo": "seleção",
+   "titulo": "Churn Rate",
+   "xp": 35,
+   "ativo": true,
+   "alternativas": {
+    "D": "O NPS está subindo",
+    "A": "A empresa está crescendo rapidamente",
+    "C": "Muitos clientes estão deixando de usar o produto ou serviço",
+    "B": "Os clientes estão muito satisfeitos",
+    "E": "A equipe de vendas está performando bem"
+   }
+  },
+  {
+   "ordem": 5,
+   "resposta_correta": "B",
+   "descricao": "Em uma pesquisa NPS com 200 respondentes: 120 deram notas 9-10, 40 deram notas 7-8 e 40 deram notas 0-6. Qual é o NPS?",
+   "id": "sel-201-v1",
+   "tags": [
+    "nps",
+    "cálculo",
+    "métricas"
+   ],
+   "categoria": "Métricas & KPIs",
+   "tempo_limite": 120,
+   "tipo": "seleção",
+   "titulo": "Cálculo do NPS",
+   "xp": 40,
+   "ativo": true,
+   "alternativas": {
+    "A": "NPS = 60",
+    "D": "NPS = 20",
+    "C": "NPS = 80",
+    "B": "NPS = 40"
+   }
+  },
+  {
+   "ordem": 6,
+   "tags": [
+    "ces",
+    "esforço",
+    "métricas"
+   ],
+   "descricao": "O CES mede um aspecto específico da experiência do cliente. O que ele avalia?",
+   "id": "sel-202-v1",
+   "resposta_correta": "B",
+   "categoria": "Métricas & KPIs",
+   "tempo_limite": 90,
+   "tipo": "seleção",
+   "titulo": "Customer Effort Score (CES)",
+   "xp": 40,
+   "ativo": true,
+   "alternativas": {
+    "A": "A satisfação geral com a marca",
+    "D": "O tempo médio de resposta do suporte",
+    "C": "A probabilidade de indicar a empresa",
+    "E": "O valor médio gasto pelo cliente",
+    "B": "O esforço que o cliente precisa fazer para resolver um problema ou completar uma tarefa"
+   }
+  },
+  {
+   "ordem": 7,
+   "tags": [
+    "jornada",
+    "mapa",
+    "touchpoints"
+   ],
+   "descricao": "Qual é o principal objetivo de criar um Mapa de Jornada do Cliente (Customer Journey Map)?",
+   "id": "sel-203-v1",
+   "resposta_correta": "B",
+   "categoria": "Jornada do Cliente",
+   "tempo_limite": 90,
+   "tipo": "seleção",
+   "titulo": "Mapa de Jornada do Cliente",
+   "xp": 45,
+   "ativo": true,
+   "alternativas": {
+    "A": "Definir o organograma da empresa",
+    "D": "Criar um fluxograma do sistema de TI",
+    "C": "Calcular o ROI de campanhas de marketing",
+    "B": "Visualizar e entender cada etapa da experiência do cliente com a marca, identificando dores e oportunidades"
+   }
+  },
+  {
+   "ordem": 8,
+   "resposta_correta": "C",
+   "descricao": "O Churn Rate é uma métrica crítica em CX. O que um Churn Rate alto indica?",
+   "id": "sel-204-v1",
+   "tags": [
+    "churn",
+    "retenção",
+    "métricas"
+   ],
+   "tempo_limite": 60,
+   "categoria": "Métricas & KPIs",
+   "tipo": "seleção",
+   "titulo": "Churn Rate",
+   "xp": 35,
+   "ativo": true,
+   "alternativas": {
+    "D": "O NPS está subindo",
+    "A": "A empresa está crescendo rapidamente",
+    "C": "Muitos clientes estão deixando de usar o produto ou serviço",
+    "B": "Os clientes estão muito satisfeitos",
+    "E": "A equipe de vendas está performando bem"
+   }
+  },
+  {
+   "description": "Intermission game na Fase 2, Posição 1",
+   "type": "intermission",
+   "points": 150,
+   "id": "ig-L2-slot1",
+   "setor": "CX",
+   "titulo": "Desafio Especial - Fase 2",
+   "xp": 150,
+   "alternativas": {},
+   "challenge_id": "ig-L2-slot1",
+   "ordem": 9,
+   "slot_index": 1,
+   "descricao": "Intermission game na Fase 2, Posição 1",
+   "tempo_limite": 180,
+   "tipo": "intermission",
+   "title": "Desafio Especial - Fase 2",
+   "level": 2,
+   "ativo": true
+  },
+  {
+   "ordem": 10,
+   "tags": [
+    "nps",
+    "cálculo",
+    "métricas"
+   ],
+   "descricao": "Em uma pesquisa NPS com 200 respondentes: 120 deram notas 9-10, 40 deram notas 7-8 e 40 deram notas 0-6. Qual é o NPS?",
+   "id": "sel-201-v2",
+   "resposta_correta": "B",
+   "tempo_limite": 120,
+   "categoria": "Métricas & KPIs",
+   "tipo": "seleção",
+   "titulo": "Cálculo do NPS",
+   "xp": 40,
+   "ativo": true,
+   "alternativas": {
+    "A": "NPS = 60",
+    "D": "NPS = 20",
+    "C": "NPS = 80",
+    "B": "NPS = 40"
+   }
+  },
+  {
+   "ordem": 11,
+   "resposta_correta": "B",
+   "descricao": "O CES mede um aspecto específico da experiência do cliente. O que ele avalia?",
+   "id": "sel-202-v2",
+   "tags": [
+    "ces",
+    "esforço",
+    "métricas"
+   ],
+   "tempo_limite": 90,
+   "categoria": "Métricas & KPIs",
+   "tipo": "seleção",
+   "titulo": "Customer Effort Score (CES)",
+   "xp": 40,
+   "ativo": true,
+   "alternativas": {
+    "D": "O tempo médio de resposta do suporte",
+    "A": "A satisfação geral com a marca",
+    "C": "A probabilidade de indicar a empresa",
+    "B": "O esforço que o cliente precisa fazer para resolver um problema ou completar uma tarefa",
+    "E": "O valor médio gasto pelo cliente"
+   }
+  },
+  {
+   "ordem": 12,
+   "resposta_correta": "B",
+   "descricao": "Qual é o principal objetivo de criar um Mapa de Jornada do Cliente (Customer Journey Map)?",
+   "id": "sel-203-v2",
+   "tags": [
+    "jornada",
+    "mapa",
+    "touchpoints"
+   ],
+   "tempo_limite": 90,
+   "categoria": "Jornada do Cliente",
+   "tipo": "seleção",
+   "titulo": "Mapa de Jornada do Cliente",
+   "xp": 45,
+   "ativo": true,
+   "alternativas": {
+    "D": "Criar um fluxograma do sistema de TI",
+    "A": "Definir o organograma da empresa",
+    "C": "Calcular o ROI de campanhas de marketing",
+    "B": "Visualizar e entender cada etapa da experiência do cliente com a marca, identificando dores e oportunidades"
+   }
+  },
+  {
+   "ordem": 13,
+   "tags": [
+    "churn",
+    "retenção",
+    "métricas"
+   ],
+   "descricao": "O Churn Rate é uma métrica crítica em CX. O que um Churn Rate alto indica?",
+   "id": "sel-204-v2",
+   "resposta_correta": "C",
+   "categoria": "Métricas & KPIs",
+   "tempo_limite": 60,
+   "tipo": "seleção",
+   "titulo": "Churn Rate",
+   "xp": 35,
+   "ativo": true,
+   "alternativas": {
+    "D": "O NPS está subindo",
+    "A": "A empresa está crescendo rapidamente",
+    "C": "Muitos clientes estão deixando de usar o produto ou serviço",
+    "B": "Os clientes estão muito satisfeitos",
+    "E": "A equipe de vendas está performando bem"
+   }
+  },
+  {
+   "ordem": 14,
+   "tags": [
+    "nps",
+    "cálculo",
+    "métricas"
+   ],
+   "descricao": "Em uma pesquisa NPS com 200 respondentes: 120 deram notas 9-10, 40 deram notas 7-8 e 40 deram notas 0-6. Qual é o NPS?",
+   "id": "sel-201-v3",
+   "resposta_correta": "B",
+   "tempo_limite": 120,
+   "categoria": "Métricas & KPIs",
+   "tipo": "seleção",
+   "titulo": "Cálculo do NPS",
+   "xp": 40,
+   "ativo": true,
+   "alternativas": {
+    "D": "NPS = 20",
+    "A": "NPS = 60",
+    "C": "NPS = 80",
+    "B": "NPS = 40"
+   }
+  },
+  {
+   "ordem": 15,
+   "tags": [
+    "ces",
+    "esforço",
+    "métricas"
+   ],
+   "descricao": "O CES mede um aspecto específico da experiência do cliente. O que ele avalia?",
+   "id": "sel-202-v3",
+   "resposta_correta": "B",
+   "tempo_limite": 90,
+   "categoria": "Métricas & KPIs",
+   "tipo": "seleção",
+   "titulo": "Customer Effort Score (CES)",
+   "xp": 40,
+   "ativo": true,
+   "alternativas": {
+    "D": "O tempo médio de resposta do suporte",
+    "A": "A satisfação geral com a marca",
+    "C": "A probabilidade de indicar a empresa",
+    "B": "O esforço que o cliente precisa fazer para resolver um problema ou completar uma tarefa",
+    "E": "O valor médio gasto pelo cliente"
+   }
+  },
+  {
+   "ordem": 16,
+   "resposta_correta": null,
+   "descricao": "**Situação:** A diretoria solicitou que você justifique a relação entre a experiência do colaborador (Employee Experience - EX) e a experiência do cliente (Customer Experience - CX).\n\n**Sua tarefa:** Explique por que colaboradores motivados geram clientes mais satisfeitos e proponha uma iniciativa prática de EX para a equipe.",
+   "id": "lg-201",
+   "tags": [
+    "cultura",
+    "employee-experience",
+    "alinhamento",
+    "logun"
+   ],
+   "tempo_limite": 180,
+   "categoria": "Employee Experience",
+   "tipo": "texto",
+   "titulo": "Cultura: Employee Experience (EX)",
+   "xp": 50,
+   "ativo": true,
+   "alternativas": {}
+  },
+  {
+   "ordem": 17,
+   "tags": [
+    "jornada",
+    "mapa",
+    "touchpoints"
+   ],
+   "descricao": "Qual é o principal objetivo de criar um Mapa de Jornada do Cliente (Customer Journey Map)?",
+   "id": "sel-203-v3",
+   "resposta_correta": "B",
+   "categoria": "Jornada do Cliente",
+   "tempo_limite": 90,
+   "tipo": "seleção",
+   "titulo": "Mapa de Jornada do Cliente",
+   "xp": 45,
+   "ativo": true,
+   "alternativas": {
+    "D": "Criar um fluxograma do sistema de TI",
+    "A": "Definir o organograma da empresa",
+    "C": "Calcular o ROI de campanhas de marketing",
+    "B": "Visualizar e entender cada etapa da experiência do cliente com a marca, identificando dores e oportunidades"
+   }
+  },
+  {
+   "ordem": 18,
+   "resposta_correta": "C",
+   "descricao": "O Churn Rate é uma métrica crítica em CX. O que um Churn Rate alto indica?",
+   "id": "sel-204-v3",
+   "tags": [
+    "churn",
+    "retenção",
+    "métricas"
+   ],
+   "categoria": "Métricas & KPIs",
+   "tempo_limite": 60,
+   "tipo": "seleção",
+   "titulo": "Churn Rate",
+   "xp": 35,
+   "ativo": true,
+   "alternativas": {
+    "D": "O NPS está subindo",
+    "A": "A empresa está crescendo rapidamente",
+    "C": "Muitos clientes estão deixando de usar o produto ou serviço",
+    "B": "Os clientes estão muito satisfeitos",
+    "E": "A equipe de vendas está performando bem"
+   }
+  },
+  {
+   "ordem": 19,
+   "resposta_correta": "B",
+   "descricao": "Em uma pesquisa NPS com 200 respondentes: 120 deram notas 9-10, 40 deram notas 7-8 e 40 deram notas 0-6. Qual é o NPS?",
+   "id": "sel-201-v4",
+   "tags": [
+    "nps",
+    "cálculo",
+    "métricas"
+   ],
+   "tempo_limite": 120,
+   "categoria": "Métricas & KPIs",
+   "tipo": "seleção",
+   "titulo": "Cálculo do NPS",
+   "xp": 40,
+   "ativo": true,
+   "alternativas": {
+    "D": "NPS = 20",
+    "A": "NPS = 60",
+    "C": "NPS = 80",
+    "B": "NPS = 40"
+   }
+  },
+  {
+   "points": 150,
+   "type": "intermission",
+   "description": "Intermission game na Fase 2, Posição 2",
+   "id": "ig-L2-slot2",
+   "setor": "CX",
+   "titulo": "Desafio Especial - Fase 2",
+   "xp": 150,
+   "challenge_id": "ig-L2-slot2",
+   "alternativas": {},
+   "ordem": 20,
+   "slot_index": 2,
+   "descricao": "Intermission game na Fase 2, Posição 2",
+   "tempo_limite": 180,
+   "tipo": "intermission",
+   "level": 2,
+   "title": "Desafio Especial - Fase 2",
+   "ativo": true
+  },
+  {
+   "ordem": 21,
+   "resposta_correta": "B",
+   "descricao": "O CES mede um aspecto específico da experiência do cliente. O que ele avalia?",
+   "id": "sel-202-v4",
+   "tags": [
+    "ces",
+    "esforço",
+    "métricas"
+   ],
+   "categoria": "Métricas & KPIs",
+   "tempo_limite": 90,
+   "tipo": "seleção",
+   "titulo": "Customer Effort Score (CES)",
+   "xp": 40,
+   "ativo": true,
+   "alternativas": {
+    "D": "O tempo médio de resposta do suporte",
+    "A": "A satisfação geral com a marca",
+    "C": "A probabilidade de indicar a empresa",
+    "B": "O esforço que o cliente precisa fazer para resolver um problema ou completar uma tarefa",
+    "E": "O valor médio gasto pelo cliente"
+   }
+  },
+  {
+   "ordem": 22,
+   "resposta_correta": "B",
+   "descricao": "Qual é o principal objetivo de criar um Mapa de Jornada do Cliente (Customer Journey Map)?",
+   "id": "sel-203-v4",
+   "tags": [
+    "jornada",
+    "mapa",
+    "touchpoints"
+   ],
+   "categoria": "Jornada do Cliente",
+   "tempo_limite": 90,
+   "tipo": "seleção",
+   "titulo": "Mapa de Jornada do Cliente",
+   "xp": 45,
+   "ativo": true,
+   "alternativas": {
+    "A": "Definir o organograma da empresa",
+    "D": "Criar um fluxograma do sistema de TI",
+    "C": "Calcular o ROI de campanhas de marketing",
+    "B": "Visualizar e entender cada etapa da experiência do cliente com a marca, identificando dores e oportunidades"
+   }
+  },
+  {
+   "ordem": 23,
+   "tags": [
+    "churn",
+    "retenção",
+    "métricas"
+   ],
+   "descricao": "O Churn Rate é uma métrica crítica em CX. O que um Churn Rate alto indica?",
+   "id": "sel-204-v4",
+   "resposta_correta": "C",
+   "tempo_limite": 60,
+   "categoria": "Métricas & KPIs",
+   "tipo": "seleção",
+   "titulo": "Churn Rate",
+   "xp": 35,
+   "ativo": true,
+   "alternativas": {
+    "A": "A empresa está crescendo rapidamente",
+    "D": "O NPS está subindo",
+    "C": "Muitos clientes estão deixando de usar o produto ou serviço",
+    "E": "A equipe de vendas está performando bem",
+    "B": "Os clientes estão muito satisfeitos"
+   }
+  },
+  {
+   "ordem": 24,
+   "resposta_correta": "B",
+   "descricao": "Em uma pesquisa NPS com 200 respondentes: 120 deram notas 9-10, 40 deram notas 7-8 e 40 deram notas 0-6. Qual é o NPS?",
+   "id": "sel-201-v5",
+   "tags": [
+    "nps",
+    "cálculo",
+    "métricas"
+   ],
+   "categoria": "Métricas & KPIs",
+   "tempo_limite": 120,
+   "tipo": "seleção",
+   "titulo": "Cálculo do NPS",
+   "xp": 40,
+   "ativo": true,
+   "alternativas": {
+    "A": "NPS = 60",
+    "D": "NPS = 20",
+    "C": "NPS = 80",
+    "B": "NPS = 40"
+   }
+  },
+  {
+   "ordem": 25,
+   "resposta_correta": "B",
+   "descricao": "O CES mede um aspecto específico da experiência do cliente. O que ele avalia?",
+   "id": "sel-202-v5",
+   "tags": [
+    "ces",
+    "esforço",
+    "métricas"
+   ],
+   "tempo_limite": 90,
+   "categoria": "Métricas & KPIs",
+   "tipo": "seleção",
+   "titulo": "Customer Effort Score (CES)",
+   "xp": 40,
+   "ativo": true,
+   "alternativas": {
+    "D": "O tempo médio de resposta do suporte",
+    "A": "A satisfação geral com a marca",
+    "C": "A probabilidade de indicar a empresa",
+    "B": "O esforço que o cliente precisa fazer para resolver um problema ou completar uma tarefa",
+    "E": "O valor médio gasto pelo cliente"
+   }
+  },
+  {
+   "ordem": 26,
+   "resposta_correta": "B",
+   "descricao": "Qual é o principal objetivo de criar um Mapa de Jornada do Cliente (Customer Journey Map)?",
+   "id": "sel-203-v5",
+   "tags": [
+    "jornada",
+    "mapa",
+    "touchpoints"
+   ],
+   "tempo_limite": 90,
+   "categoria": "Jornada do Cliente",
+   "tipo": "seleção",
+   "titulo": "Mapa de Jornada do Cliente",
+   "xp": 45,
+   "ativo": true,
+   "alternativas": {
+    "D": "Criar um fluxograma do sistema de TI",
+    "A": "Definir o organograma da empresa",
+    "C": "Calcular o ROI de campanhas de marketing",
+    "B": "Visualizar e entender cada etapa da experiência do cliente com a marca, identificando dores e oportunidades"
+   }
+  },
+  {
+   "ordem": 27,
+   "tags": [
+    "churn",
+    "retenção",
+    "métricas"
+   ],
+   "descricao": "O Churn Rate é uma métrica crítica em CX. O que um Churn Rate alto indica?",
+   "id": "sel-204-v5",
+   "resposta_correta": "C",
+   "categoria": "Métricas & KPIs",
+   "tempo_limite": 60,
+   "tipo": "seleção",
+   "titulo": "Churn Rate",
+   "xp": 35,
+   "ativo": true,
+   "alternativas": {
+    "D": "O NPS está subindo",
+    "A": "A empresa está crescendo rapidamente",
+    "C": "Muitos clientes estão deixando de usar o produto ou serviço",
+    "B": "Os clientes estão muito satisfeitos",
+    "E": "A equipe de vendas está performando bem"
+   }
+  }
+ ]
+}

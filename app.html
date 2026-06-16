@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <script src="./frontend/js/console-control.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://favicon.rysn-craft.workers.dev">
+    <meta name="description" content="Experience Connect - Painel de Desafios">
+    <title>Experience Connect — Desafios</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Knewave&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./frontend/styles/landing.css">
+    <link rel="stylesheet" href="./frontend/styles/home-ec.css">
+    <link rel="stylesheet" href="./frontend/styles/rank1-overlay.css">
+    <link rel="stylesheet" href="./frontend/css/components/logun-modal.css?v=20260517-002">
+    <script src="./frontend/js/shared/cx-session.js"></script>
+    <script>
+        window.CxSession.bootstrapPage({
+            mode: 'protected',
+            redirectUnauthenticatedTo: 'login.html'
+        });
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./frontend/js/env-loader.js"></script>
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+        import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+        
+        const appConfig = await window.__APP_CONFIG_READY__;
+        const firebaseConfig = {
+            apiKey: appConfig.FIREBASE_API_KEY,
+            authDomain: appConfig.FIREBASE_AUTH_DOMAIN,
+            projectId: appConfig.FIREBASE_PROJECT_ID,
+            storageBucket: appConfig.FIREBASE_STORAGE_BUCKET,
+            messagingSenderId: appConfig.FIREBASE_MESSAGING_SENDER_ID,
+            appId: appConfig.FIREBASE_APP_ID
+        };
+
+        if (!firebaseConfig.apiKey || !firebaseConfig.projectId || !firebaseConfig.appId) {
+            throw new Error('Firebase public config is incomplete');
+        }
+        
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        // Make Firebase available globally
+        window.firebaseApp = app;
+        window.firebaseDb = db;
+        
+        console.log('[Firebase] Inicializado');
+    </script>
+</head>
+<body>
+
+    <header class="header" id="header">
+        <div class="header__inner">
+            <a href="#" class="header__brand" id="header-brand">
+                <div class="header__logo">
+                    <img class="brand-mark" src="https://ec-cdn.rysn-craft.workers.dev" alt="Experience Connect" width="28" height="28" loading="eager" decoding="async">
+                </div>
+                <span class="header__brand-text">Experience<br><span class="text-yellow">Connect</span></span>
+            </a>
+
+            <nav class="header__nav" id="header-nav">
+                <a href="#" class="nav-link nav-link--active" id="nav-desafios">Desafios</a>
+                <a href="ranking.html" class="nav-link" id="nav-ranking">Ranking</a>
+                <a href="conquistas.html" class="nav-link" id="nav-conquistas" title="Conquistas">Conquistas</a>
+                <a href="resgatar.html" class="nav-link" id="nav-resgatar">Resgate</a>
+            </nav>
+
+            <div class="header__user" id="header-user">
+                <div class="sync-indicator" id="sync-indicator" title="Sincronização">
+                    <svg class="sync-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+                    </svg>
+                    <span class="sync-text">Conectando...</span>
+                </div>
+
+                <div class="user-info">
+                    <div class="user-avatar" id="header-user-avatar">
+                        <span class="user-avatar__initials" id="header-user-avatar-text"></span>
+                        <div class="avatar-status"></div>
+                    </div>
+                    <div class="user-details">
+                        <span class="user-name">Olá, <span id="header-user-name" class="home-skeleton-text home-skeleton-text--name"></span>!</span>
+                        <div class="user-meta">
+                            <span class="user-level home-skeleton-text home-skeleton-text--level" id="header-user-level"></span>
+                            <span class="user-xp home-skeleton-text home-skeleton-text--xp" id="header-user-xp"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="header__bell" type="button" title="Notificações" aria-label="Notificações">
+                    <span class="dot"></span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                    </svg>
+                </button>
+
+                <button class="btn-logout" id="btn-logout" title="Sair" onclick="handleLogout()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                        <polyline points="16 17 21 12 16 7"/>
+                        <line x1="21" y1="12" x2="9" y2="12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <button class="mobile-menu-btn" id="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Abrir menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="mobile-nav-overlay" id="mobile-nav-overlay" onclick="toggleMobileMenu()" aria-hidden="true"></div>
+    <nav class="mobile-nav" id="mobile-nav">
+        <div class="mobile-nav__user">
+            <div class="user-avatar user-avatar--lg" id="mobile-user-avatar">
+                <span class="user-avatar__initials" id="mobile-user-avatar-text"></span>
+            </div>
+            <span class="user-name home-skeleton-text home-skeleton-text--name" id="mobile-user-name"></span>
+            <span class="user-level home-skeleton-text home-skeleton-text--level" id="mobile-user-level"></span>
+        </div>
+        <div class="mobile-nav__links">
+            <a href="#" class="mobile-nav-link mobile-nav-link--active">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                Níveis
+            </a>
+            <a href="ranking.html" class="mobile-nav-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                Ranking
+            </a>
+            <a href="conquistas.html" class="mobile-nav-link" title="Conquistas">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+                Conquistas
+            </a>
+            <a href="resgatar.html" class="mobile-nav-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="12" rx="2" ry="2"/><path d="M7 8V6a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
+                Resgatar
+            </a>
+        </div>
+        <button class="mobile-nav__logout" onclick="handleLogout()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Sair da conta
+        </button>
+    </nav>
+
+    <main class="main" id="main-content">
+
+        <section class="season">
+            <div class="wrapx">
+                <div class="season-grid">
+                    <div class="season-text">
+                        <span class="season-tag">Temporada 01</span>
+                        <h1 class="season-title">Conexões</h1>
+                        <span class="season-sub">Experiências que transformam pessoas.</span>
+
+                        <div class="season-progress is-loading" id="season-progress" aria-busy="true">
+                            <div class="season-compass" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+                            </div>
+                            <div class="season-pdata">
+                                <div class="season-pnums"><span id="season-done"></span> <span class="tot">/ <span id="season-total"></span> desafios</span></div>
+                                <div class="season-plabel"><span id="season-pct"></span><span class="season-plabel-text">% da temporada completa</span></div>
+                                <div class="season-pbar"><div class="season-pfill" id="season-pfill" style="width:0%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="season-art">
+                        <img src="https://polished-paper-d4e4.rysn-craft.workers.dev" alt="Comunidade Experience Connect" loading="eager" decoding="async" draggable="false" ondragstart="return false;">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="wrapx">
+            <section class="section-header" id="section-challenges">
+                <div class="section-header__left">
+                    <h2 class="section-title" id="section-title">Desafios <span class="text-yellow">EC</span></h2>
+                    <p class="section-subtitle" id="section-subtitle">Evolua sua jornada em Experience Connect</p>
+                </div>
+                <a class="seeall" href="conquistas.html">Ver todos os níveis
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </a>
+            </section>
+
+            <section class="levels-track" id="levels-container">
+                <div class="skeleton-loader">
+                    <div class="skeleton-card">
+                        <div class="skeleton-shimmer"></div>
+                        <div class="skeleton-element skeleton-badge"></div>
+                        <div class="skeleton-head-group">
+                            <div class="skeleton-head-text">
+                                <div class="skeleton-element skeleton-misslabel"></div>
+                                <div class="skeleton-element skeleton-num"></div>
+                            </div>
+                            <div class="skeleton-element skeleton-icon"></div>
+                        </div>
+                        <div class="skeleton-element skeleton-name"></div>
+                        <div class="skeleton-element skeleton-stars"></div>
+                        <div class="skeleton-element skeleton-progress-bar"></div>
+                        <div class="skeleton-element skeleton-progress-text"></div>
+                        <div class="skeleton-element skeleton-button"></div>
+                    </div>
+                    <div class="skeleton-card">
+                        <div class="skeleton-shimmer"></div>
+                        <div class="skeleton-element skeleton-badge"></div>
+                        <div class="skeleton-head-group">
+                            <div class="skeleton-head-text">
+                                <div class="skeleton-element skeleton-misslabel"></div>
+                                <div class="skeleton-element skeleton-num"></div>
+                            </div>
+                            <div class="skeleton-element skeleton-icon"></div>
+                        </div>
+                        <div class="skeleton-element skeleton-name"></div>
+                        <div class="skeleton-element skeleton-stars"></div>
+                        <div class="skeleton-element skeleton-progress-bar"></div>
+                        <div class="skeleton-element skeleton-progress-text"></div>
+                        <div class="skeleton-element skeleton-button"></div>
+                    </div>
+                    <div class="skeleton-card">
+                        <div class="skeleton-shimmer"></div>
+                        <div class="skeleton-element skeleton-badge"></div>
+                        <div class="skeleton-head-group">
+                            <div class="skeleton-head-text">
+                                <div class="skeleton-element skeleton-misslabel"></div>
+                                <div class="skeleton-element skeleton-num"></div>
+                            </div>
+                            <div class="skeleton-element skeleton-icon"></div>
+                        </div>
+                        <div class="skeleton-element skeleton-name"></div>
+                        <div class="skeleton-element skeleton-stars"></div>
+                        <div class="skeleton-element skeleton-progress-bar"></div>
+                        <div class="skeleton-element skeleton-progress-text"></div>
+                        <div class="skeleton-element skeleton-button"></div>
+                    </div>
+                </div>
+                <!-- Populated by home.js -->
+            </section>
+
+            <section class="section-header">
+                <div class="section-header__left">
+                    <h2 class="section-title">Game <span class="text-yellow">Diário</span></h2>
+                    <p class="section-subtitle">Novas decisões, novos caminhos. Jogue e ganhe XP bônus!</p>
+                </div>
+            </section>
+
+            <section class="daily-games-section" id="daily-games-section" aria-label="Escolha um game diário">
+                <div class="daily-games-carousel" aria-label="Games diários disponíveis">
+                    <a class="daily-game-banner" href="/momento-critico" aria-label="Jogar Momento Crítico - O Silêncio de Rafael">
+                        <img class="daily-game-banner__image" src="./frontend/assets/image/Momento%20critico/momento_critico.webp" alt="" loading="lazy" decoding="async">
+                        <div class="daily-game-banner__content">
+                            <div class="daily-game-banner__info">
+                                <span class="daily-game-banner__eyebrow">Game Diário</span>
+                                <h2>O Silêncio de Rafael</h2>
+                                <p>Uma história rápida sobre sinais pequenos, decisões ambíguas e o custo emocional da liderança.</p>
+                            </div>
+                            <span class="daily-game-banner__cta">Jogar agora <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="margin-left:2px"><polygon points="5 3 19 12 5 21 5 3"/></svg></span>
+                        </div>
+                    </a>
+                    <a class="daily-game-banner" href="/duelo-de-experiencia" aria-label="Jogar Duelo de Experiência">
+                        <img class="daily-game-banner__image" src="./frontend/assets/image/cardgame/gamecard.webp" alt="" loading="lazy" decoding="async">
+                        <div class="daily-game-banner__content">
+                            <div class="daily-game-banner__info">
+                                <span class="daily-game-banner__eyebrow">Card Game</span>
+                                <h2>Duelo de Experiência</h2>
+                                <p>Escolha cartas, reaja aos cenários e enfrente Sentury em uma partida curta de estratégia CX.</p>
+                            </div>
+                            <span class="daily-game-banner__cta">Jogar agora <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="margin-left:2px"><polygon points="5 3 19 12 5 21 5 3"/></svg></span>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <section class="section-header">
+                <div class="section-header__left">
+                    <h2 class="section-title">Sua <span class="text-yellow">Jornada</span></h2>
+                </div>
+                <a class="seeall" href="conquistas.html">Ver perfil completo
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </a>
+            </section>
+
+            <section class="stats-bar" id="stats-bar">
+                <div class="stat-card" id="stat-completed">
+                    <div class="stat-icon stat-icon--yellow">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-number" id="stat-num-completed"></span>
+                        <span class="stat-label">Desafios concluídos</span>
+                    </div>
+                </div>
+                <div class="stat-card" id="stat-xp">
+                    <div class="stat-icon stat-icon--green">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-number" id="stat-num-xp"></span>
+                        <span class="stat-label">XP Total</span>
+                    </div>
+                </div>
+                <div class="stat-card" id="stat-rank">
+                    <div class="stat-icon stat-icon--purple">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-number" id="stat-num-rank"></span>
+                        <span class="stat-label">Ranking</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="season-tip">
+                <div class="tip-main">
+                    <div class="tip-ic" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 1 7 7c0 2.386-1.17 4.5-3 5.793V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.207C6.17 13.5 5 11.386 5 9a7 7 0 0 1 7-7z"/></svg>
+                    </div>
+                    <div class="tip-txt">
+                        <div class="tt">Dica da temporada</div>
+                        <div class="td">Cada conexão que você cria hoje pode transformar o amanhã de alguém.</div>
+                    </div>
+                </div>
+                <div class="tip-reward">
+                    <span class="tip-xp">+100 XP</span>
+                    <span class="tip-note">Por concluir seu game diário!</span>
+                    <div class="sentury-face" aria-hidden="true"><span class="sentury-bar"></span><span class="sentury-bar"></span></div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="./frontend/js/progress-sync-service.js"></script>
+    
+    <script src="./frontend/js/firebase-loader.js"></script>
+    <script src="./frontend/js/services/ProgressFlow.js"></script>
+    <script src="./frontend/js/challenge-randomizer.js"></script>
+    
+    <script src="./frontend/js/shared/achievement-notifications.js"></script>
+    
+    <script src="./frontend/js/vps-client.js"></script>
+    
+    <script src="./frontend/js/home.js"></script>
+    
+    <div class="cinematic-overlay" id="rank1-cinematic-overlay" role="dialog" aria-modal="true" aria-label="Você alcançou o Rank #1">
+        <div class="scan-lines"></div>
+
+        <div class="particles" id="rank1-particles"></div>
+
+        <div class="intro-phrases" id="rank1-intro-phrases">
+        </div>
+
+        <div class="power-block" id="rank1-power-block">
+            <div class="power-row">ROW ROW</div>
+            <div class="power-text">FIGHT THE POWER!</div>
+        </div>
+
+        <div class="poster-stage" id="rank1-poster-stage">
+            <img
+                class="rank-poster"
+                id="rank1-poster"
+                alt="Rank #1 — ExpConnect"
+                draggable="false"
+            />
+            <button class="continue-button" id="rank1-continue-btn" onclick="window.Rank1Overlay.close()">CONTINUAR</button>
+        </div>
+
+        <button class="close-button" id="rank1-close-btn" onclick="window.Rank1Overlay.close()" aria-label="Fechar">✕</button>
+    </div>
+
+    <script src="./frontend/js/rank1-overlay.js"></script>
+
+    <script>
+        // Check for error reason in URL
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const reason = urlParams.get('reason');
+            
+            if (reason) {
+                const challengeId = urlParams.get('id') || urlParams.get('challenge');
+                const level = urlParams.get('level');
+                const error = urlParams.get('error');
+                const validation = urlParams.get('validation');
+                
+                console.error('═══════════════════════════════════════');
+                console.error('❌ REDIRECIONADO PARA HOME');
+                console.error('═══════════════════════════════════════');
+                console.error('Motivo:', reason);
+                if (challengeId) console.error('Challenge ID:', challengeId);
+                if (level) console.error('Level:', level);
+                if (error) console.error('Error:', decodeURIComponent(error));
+                if (validation) console.error('Validation:', decodeURIComponent(validation));
+                console.error('═══════════════════════════════════════');
+                
+                // Show user-friendly message
+                const messages = {
+                    'validator_no_redirect': 'Validação falhou: sem desafios disponíveis',
+                    'challenge_not_found': 'Este desafio foi atualizado e não existe mais. Por favor, selecione um desafio da lista abaixo.',
+                    'fallback_not_found': 'Desafio não encontrado no fallback local',
+                    'fallback_error': 'Erro ao carregar desafio do fallback',
+                    'intermission_runtime_unavailable': 'Runtime de intermissão não disponível'
+                };
+                
+                const _esc = s => String(s).replace(/[&<>"']/g, c =>
+                    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+                const message = messages[reason] || `Erro desconhecido: ${_esc(reason)}`;
+
+                if (!document.getElementById('ec-challenge-error-styles')) {
+                    const s = document.createElement('style');
+                    s.id = 'ec-challenge-error-styles';
+                    s.textContent = `
+                        @keyframes ecErrIn { from { transform: translateX(420px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+                        @keyframes ecErrOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(420px); opacity: 0; } }
+                        .ec-challenge-error {
+                            position: fixed; top: 80px; right: 20px;
+                            background: #F5F0E6;
+                            border: 2px solid #0A0A0A;
+                            border-left: 4px solid #FF3B3B;
+                            border-radius: 8px;
+                            padding: 16px 18px;
+                            max-width: 400px;
+                            z-index: 10000;
+                            box-shadow: 4px 4px 0 #0A0A0A;
+                            animation: ecErrIn 0.15s cubic-bezier(.4,0,.2,1);
+                            font-family: 'DM Sans', system-ui, sans-serif;
+                            display: flex; align-items: flex-start; gap: 12px;
+                        }
+                        .ec-challenge-error__body { flex: 1; min-width: 0; }
+                        .ec-challenge-error__title { color: #FF3B3B; font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+                        .ec-challenge-error__msg { color: #0A0A0A; font-size: 13px; line-height: 1.45; }
+                        .ec-challenge-error__id { color: #7A7570; font-size: 11px; margin-top: 5px; font-family: 'Space Mono', monospace; letter-spacing: .04em; }
+                        .ec-challenge-error__close { background: none; border: none; color: #7A7570; cursor: pointer; padding: 0; font-size: 20px; line-height: 1; flex-shrink: 0; }
+                        .ec-challenge-error__close:hover { color: #0A0A0A; }
+                    `;
+                    document.head.appendChild(s);
+                }
+
+                const toast = document.createElement('div');
+                toast.className = 'ec-challenge-error';
+                toast.innerHTML = `
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF3B3B" stroke-width="2" stroke-linecap="round" flex-shrink="0" style="flex-shrink:0;margin-top:1px">
+                        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="13"/><circle cx="12" cy="16.5" r=".5" fill="#FF3B3B"/>
+                    </svg>
+                    <div class="ec-challenge-error__body">
+                        <div class="ec-challenge-error__title">Erro ao Carregar Desafio</div>
+                        <div class="ec-challenge-error__msg">${message}</div>
+                        ${challengeId ? `<div class="ec-challenge-error__id">ID: ${_esc(challengeId)}</div>` : ''}
+                    </div>
+                    <button class="ec-challenge-error__close" onclick="this.closest('.ec-challenge-error').remove()" aria-label="Fechar">×</button>
+                `;
+
+                document.body.appendChild(toast);
+
+                setTimeout(() => {
+                    if (toast.parentElement) {
+                        toast.style.animation = 'ecErrOut 0.15s cubic-bezier(.4,0,.2,1) forwards';
+                        setTimeout(() => toast.remove(), 150);
+                    }
+                }, 10000);
+                
+                // Clean URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        })();
+    </script>
+</body>
+</html>
+
+

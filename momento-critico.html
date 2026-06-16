@@ -1,0 +1,2215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script src="./frontend/js/console-control.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Momento Crítico - O Silêncio de Rafael">
+  <title>Momento Crítico - O Silêncio de Rafael</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --mc-bg: #020202;
+      --mc-surface: rgba(9, 9, 9, 0.9);
+      --mc-surface-2: rgba(255, 255, 255, 0.035);
+      --mc-border: rgba(255, 255, 255, 0.1);
+      --mc-border-strong: rgba(255, 214, 0, 0.28);
+      --mc-text: #f3f3f0;
+      --mc-muted: rgba(255, 255, 255, 0.48);
+      --mc-faint: rgba(255, 255, 255, 0.2);
+      --mc-yellow: #ffd600;
+      --mc-green: #35d07f;
+      --mc-red: #ff3b3b;
+      --mc-orange: #ff6b35;
+      --mc-purple: #a259ff;
+      --mc-route: var(--mc-yellow);
+      --mc-route-rgb: 255, 214, 0;
+      --mc-font: "DM Sans", system-ui, sans-serif;
+      --mc-mono: "Space Mono", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-height: 100%;
+      background: var(--mc-bg);
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      background:
+        radial-gradient(circle at 62% 22%, rgba(var(--mc-route-rgb), 0.12), transparent 28%),
+        linear-gradient(180deg, rgba(var(--mc-route-rgb), 0.035), transparent 24%),
+        linear-gradient(130deg, rgba(255, 59, 59, 0.035), transparent 44%),
+        var(--mc-bg);
+      color: var(--mc-text);
+      font-family: var(--mc-font);
+      overflow-x: hidden;
+    }
+
+    body[data-route-tone="positive"] {
+      --mc-route: var(--mc-green);
+      --mc-route-rgb: 53, 208, 127;
+    }
+
+    body[data-route-tone="warning"] {
+      --mc-route: var(--mc-orange);
+      --mc-route-rgb: 255, 107, 53;
+    }
+
+    body[data-route-tone="critical"] {
+      --mc-route: var(--mc-red);
+      --mc-route-rgb: 255, 59, 59;
+    }
+
+    body::before,
+    body::after {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      content: "";
+      z-index: 0;
+    }
+
+    body::before {
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          rgba(255, 255, 255, 0.018) 0,
+          rgba(255, 255, 255, 0.018) 1px,
+          transparent 1px,
+          transparent 5px
+        );
+      mix-blend-mode: screen;
+      opacity: 0.18;
+    }
+
+    body::after {
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.065) 0 1px, transparent 1px),
+        radial-gradient(circle at 70% 65%, rgba(var(--mc-route-rgb), 0.1) 0 1px, transparent 1px);
+      background-size: 34px 34px, 51px 51px;
+      opacity: 0.11;
+    }
+
+    button,
+    a {
+      font: inherit;
+    }
+
+    button {
+      color: inherit;
+    }
+
+    .mc-shell {
+      position: relative;
+      z-index: 1;
+      width: min(100%, 1120px);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 28px 20px;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 22px;
+    }
+
+    .mc-topbar {
+      min-height: 36px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .mc-home-link,
+    .mc-audio-btn {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 7px;
+      background: rgba(255, 255, 255, 0.025);
+      color: var(--mc-muted);
+      cursor: pointer;
+      font-family: var(--mc-mono);
+      font-size: 10px;
+      letter-spacing: 1.8px;
+      padding: 9px 12px;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: border-color 160ms ease, color 160ms ease, background 160ms ease;
+    }
+
+    .mc-home-link {
+      justify-self: start;
+    }
+
+    .mc-home-link:hover,
+    .mc-audio-btn:hover {
+      border-color: rgba(var(--mc-route-rgb), 0.28);
+      background: rgba(var(--mc-route-rgb), 0.06);
+      color: var(--mc-route);
+    }
+
+    .mc-audio-btn {
+      justify-self: end;
+    }
+
+    .mc-progress {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .mc-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+      transition: width 220ms ease, background 220ms ease, box-shadow 220ms ease;
+    }
+
+    .mc-dot.is-active {
+      width: 22px;
+      background: var(--mc-route);
+      box-shadow: 0 0 16px rgba(var(--mc-route-rgb), 0.25);
+    }
+
+    .mc-stage {
+      display: grid;
+      place-items: center;
+      padding: 8px 0 30px;
+    }
+
+    .mc-panel {
+      position: relative;
+      width: min(100%, 520px);
+      min-height: 530px;
+      border: 1px solid rgba(var(--mc-route-rgb), 0.18);
+      border-radius: 12px;
+      background:
+        radial-gradient(circle at 78% 0%, rgba(var(--mc-route-rgb), 0.1), transparent 42%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 44%),
+        var(--mc-surface);
+      box-shadow: 0 24px 88px rgba(0, 0, 0, 0.62), 0 0 46px rgba(var(--mc-route-rgb), 0.06);
+      overflow: hidden;
+      animation: mcFadeUp 420ms ease both;
+    }
+
+    .mc-panel::before {
+      position: absolute;
+      top: 0;
+      left: 24px;
+      right: 24px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(var(--mc-route-rgb), 0.58), transparent);
+      content: "";
+    }
+
+    .mc-panel.is-wide {
+      width: min(100%, 860px);
+    }
+
+    .mc-panel.has-fixed-forward .mc-panel-inner {
+      min-height: inherit;
+      padding-bottom: 96px;
+    }
+
+    .mc-panel-inner {
+      position: relative;
+      z-index: 1;
+      padding: 28px;
+    }
+
+    .mc-kicker,
+    .mc-tag,
+    .mc-meta,
+    .mc-small {
+      font-family: var(--mc-mono);
+      text-transform: uppercase;
+      letter-spacing: 2.4px;
+    }
+
+    .mc-kicker {
+      color: rgba(255, 214, 0, 0.48);
+      font-size: 10px;
+      margin: 0 0 10px;
+    }
+
+    .mc-title {
+      margin: 0;
+      font-size: clamp(30px, 7vw, 54px);
+      line-height: 0.98;
+      font-weight: 300;
+      letter-spacing: 0;
+    }
+
+    .mc-title strong {
+      color: var(--mc-yellow);
+      font-weight: 700;
+    }
+
+    .mc-subtitle {
+      margin: 18px 0 0;
+      max-width: 610px;
+      color: var(--mc-muted);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .mc-intro-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 230px;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .mc-mystery {
+      min-height: 310px;
+      border-left: 1px solid rgba(255, 214, 0, 0.22);
+      display: grid;
+      align-content: center;
+      gap: 16px;
+      padding-left: 24px;
+    }
+
+    .mc-badge {
+      width: 142px;
+      min-height: 190px;
+      border: 1px solid rgba(var(--mc-route-rgb), 0.28);
+      border-radius: 9px;
+      background:
+        radial-gradient(circle at 50% 12%, rgba(var(--mc-route-rgb), 0.16), transparent 38%),
+        rgba(255, 255, 255, 0.025);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 28px rgba(var(--mc-route-rgb), 0.08), inset 0 0 24px rgba(0, 0, 0, 0.58);
+    }
+
+    .mc-badge::before {
+      position: absolute;
+      inset: 0;
+      background:
+        repeating-linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 4px),
+        radial-gradient(circle at 50% 28%, transparent, rgba(0, 0, 0, 0.42));
+      content: "";
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .mc-badge::after {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 11px;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--mc-route);
+      box-shadow: 0 0 14px rgba(var(--mc-route-rgb), 0.34);
+      content: "";
+      z-index: 3;
+    }
+
+    .mc-badge img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      min-height: 190px;
+      object-fit: cover;
+      filter: grayscale(1) contrast(1.16) brightness(0.58);
+      transform: scale(1.02);
+    }
+
+    .mc-badge.is-missing {
+      display: grid;
+      place-items: center;
+      color: rgba(255, 255, 255, 0.28);
+      font-family: var(--mc-mono);
+      font-size: 9px;
+      letter-spacing: 1.4px;
+      line-height: 1.6;
+      padding: 18px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .mc-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+
+    .mc-actions.is-forward {
+      justify-content: flex-end;
+    }
+
+    .mc-panel.has-fixed-forward .mc-actions.is-forward {
+      position: absolute;
+      right: 28px;
+      bottom: 28px;
+      left: 28px;
+      margin-top: 0;
+    }
+
+    .mc-btn,
+    .mc-choice,
+    .mc-emotion {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.035);
+      cursor: pointer;
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease, color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .mc-btn {
+      min-height: 44px;
+      border-radius: 8px;
+      padding: 13px 16px;
+      color: var(--mc-route);
+      font-family: var(--mc-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.9px;
+      text-transform: uppercase;
+    }
+
+    .mc-btn.has-audio-choice {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mc-btn-icon {
+      position: relative;
+      width: 21px;
+      height: 21px;
+      flex: 0 0 auto;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      opacity: 0.9;
+    }
+
+    .mc-btn-icon::before,
+    .mc-btn-icon::after {
+      content: "";
+      position: absolute;
+    }
+
+    .mc-btn-icon::before {
+      left: 5px;
+      top: 6px;
+      width: 5px;
+      height: 7px;
+      background: currentColor;
+      clip-path: polygon(0 24%, 46% 24%, 100% 0, 100% 100%, 46% 76%, 0 76%);
+    }
+
+    .mc-btn-icon.is-sound::after {
+      right: 4px;
+      top: 5px;
+      width: 6px;
+      height: 9px;
+      border-right: 2px solid currentColor;
+      border-radius: 0 999px 999px 0;
+      opacity: 0.8;
+    }
+
+    .mc-btn-icon.is-muted::after {
+      left: 4px;
+      top: 9px;
+      width: 13px;
+      height: 2px;
+      background: currentColor;
+      transform: rotate(-42deg);
+      transform-origin: center;
+      opacity: 0.85;
+    }
+
+    .mc-btn:hover:not(:disabled),
+    .mc-choice:hover:not(.is-locked),
+    .mc-emotion:hover {
+      transform: translateY(-1px);
+      border-color: rgba(var(--mc-route-rgb), 0.36);
+      background: rgba(var(--mc-route-rgb), 0.07);
+    }
+
+    .mc-btn:disabled {
+      color: rgba(255, 255, 255, 0.24);
+      cursor: not-allowed;
+    }
+
+    .mc-btn.is-secondary {
+      color: rgba(255, 255, 255, 0.52);
+    }
+
+    .mc-btn.is-danger {
+      border-color: rgba(255, 59, 59, 0.36);
+      color: #ff8a8a;
+    }
+
+    .mc-phase-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .mc-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--mc-route);
+      font-size: 10px;
+    }
+
+    .mc-tag::before {
+      width: 28px;
+      height: 2px;
+      background: currentColor;
+      content: "";
+    }
+
+    .mc-meta {
+      color: rgba(255, 255, 255, 0.28);
+      font-size: 10px;
+    }
+
+    .mc-copy {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.76);
+      font-size: 16px;
+      line-height: 1.78;
+      white-space: pre-line;
+    }
+
+    .mc-copy.is-large {
+      color: var(--mc-text);
+      font-size: 19px;
+      font-weight: 300;
+      line-height: 1.62;
+    }
+
+    .mc-context-layout,
+    .mc-decision-layout,
+    .mc-narrative-layout,
+    .mc-final-layout {
+      display: grid;
+      gap: 22px;
+    }
+
+    .mc-context-layout {
+      grid-template-columns: 150px minmax(0, 1fr);
+      align-items: start;
+    }
+
+    .mc-decision-layout,
+    .mc-narrative-layout {
+      grid-template-columns: minmax(0, 1fr) 180px;
+      align-items: start;
+    }
+
+    .mc-final-layout {
+      grid-template-columns: 280px minmax(0, 1fr);
+      align-items: start;
+    }
+
+    .mc-text-card {
+      border: 1px solid rgba(var(--mc-route-rgb), 0.13);
+      border-left: 3px solid rgba(var(--mc-route-rgb), 0.78);
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.24);
+      padding: 22px;
+    }
+
+    .rafael-portrait {
+      position: relative;
+      margin: 0;
+      aspect-ratio: 3 / 4;
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      border-radius: 10px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(0, 0, 0, 0.28)),
+        rgba(255, 255, 255, 0.025);
+      overflow: hidden;
+      opacity: 0;
+      animation: mcFadeIn 560ms ease 120ms both;
+      align-self: start;
+    }
+
+    .rafael-portrait::before,
+    .rafael-portrait::after {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      content: "";
+      z-index: 2;
+    }
+
+    .rafael-portrait::before {
+      background:
+        repeating-linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 0 1px, transparent 1px 4px),
+        radial-gradient(circle at 50% 30%, transparent, rgba(0, 0, 0, 0.38));
+      opacity: 0.7;
+    }
+
+    .rafael-portrait::after {
+      background-image: radial-gradient(circle at 30% 10%, rgba(255, 255, 255, 0.18) 0 1px, transparent 1px);
+      background-size: 9px 9px;
+      opacity: 0.08;
+    }
+
+    .rafael-portrait img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      filter: grayscale(1) saturate(0) contrast(1.08) brightness(0.74);
+      transform: scale(1.01);
+    }
+
+    .rafael-portrait--small {
+      width: 136px;
+    }
+
+    .rafael-portrait--medium {
+      width: 180px;
+    }
+
+    .rafael-portrait--large {
+      width: 280px;
+    }
+
+    .rafael-portrait--positive img {
+      filter: grayscale(1) saturate(0) contrast(1.18) brightness(1.04);
+    }
+
+    .rafael-portrait--negative img {
+      filter: grayscale(1) saturate(0) contrast(1.1) brightness(0.48);
+    }
+
+    .rafael-portrait--bottom img,
+    .rafael-portrait--risk img {
+      filter: grayscale(1) saturate(0) contrast(1.18) brightness(0.42);
+    }
+
+    body.is-urgent .rafael-portrait img {
+      filter: grayscale(1) saturate(0) contrast(1.22) brightness(0.42);
+    }
+
+    .portrait-caption {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      z-index: 3;
+      border-radius: 7px;
+      background: rgba(0, 0, 0, 0.72);
+      color: rgba(255, 255, 255, 0.62);
+      font-family: var(--mc-mono);
+      font-size: 8px;
+      letter-spacing: 1.3px;
+      line-height: 1.45;
+      padding: 8px 9px;
+      text-transform: uppercase;
+    }
+
+    .portrait-fallback {
+      position: absolute;
+      inset: 0;
+      display: none;
+      place-items: center;
+      padding: 18px;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.28);
+      font-family: var(--mc-mono);
+      font-size: 9px;
+      letter-spacing: 1.6px;
+      line-height: 1.7;
+      text-transform: uppercase;
+    }
+
+    .rafael-portrait.is-missing .portrait-fallback {
+      display: grid;
+    }
+
+    .mc-timer {
+      margin: 12px 0 18px;
+    }
+
+    .mc-timer-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 8px;
+    }
+
+    .mc-timer-label,
+    .mc-timer-count,
+    .mc-urgent-note {
+      font-family: var(--mc-mono);
+      font-size: 10px;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+    }
+
+    .mc-timer-label {
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    .mc-timer-count {
+      color: var(--mc-route);
+      font-weight: 700;
+    }
+
+    .mc-timer-track {
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+
+    .mc-timer-fill {
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--mc-route);
+      transform-origin: left center;
+      transition: transform 240ms linear, background 180ms ease, box-shadow 180ms ease;
+    }
+
+    .mc-urgent-note {
+      display: none;
+      margin-top: 9px;
+      color: rgba(255, 92, 92, 0.8);
+    }
+
+    body.is-urgent .mc-panel {
+      border-color: rgba(255, 59, 59, 0.34);
+      animation: mcTension 420ms ease both;
+    }
+
+    body.is-urgent .mc-timer-fill {
+      background: var(--mc-red);
+      box-shadow: 0 0 16px rgba(255, 59, 59, 0.42);
+    }
+
+    body.is-urgent .mc-timer-count {
+      color: var(--mc-red);
+    }
+
+    body.is-urgent .mc-urgent-note {
+      display: block;
+    }
+
+    .mc-warning {
+      margin: 0 0 15px;
+      border: 1px solid rgba(255, 59, 59, 0.18);
+      border-radius: 8px;
+      background: rgba(255, 59, 59, 0.045);
+      color: rgba(255, 163, 163, 0.78);
+      font-family: var(--mc-mono);
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      line-height: 1.55;
+      padding: 10px 12px;
+      text-transform: uppercase;
+    }
+
+    .mc-choice-list,
+    .mc-emotion-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .mc-choice {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr);
+      gap: 13px;
+      width: 100%;
+      border-radius: 10px;
+      padding: 15px;
+      text-align: left;
+    }
+
+    .mc-choice-key {
+      width: 30px;
+      height: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      color: rgba(255, 255, 255, 0.38);
+      font-family: var(--mc-mono);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .mc-choice-text {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 14px;
+      line-height: 1.58;
+    }
+
+    .mc-choice.is-selected {
+      border-color: rgba(var(--mc-route-rgb), 0.42);
+      background: rgba(var(--mc-route-rgb), 0.075);
+      box-shadow: 0 0 24px rgba(var(--mc-route-rgb), 0.08);
+    }
+
+    .mc-choice.is-selected .mc-choice-key {
+      border-color: var(--mc-route);
+      color: var(--mc-route);
+    }
+
+    .mc-choice.is-selected .mc-choice-text {
+      color: var(--mc-text);
+    }
+
+    .mc-choice.is-locked {
+      cursor: default;
+    }
+
+    .mc-hidden {
+      display: none !important;
+    }
+
+    .mc-context-dots {
+      display: flex;
+      gap: 7px;
+      margin: 18px 0 0;
+    }
+
+    .mc-context-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .mc-context-dot.is-on {
+      width: 22px;
+      background: var(--mc-route);
+    }
+
+    .mc-emotion-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin: 22px 0;
+    }
+
+    .mc-emotion {
+      min-height: 76px;
+      border-radius: 10px;
+      padding: 14px;
+      text-align: left;
+    }
+
+    .mc-emotion strong {
+      display: block;
+      color: rgba(255, 255, 255, 0.76);
+      font-family: var(--mc-mono);
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      margin-bottom: 7px;
+      text-transform: uppercase;
+    }
+
+    .mc-emotion span {
+      color: rgba(255, 255, 255, 0.42);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .mc-emotion.is-selected {
+      border-color: rgba(162, 89, 255, 0.58);
+      background: rgba(162, 89, 255, 0.12);
+      box-shadow: 0 0 24px rgba(162, 89, 255, 0.1);
+    }
+
+    .mc-final-pill {
+      display: inline-flex;
+      border: 1px solid currentColor;
+      border-radius: 7px;
+      background: color-mix(in srgb, currentColor 10%, transparent);
+      color: var(--final-color);
+      font-family: var(--mc-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.7px;
+      line-height: 1.35;
+      padding: 10px 14px;
+      text-transform: uppercase;
+    }
+
+    .mc-final-title {
+      margin: 16px 0 8px;
+      color: var(--mc-text);
+      font-size: clamp(26px, 6vw, 44px);
+      font-weight: 300;
+      letter-spacing: 0;
+      line-height: 1.05;
+    }
+
+    .mc-final-title strong {
+      color: var(--final-color);
+      font-weight: 700;
+    }
+
+    .mc-impact-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.075);
+      border-radius: 9px;
+      background: rgba(255, 255, 255, 0.025);
+      padding: 12px 14px;
+      margin-top: 10px;
+    }
+
+    .mc-impact-row span {
+      display: block;
+      color: rgba(255, 255, 255, 0.38);
+      font-family: var(--mc-mono);
+      font-size: 8px;
+      letter-spacing: 1.5px;
+      line-height: 1.6;
+      text-transform: uppercase;
+    }
+
+    .mc-impact-row strong {
+      display: block;
+      color: var(--mc-text);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.45;
+      margin-top: 3px;
+    }
+
+    .mc-xp {
+      width: 92px;
+      height: 92px;
+      border: 1px solid rgba(255, 214, 0, 0.46);
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      color: var(--mc-yellow);
+      font-family: var(--mc-mono);
+      box-shadow: 0 0 32px rgba(255, 214, 0, 0.16);
+    }
+
+    .mc-xp strong {
+      display: block;
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    .mc-xp span {
+      color: rgba(255, 214, 0, 0.55);
+      font-size: 9px;
+      letter-spacing: 1.6px;
+    }
+
+    .mc-final-reveal {
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 360ms ease, transform 360ms ease;
+    }
+
+    .mc-final-reveal.is-visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    .mc-cursor {
+      color: var(--mc-yellow);
+      animation: mcBlink 800ms steps(2, start) infinite;
+    }
+
+    @keyframes mcFadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    @keyframes mcFadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes mcBlink {
+      50% {
+        opacity: 0;
+      }
+    }
+
+    @keyframes mcTension {
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+      35% {
+        transform: translateX(-1px);
+      }
+      70% {
+        transform: translateX(1px);
+      }
+    }
+
+    @media (max-width: 820px) {
+      .mc-topbar {
+        grid-template-columns: 1fr;
+        justify-items: stretch;
+      }
+
+      .mc-progress {
+        order: -1;
+      }
+
+      .mc-home-link,
+      .mc-audio-btn {
+        justify-self: stretch;
+        text-align: center;
+      }
+
+      .mc-intro-grid,
+      .mc-context-layout,
+      .mc-decision-layout,
+      .mc-narrative-layout,
+      .mc-final-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .mc-mystery {
+        min-height: 190px;
+        border-left: 0;
+        border-top: 1px solid rgba(255, 214, 0, 0.18);
+        padding: 22px 0 0;
+      }
+
+      .rafael-portrait--small,
+      .rafael-portrait--medium,
+      .rafael-portrait--large {
+        justify-self: center;
+        width: min(100%, 260px);
+      }
+
+      .rafael-portrait--large {
+        width: min(100%, 320px);
+      }
+    }
+
+    @media (max-width: 540px) {
+      .mc-shell {
+        padding: 16px 12px;
+      }
+
+      .mc-panel {
+        min-height: auto;
+        border-radius: 10px;
+      }
+
+      .mc-panel-inner {
+        padding: 20px;
+      }
+
+      .mc-panel.has-fixed-forward .mc-panel-inner {
+        min-height: 560px;
+        padding-bottom: 130px;
+      }
+
+      .mc-panel.has-fixed-forward .mc-actions.is-forward {
+        right: 20px;
+        bottom: 20px;
+        left: 20px;
+      }
+
+      .mc-copy.is-large {
+        font-size: 17px;
+      }
+
+      .mc-choice {
+        grid-template-columns: 30px minmax(0, 1fr);
+        padding: 13px;
+      }
+
+      .mc-emotion-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .mc-actions {
+        flex-direction: column;
+      }
+
+      .mc-btn {
+        width: 100%;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 1ms !important;
+        transition-duration: 1ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="mc-shell">
+    <header class="mc-topbar" aria-label="Controles do Momento Crítico">
+      <a class="mc-home-link" href="/app">Voltar</a>
+      <div class="mc-progress" id="progress" aria-label="Progresso"></div>
+      <button class="mc-audio-btn mc-hidden" id="audio-toggle" type="button">Som ativo</button>
+    </header>
+    <section class="mc-stage" id="stage" aria-live="polite"></section>
+  </main>
+
+  <script>
+    const C = {
+      yellow: "#ffd600",
+      green: "#35d07f",
+      red: "#ff3b3b",
+      orange: "#ff6b35",
+      purple: "#a259ff"
+    };
+
+    const RAFAEL_BASE = "/frontend/assets/image/Momento%20critico/";
+    const RAFAEL_IMAGES = {
+      badge: RAFAEL_BASE + "cracha_rafael.webp",
+      neutral: RAFAEL_BASE + "NEUTRAL.webp",
+      worried: RAFAEL_BASE + "WORRIED.webp",
+      worn: RAFAEL_BASE + "WORN.webp",
+      exhausted: RAFAEL_BASE + "OVERLOADED.webp",
+      overloaded: RAFAEL_BASE + "OVERLOADED.webp",
+      risk: RAFAEL_BASE + "RISK.webp",
+      bottom: RAFAEL_BASE + "BOTTOM.webp",
+      GROW: RAFAEL_BASE + "GROW.webp",
+      RESTORED: RAFAEL_BASE + "RESTORED.webp",
+      SILENT: RAFAEL_BASE + "BOTTOM.webp",
+      TRANSFER: RAFAEL_BASE + "TRANSFER.webp",
+      EXIT: RAFAEL_BASE + "EXIT.webp"
+    };
+
+    const CONTEXT_CARDS = [
+      {
+        tag: "Pessoa",
+        text: "Rafael tem 4 anos de empresa. É referência técnica do time, resolve problemas difíceis e quase nunca pede ajuda.\n\nNas últimas semanas, ele ficou mais econômico nas respostas. Não pareceu crise. Pareceu cansaço."
+      },
+      {
+        tag: "Sobrecarga",
+        text: "Dois colaboradores saíram. Parte da carga ficou com Rafael porque ele já conhecia os atalhos, os clientes e os riscos.\n\nNinguém combinou isso em voz alta. Só foi acontecendo."
+      },
+      {
+        tag: "Hoje",
+        text: "Ele entregou o relatório antes do prazo. Saiu no horário exato.\n\nNo chat, ficou alguns segundos como digitando... e apagou.\n\nAmanhã tem reunião com o gestor regional. Você é a liderança direta."
+      }
+    ];
+
+    const D1 = {
+      question: "O dia acabou mais quieto que o normal. O que você faz agora?",
+      timer: 18,
+      timeout: "C",
+      timeoutLabel: "O tempo passou. Você não chamou Rafael.",
+      choices: [
+        {
+          id: "A",
+          text: "Mandar uma mensagem simples: \"Você parece diferente hoje. Se quiser conversar depois, me chama.\"",
+          impact: { trust: 1, pressure: 0, openness: 1, distance: 0 }
+        },
+        {
+          id: "B",
+          text: "Não puxar agora. Bloquear 20 minutos amanhã cedo para conversar sem plateia.",
+          impact: { trust: 0, pressure: 0, openness: 1, distance: 1 }
+        },
+        {
+          id: "C",
+          text: "Dar espaço. Rafael sempre valorizou autonomia e talvez pressionar agora piore.",
+          impact: { trust: 0, pressure: -1, openness: 0, distance: 2 }
+        }
+      ]
+    };
+
+    const PATHS = {
+      A: {
+        label: "Caminho curto",
+        decisionsCount: 2,
+        remember: "Você tentou chegar sem invadir.",
+        cons1: "A mensagem fica entregue.\n\nRafael aparece como digitando...\n\nSome.\n\nVinte e dois minutos depois, chegam três palavras: \"Valeu. Tô bem.\"\n\nA resposta veio rápida demais. Curta demais. Com ponto final.",
+        d2: {
+          question: "Na reunião, o gestor abre o relatório e cita Rafael. A sala entende atraso antes de entender contexto. O que você faz?",
+          timer: 15,
+          choices: [
+            {
+              id: "X",
+              text: "Assumir sua parte sem expor Rafael: \"Eu deixei sinais passarem. Antes de avaliar atraso, preciso entender o cenário.\"",
+              impact: { trust: 2, pressure: 0, openness: 1, distance: 0 }
+            },
+            {
+              id: "Y",
+              text: "Pedir uma leitura mais justa: \"Quero separar entrega, carga e suporte. A conversa precisa de contexto.\"",
+              impact: { trust: 1, pressure: 1, openness: 1, distance: 0 }
+            }
+          ]
+        },
+        finals: { X: "GROW", Y: "RESTORED" }
+      },
+      B: {
+        label: "Caminho médio",
+        decisionsCount: 3,
+        remember: "Você escolheu preservar o espaço, mas a noite continuou acontecendo.",
+        cons1: "A reunião começa às 9h.\n\nRafael não entra.\n\nÀs 8h02, ele tinha enviado: \"Não vou conseguir participar hoje, desculpa.\"\n\nSem explicação. Sem áudio. Só a mensagem, sozinha na tela.",
+        d2: {
+          question: "São 9h14. A reunião continua sem Rafael e o assunto está escorregando para julgamento. O que você faz?",
+          timer: 15,
+          choices: [
+            {
+              id: "X",
+              text: "Sair da sala e ligar fora do viva-voz. Se ele não atender, você volta sem expor.",
+              impact: { trust: 1, pressure: 1, openness: 1, distance: 0 }
+            },
+            {
+              id: "Y",
+              text: "Pedir reagendamento primeiro. Evitar transformar a ausência dele em assunto público.",
+              impact: { trust: 0, pressure: -1, openness: 0, distance: 1 }
+            }
+          ]
+        },
+        cons2: {
+          X: "Rafael atende na terceira chamada.\n\nHá alguns segundos de silêncio antes do primeiro \"oi\".\n\nA voz vem menor. Não quebrada. Só menor.\n\nEle diz que está segurando. Não diz o quê.",
+          Y: "O gestor aceita reagendar.\n\nVocê escreve: \"Sem problema, remarcamos.\"\n\nA mensagem fica sem resposta.\n\nÀ tarde, Rafael visualiza. À noite, nada muda. O silêncio ganha forma."
+        },
+        d3: {
+          question: "No fim do dia, Rafael aparece na sua sala. \"Você tem um minuto?\" Ele fica de pé, como se ainda pudesse desistir.",
+          timer: 20,
+          choices: [
+            {
+              id: "P",
+              text: "Fechar o notebook e dar tempo: \"Tenho. Você começa por onde fizer sentido.\"",
+              impact: { trust: 2, pressure: -1, openness: 2, distance: -1 }
+            },
+            {
+              id: "Q",
+              text: "Ser claro sem cobrar: \"Eu percebi tarde. Preciso entender o que você está carregando.\"",
+              impact: { trust: 1, pressure: 1, openness: 1, distance: 0 }
+            }
+          ]
+        },
+        finals: { XP: "RESTORED", XQ: "SILENT", YP: "RESTORED", YQ: "SILENT" }
+      },
+      C: {
+        label: "Caminho longo",
+        decisionsCount: { base: 3, Y: 4 },
+        remember: "Você deu espaço. Rafael também.",
+        cons1: "O RH liga às 8h47.\n\nRafael pediu transferência de time.\n\nA solicitação foi feita ontem às 18h02.\n\nA justificativa tem uma linha: \"Não vejo mais espaço para continuar aqui.\"\n\nNão parece raiva. Parece decisão tomada em silêncio.",
+        d2: {
+          question: "O RH pergunta sem rodeio: \"Você sabia que ele estava assim?\"",
+          timer: 15,
+          choices: [
+            {
+              id: "X",
+              text: "Ser honesto sem se defender: \"Notei sinais e tratei como autonomia. Posso ter errado o tempo.\"",
+              impact: { trust: 1, pressure: 0, openness: 2, distance: -1 }
+            },
+            {
+              id: "Y",
+              text: "Explicar sua leitura: \"Ele sempre pediu espaço. Eu temi invadir e piorar.\"",
+              impact: { trust: 0, pressure: 1, openness: 0, distance: 1 }
+            }
+          ]
+        },
+        cons2: {
+          X: "O RH para de digitar.\n\nA pausa não absolve ninguém. Mas muda o tom.\n\nUma conversa é marcada para amanhã. Você, Rafael, RH.\n\nMenos de 24 horas para transformar percepção em presença.",
+          Y: "O RH anota sem comentar.\n\nA ligação termina rápido.\n\nPouco depois, chega o convite de reunião com Rafael.\n\nVocê não sabe o que ele já contou. Nem o que ele ainda decidiu não contar."
+        },
+        d3: {
+          question: "Rafael senta à sua frente. Ele olha primeiro e espera. A sala parece mais silenciosa do que deveria.",
+          timer: 20,
+          choices: [
+            {
+              id: "P",
+              text: "Começar assumindo sua parte, sem pedir alívio: \"Eu não agi quando deveria ter perguntado.\"",
+              impact: { trust: 2, pressure: -1, openness: 1, distance: -1 }
+            },
+            {
+              id: "Q",
+              text: "Abrir espaço antes de explicar: \"Quero ouvir sem interromper. Depois eu falo do que preciso assumir.\"",
+              impact: { trust: 1, pressure: -1, openness: 2, distance: 0 }
+            }
+          ]
+        },
+        cons3: {
+          XP: "Rafael olha para baixo.\n\nDepois olha para você.\n\n\"É a primeira vez que alguém fala isso aqui dentro.\"\n\nNão resolve tudo. Mas a sala deixa de parecer um corredor de saída.",
+          XQ: "Rafael fala por vinte e três minutos.\n\nSem levantar a voz.\n\nDatas, trocas de turno, mensagens sem resposta, tarefas que ninguém assumiu.\n\nVocê não interrompe. Pela primeira vez, isso importa.",
+          YP: "O pedido de desculpas chega com atraso.\n\nRafael escuta. Agradece baixo.\n\nMas existe uma camada de formalidade que não estava ali antes. Ele já ensaiou essa conversa sem você.",
+          YQ: "Rafael responde com fatos.\n\nNenhuma frase sobra.\n\nQuando ele termina, você percebe que ouviu muito. E ainda assim ficou do lado de fora."
+        },
+        d4: {
+          question: "O RH liga antes das 17h: \"Rafael vai assinar o pedido hoje. Se você quiser falar, precisa ser agora.\"",
+          timer: 20,
+          choices: [
+            {
+              id: "P",
+              text: "Pedir uma conversa curta antes da assinatura, aceitando que ele pode manter a decisão.",
+              impact: { trust: 1, pressure: 1, openness: 1, distance: -1 }
+            },
+            {
+              id: "Q",
+              text: "Não interromper a assinatura. Garantir uma transição respeitosa e não disputar a decisão.",
+              impact: { trust: 0, pressure: -1, openness: 0, distance: 1 }
+            }
+          ]
+        },
+        finals: {
+          XP: "RESTORED",
+          XQ: "SILENT",
+          YPP: "TRANSFER",
+          YPQ: "EXIT",
+          YQP: "TRANSFER",
+          YQQ: "EXIT"
+        }
+      }
+    };
+
+    const FINALS = {
+      GROW: {
+        label: "Rafael fica e cresce",
+        color: C.green,
+        xp: 180,
+        title: "Ele fica. Ainda cansado.",
+        subtitle: "A proteção chegou antes da ruptura.",
+        desc: "Rafael não sai da reunião leve. Mas sai menos sozinho. O que muda não é a carga inteira; é a certeza de que alguém finalmente decidiu olhar junto.",
+        insight: "Às vezes liderança é perceber antes de ter uma prova perfeita.",
+        rafaelFelt: "visto e protegido, sem virar caso público",
+        cost: "Há cansaço acumulado. A confiança cresce, mas pede manutenção."
+      },
+      RESTORED: {
+        label: "Confiança em reconstrução",
+        color: "#52d68a",
+        xp: 130,
+        title: "Chegou tarde. Ainda assim, chegou.",
+        subtitle: "A conversa não apaga as marcas.",
+        desc: "Rafael percebe esforço real, mas também percebe o tempo perdido. O vínculo não volta inteiro em uma fala. Ele começa a voltar nas próximas semanas.",
+        insight: "Reparar não é vencer. É aceitar que a confiança agora precisa de prova repetida.",
+        rafaelFelt: "ouvido, com reservas",
+        cost: "A relação sobrevive, mais frágil e mais honesta."
+      },
+      SILENT: {
+        label: "Acordo silencioso",
+        color: C.yellow,
+        xp: 80,
+        title: "Rafael fica. Algo não fica.",
+        subtitle: "O final mais difícil de perceber no dia a dia.",
+        desc: "Ele segue entregando. Responde, participa, confirma presença. Mas as respostas ficaram exatas demais. O olhar não procura mais a sala.",
+        insight: "Nem toda saída aparece no crachá. Algumas começam quando a pessoa ainda está sentada ali.",
+        rafaelFelt: "resignado, presente no corpo e distante no resto",
+        cost: "O time mantém Rafael. Perde parte do Rafael que confiava."
+      },
+      TRANSFER: {
+        label: "Rafael pede transferência",
+        color: C.orange,
+        xp: 40,
+        title: "Ele escolhe outro lugar.",
+        subtitle: "Pode ser saudável para ele. E ainda assim diz algo sobre a liderança.",
+        desc: "Rafael continua na empresa, mas sai do seu alcance direto. A transferência não vem como vingança. Vem como limite.",
+        insight: "Quando alguém precisa mudar de ambiente para respirar, o ambiente também precisa ser lido.",
+        rafaelFelt: "respeitado tarde, mas decidido a se afastar",
+        cost: "A empresa preserva o talento. O time perde a relação."
+      },
+      EXIT: {
+        label: "Rafael sai da empresa",
+        color: C.red,
+        xp: 0,
+        title: "A cadeira fica vazia.",
+        subtitle: "Sem grande discurso. Só ausência.",
+        desc: "O anúncio da vaga aparece antes de qualquer conversa honesta acontecer. Na mesa dele, fica um cabo enrolado e um bloco sem dono.",
+        insight: "Alguns sinais não pedem urgência porque são barulhentos. Pedem porque são pequenos e persistentes.",
+        rafaelFelt: "invisível até escolher não ficar",
+        cost: "A perda é concreta. O aprendizado precisa ser também."
+      }
+    };
+
+    const EMOTION_CHECK = {
+      question: "Enquanto ninguém tinha certeza do que estava acontecendo, o que Rafael talvez estivesse sentindo?",
+      hint: "Escolha até 2 leituras. A pergunta não mede acerto; mede atenção.",
+      options: [
+        { id: "frustrado", label: "Frustrado", desc: "Irritado com decisões do time." },
+        { id: "invisivel", label: "Invisível", desc: "Percebido pela entrega, não pelo limite." },
+        { id: "esgotado", label: "Esgotado", desc: "Funcionando no automático." },
+        { id: "traido", label: "Traído", desc: "Sentindo que confiança virou carga." },
+        { id: "resignado", label: "Resignado", desc: "Sem energia para explicar de novo." },
+        { id: "aliviado", label: "Aliviado", desc: "Livre por não ter sido pressionado." }
+      ],
+      correct: ["invisivel", "esgotado"],
+      insight: "A leitura mais importante não é saber o nome exato da emoção. É perceber que desempenho também pode esconder pedido de ajuda."
+    };
+
+    const emotionalImpact = Object.freeze({
+      trust: 0,
+      pressure: 0,
+      openness: 0,
+      distance: 0
+    });
+
+    const state = {
+      phase: "intro",
+      contextIndex: 0,
+      c1: null,
+      c2: null,
+      c3: null,
+      c4: null,
+      emotions: [],
+      impact: freshImpact(),
+      sound: false,
+      muted: false,
+      finalKey: null,
+      selectedChoice: null
+    };
+
+    const stage = document.getElementById("stage");
+    const progress = document.getElementById("progress");
+    const audioToggle = document.getElementById("audio-toggle");
+    let timers = [];
+    let intervals = [];
+    let frameId = null;
+    let finishTypewriter = null;
+    const audio = createAudioEngine();
+
+    audioToggle.addEventListener("click", () => {
+      state.muted = !state.muted;
+      audio.setMuted(state.muted);
+      audioToggle.textContent = state.muted ? "Som pausado" : "Som ativo";
+    });
+
+    function freshImpact() {
+      return { ...emotionalImpact };
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function clearTransient() {
+      intervals.forEach(clearInterval);
+      timers.forEach(clearTimeout);
+      intervals = [];
+      timers = [];
+      finishTypewriter = null;
+      if (frameId) {
+        cancelAnimationFrame(frameId);
+        frameId = null;
+      }
+      document.body.classList.remove("is-urgent");
+    }
+
+    function setPhase(phase) {
+      clearTransient();
+      state.phase = phase;
+      state.selectedChoice = null;
+      render();
+    }
+
+    function addImpact(delta) {
+      if (!delta) return;
+      Object.keys(state.impact).forEach((key) => {
+        state.impact[key] += Number(delta[key] || 0);
+      });
+    }
+
+    function totalDecisions() {
+      if (!state.c1) return 0;
+      if (state.c1 === "A") return 2;
+      if (state.c1 === "B") return 3;
+      return state.c2 === "Y" ? 4 : 3;
+    }
+
+    function progressInfo() {
+      const total = totalDecisions();
+      const max = total === 4 ? 10 : total === 3 ? 8 : total === 2 ? 6 : 5;
+      const map = {
+        intro: 0,
+        context: 1,
+        d1: 2,
+        cons1: 3,
+        d2: 4,
+        cons2: 5,
+        d3: 6,
+        cons3: 7,
+        d4: 8,
+        emotion: total === 4 ? 9 : total === 3 ? 7 : 5,
+        final: total === 4 ? 10 : total === 3 ? 8 : 6
+      };
+      return { current: map[state.phase] || 0, total: max + 1 };
+    }
+
+    function renderProgress() {
+      if (state.phase === "intro") {
+        progress.innerHTML = "";
+        return;
+      }
+      const info = progressInfo();
+      progress.innerHTML = Array.from({ length: info.total }, (_, index) =>
+        `<span class="mc-dot${index <= info.current ? " is-active" : ""}"></span>`
+      ).join("");
+    }
+
+    function setMoodForPhase() {
+      if (!state.sound) return;
+      const final = state.finalKey || resolveFinalKey();
+      const moodMap = {
+        intro: "intro",
+        context: "context",
+        d1: "decision",
+        d2: "decision",
+        d3: "urgent",
+        d4: "urgent",
+        cons1: "consequence",
+        cons2: "consequence",
+        cons3: "consequence",
+        emotion: "emotion",
+        final: ["EXIT", "TRANSFER", "SILENT"].includes(final) ? "final_bad" : "final_good"
+      };
+      audio.setMood(moodMap[state.phase] || "context");
+    }
+
+    function render() {
+      document.body.dataset.routeTone = routeTone();
+      renderProgress();
+      audioToggle.classList.toggle("mc-hidden", !state.sound);
+      setMoodForPhase();
+      const renderers = {
+        intro: renderIntro,
+        context: renderContext,
+        d1: () => renderDecision(D1, 1),
+        cons1: renderConsequenceOne,
+        d2: renderDecisionTwo,
+        cons2: renderConsequenceTwo,
+        d3: renderDecisionThree,
+        cons3: renderConsequenceThree,
+        d4: renderDecisionFour,
+        emotion: renderEmotion,
+        final: renderFinal
+      };
+      renderers[state.phase]();
+    }
+
+    function routeTone() {
+      if (state.phase === "final") {
+        const final = state.finalKey || resolveFinalKey();
+        if (["GROW", "RESTORED"].includes(final)) return "positive";
+        if (final === "EXIT") return "critical";
+        return "warning";
+      }
+      if (!state.c1) return "neutral";
+      if (state.c1 === "A") return "positive";
+      if (state.c1 === "B") return state.c2 === "Y" ? "warning" : "neutral";
+      if (state.c1 === "C") return state.c2 === "X" ? "warning" : "critical";
+      return "neutral";
+    }
+
+    function panel(content, wide = false, extraClass = "") {
+      stage.innerHTML = `
+        <article class="mc-panel${wide ? " is-wide" : ""}${extraClass ? " " + extraClass : ""}">
+          <div class="mc-panel-inner">${content}</div>
+        </article>
+      `;
+    }
+
+    function renderIntro() {
+      panel(`
+        <div class="mc-intro-grid">
+          <div>
+            <p class="mc-kicker">Momento Crítico</p>
+            <h1 class="mc-title">O Silêncio de <strong>Rafael</strong></h1>
+            <p class="mc-subtitle">Uma demo diária sobre liderança, sinais pequenos e decisões que parecem razoáveis até cobrarem um custo.</p>
+            <div class="mc-actions">
+              <button class="mc-btn has-audio-choice" id="start-sound" type="button">
+                <span class="mc-btn-icon is-sound" aria-hidden="true"></span>
+                <span>Entrar com som</span>
+              </button>
+              <button class="mc-btn has-audio-choice is-secondary" id="start-silent" type="button">
+                <span class="mc-btn-icon is-muted" aria-hidden="true"></span>
+                <span>Entrar sem som</span>
+              </button>
+            </div>
+            <p class="mc-small" style="margin-top:18px;color:rgba(255,255,255,.22)">5 finais possíveis. Nenhum deles é só prêmio ou punição.</p>
+          </div>
+          <div class="mc-mystery" aria-hidden="true">
+            <div class="mc-badge">
+              <img src="${RAFAEL_IMAGES.badge}" alt="" loading="eager" decoding="async" onerror="this.closest('.mc-badge').classList.add('is-missing');this.closest('.mc-badge').textContent='Crachá de Rafael pendente';this.remove();">
+            </div>
+            <p class="mc-small" style="max-width:190px;color:rgba(255,255,255,.28);line-height:1.7">4 anos de empresa. Referência técnica do time.</p>
+          </div>
+        </div>
+      `, true);
+      document.getElementById("start-sound").addEventListener("click", () => {
+        state.sound = true;
+        state.muted = false;
+        audio.setMuted(false);
+        audio.unlock();
+        setPhase("context");
+      });
+      document.getElementById("start-silent").addEventListener("click", () => {
+        state.sound = false;
+        audio.stopAll();
+        setPhase("context");
+      });
+    }
+
+    function renderContext() {
+      const card = CONTEXT_CARDS[state.contextIndex];
+      const isLast = state.contextIndex === CONTEXT_CARDS.length - 1;
+      panel(`
+        <div class="mc-phase-head">
+          <span class="mc-tag">Contexto</span>
+          <span class="mc-meta">${state.contextIndex + 1}/${CONTEXT_CARDS.length}</span>
+        </div>
+        <div class="mc-context-layout">
+          ${renderRafaelPortrait({
+            src: RAFAEL_IMAGES.neutral,
+            state: "neutro",
+            size: "small",
+            caption: "Rafael ainda funcional. Cansado.",
+            tone: "neutral"
+          })}
+          <div>
+            <p class="mc-kicker">${escapeHtml(card.tag)}</p>
+            <div class="mc-text-card">
+              <p class="mc-copy is-large" id="type-target"></p>
+            </div>
+            <div class="mc-context-dots">
+              ${CONTEXT_CARDS.map((_, index) => `<span class="mc-context-dot${index <= state.contextIndex ? " is-on" : ""}"></span>`).join("")}
+            </div>
+            <div class="mc-actions is-forward">
+              ${state.contextIndex > 0 ? '<button class="mc-btn is-secondary" id="context-back" type="button">Voltar</button>' : ""}
+              <button class="mc-btn" id="context-next" type="button">Pular leitura</button>
+            </div>
+          </div>
+        </div>
+      `, true, "has-fixed-forward");
+      wireTypewriter(card.text, "context-next", () => {
+        const btn = document.getElementById("context-next");
+        btn.textContent = isLast ? "Entendi. Quero decidir" : "Próximo";
+      });
+      document.getElementById("context-next").addEventListener("click", () => {
+        if (finishTypewriter) {
+          finishTypewriter();
+          return;
+        }
+        if (isLast) setPhase("d1");
+        else {
+          clearTransient();
+          state.contextIndex += 1;
+          renderContext();
+        }
+      });
+      const back = document.getElementById("context-back");
+      if (back) {
+        back.addEventListener("click", () => {
+          clearTransient();
+          state.contextIndex -= 1;
+          renderContext();
+        });
+      }
+    }
+
+    function renderDecision(data, decisionNumber) {
+      const portrait = portraitForDecision(decisionNumber);
+      panel(`
+        <div class="mc-phase-head">
+          <span class="mc-tag">Decisão ${decisionNumber}</span>
+          <span class="mc-meta">${totalDecisions() || "?"} decisões</span>
+        </div>
+        <div class="mc-decision-layout">
+          <div>
+            <p class="mc-copy is-large" id="type-target" style="min-height:92px"></p>
+            <div id="decision-controls" class="mc-hidden">
+              <p class="mc-warning">Essa escolha tem custo e intenção. Você não poderá voltar.</p>
+              <div class="mc-timer">
+                <div class="mc-timer-row">
+                  <span class="mc-timer-label">Tempo de resposta</span>
+                  <span class="mc-timer-count" id="timer-count">${data.timer}s</span>
+                </div>
+                <div class="mc-timer-track"><div class="mc-timer-fill" id="timer-fill"></div></div>
+                <div class="mc-urgent-note">Tempo acabando. A pressão muda a leitura.</div>
+              </div>
+              <div class="mc-choice-list">
+                ${data.choices.map((choice) => renderChoice(choice)).join("")}
+              </div>
+              <div class="mc-actions">
+                <button class="mc-btn" id="confirm-choice" type="button" disabled>Assumir essa escolha</button>
+              </div>
+            </div>
+            <button class="mc-btn is-secondary" id="skip-question" type="button" style="margin-top:14px">Pular leitura</button>
+            <div id="timeout-label" class="mc-hidden" style="margin-top:18px;color:var(--mc-red);font-family:var(--mc-mono);font-size:10px;letter-spacing:1.8px;text-transform:uppercase"></div>
+          </div>
+          ${portrait ? renderRafaelPortrait(portrait) : ""}
+        </div>
+      `, true);
+      wireTypewriter(data.question, "skip-question", () => {
+        document.getElementById("skip-question").classList.add("mc-hidden");
+        revealDecision(data, decisionNumber);
+      });
+      document.getElementById("skip-question").addEventListener("click", () => {
+        if (finishTypewriter) finishTypewriter();
+      });
+    }
+
+    function renderChoice(choice) {
+      return `
+        <button class="mc-choice" type="button" data-choice="${escapeHtml(choice.id)}">
+          <span class="mc-choice-key">${escapeHtml(choice.id)}</span>
+          <span class="mc-choice-text">${escapeHtml(choice.text)}</span>
+        </button>
+      `;
+    }
+
+    function revealDecision(data, decisionNumber) {
+      document.getElementById("decision-controls").classList.remove("mc-hidden");
+      let selected = null;
+      document.querySelectorAll(".mc-choice").forEach((button) => {
+        button.addEventListener("click", () => {
+          if (button.classList.contains("is-locked")) return;
+          selected = button.dataset.choice;
+          document.querySelectorAll(".mc-choice").forEach((item) => item.classList.remove("is-selected"));
+          button.classList.add("is-selected");
+          document.getElementById("confirm-choice").disabled = false;
+          audio.playClick();
+        });
+      });
+      document.getElementById("confirm-choice").addEventListener("click", () => {
+        if (!selected) return;
+        lockChoices();
+        choose(data, decisionNumber, selected);
+      });
+      startTimer(data, decisionNumber);
+    }
+
+    function lockChoices() {
+      document.querySelectorAll(".mc-choice").forEach((button) => button.classList.add("is-locked"));
+      const confirm = document.getElementById("confirm-choice");
+      if (confirm) {
+        confirm.disabled = true;
+        confirm.textContent = "...";
+      }
+    }
+
+    function startTimer(data, decisionNumber) {
+      let remaining = data.timer;
+      const count = document.getElementById("timer-count");
+      const fill = document.getElementById("timer-fill");
+      const tick = () => {
+        count.textContent = `${remaining}s`;
+        fill.style.transform = `scaleX(${Math.max(remaining, 0) / data.timer})`;
+        if (remaining <= 5) {
+          document.body.classList.add("is-urgent");
+          audio.playTension();
+        }
+        if (remaining <= 0) {
+          lockChoices();
+          const fallback = data.timeout || data.choices[data.choices.length - 1].id;
+          document.getElementById("timeout-label").textContent = data.timeoutLabel || "Tempo esgotado.";
+          document.getElementById("timeout-label").classList.remove("mc-hidden");
+          timers.push(setTimeout(() => choose(data, decisionNumber, fallback), 900));
+        }
+        remaining -= 1;
+      };
+      tick();
+      intervals.push(setInterval(tick, 1000));
+    }
+
+    function choose(data, decisionNumber, id) {
+      const choice = data.choices.find((item) => item.id === id);
+      addImpact(choice && choice.impact);
+      audio.playClick();
+      intervals.forEach(clearInterval);
+      document.body.classList.remove("is-urgent");
+      timers.push(setTimeout(() => {
+        if (decisionNumber === 1) {
+          state.c1 = id;
+          setPhase("cons1");
+        } else if (decisionNumber === 2) {
+          state.c2 = id;
+          if (state.c1 === "A") setPhase("emotion");
+          else setPhase("cons2");
+        } else if (decisionNumber === 3) {
+          state.c3 = id;
+          if (state.c1 === "C" && state.c2 === "Y") setPhase("cons3");
+          else setPhase("emotion");
+        } else if (decisionNumber === 4) {
+          state.c4 = id;
+          setPhase("emotion");
+        }
+      }, 520));
+    }
+
+    function renderConsequenceOne() {
+      const path = PATHS[state.c1];
+      renderNarrative({
+        tag: "Consequência",
+        text: path.cons1,
+        cta: "A situação evoluiu",
+        portrait: portraitForConsequence("cons1"),
+        next: () => setPhase("d2")
+      });
+    }
+
+    function renderDecisionTwo() {
+      renderDecision(PATHS[state.c1].d2, 2);
+    }
+
+    function renderConsequenceTwo() {
+      const path = PATHS[state.c1];
+      renderNarrative({
+        tag: "Desdobramento",
+        text: path.cons2[state.c2],
+        cta: "Mais uma decisão",
+        portrait: portraitForConsequence("cons2"),
+        next: () => setPhase("d3")
+      });
+    }
+
+    function renderDecisionThree() {
+      renderDecision(PATHS[state.c1].d3, 3);
+    }
+
+    function renderConsequenceThree() {
+      const key = state.c2 + state.c3;
+      renderNarrative({
+        tag: "Rafael responde",
+        text: PATHS.C.cons3[key],
+        cta: "Última decisão",
+        portrait: portraitForConsequence("cons3"),
+        next: () => setPhase("d4")
+      });
+    }
+
+    function renderDecisionFour() {
+      renderDecision(PATHS.C.d4, 4);
+    }
+
+    function renderNarrative({ tag, text, cta, portrait, next }) {
+      panel(`
+        <div class="mc-phase-head">
+          <span class="mc-tag">${escapeHtml(tag)}</span>
+          <span class="mc-meta">${PATHS[state.c1].label}</span>
+        </div>
+        <div class="mc-narrative-layout">
+          <div>
+            <div class="mc-text-card">
+              <p class="mc-copy is-large" id="type-target"></p>
+            </div>
+            <div class="mc-actions is-forward">
+              <button class="mc-btn" id="narrative-next" type="button">Pular leitura</button>
+            </div>
+          </div>
+          ${portrait ? renderRafaelPortrait(portrait) : ""}
+        </div>
+      `, true, "has-fixed-forward");
+      wireTypewriter(text, "narrative-next", () => {
+        document.getElementById("narrative-next").textContent = cta;
+      });
+      document.getElementById("narrative-next").addEventListener("click", () => {
+        if (finishTypewriter) {
+          finishTypewriter();
+          return;
+        }
+        next();
+      });
+    }
+
+    function renderEmotion() {
+      panel(`
+        <div class="mc-phase-head">
+          <span class="mc-tag" style="color:${C.purple}">Check de empatia</span>
+          <span class="mc-meta">Antes do final</span>
+        </div>
+        <p class="mc-copy is-large">${escapeHtml(EMOTION_CHECK.question)}</p>
+        <p class="mc-small" style="color:rgba(255,255,255,.32);line-height:1.7">${escapeHtml(EMOTION_CHECK.hint)}</p>
+        <div class="mc-emotion-grid">
+          ${EMOTION_CHECK.options.map((option) => `
+            <button class="mc-emotion" type="button" data-emotion="${escapeHtml(option.id)}">
+              <strong>${escapeHtml(option.label)}</strong>
+              <span>${escapeHtml(option.desc)}</span>
+            </button>
+          `).join("")}
+        </div>
+        <div class="mc-text-card" style="border-left-color:${C.purple};margin-bottom:16px">
+          <p class="mc-copy" style="font-size:14px">${escapeHtml(EMOTION_CHECK.insight)}</p>
+        </div>
+        <button class="mc-btn" id="emotion-confirm" type="button" disabled>Escolha ao menos uma leitura</button>
+      `);
+      const selected = new Set();
+      document.querySelectorAll(".mc-emotion").forEach((button) => {
+        button.addEventListener("click", () => {
+          const id = button.dataset.emotion;
+          if (selected.has(id)) {
+            selected.delete(id);
+            button.classList.remove("is-selected");
+          } else if (selected.size < 2) {
+            selected.add(id);
+            button.classList.add("is-selected");
+          }
+          const confirm = document.getElementById("emotion-confirm");
+          confirm.disabled = selected.size === 0;
+          confirm.textContent = selected.size === 0 ? "Escolha ao menos uma leitura" : "Ver consequência final";
+        });
+      });
+      document.getElementById("emotion-confirm").addEventListener("click", () => {
+        state.emotions = Array.from(selected);
+        state.finalKey = resolveFinalKey();
+        setPhase("final");
+      });
+    }
+
+    function renderFinal() {
+      const key = state.finalKey || resolveFinalKey();
+      const final = FINALS[key];
+      const hits = state.emotions.filter((id) => EMOTION_CHECK.correct.includes(id)).length;
+      const totalXP = final.xp + hits * 20;
+      const isPositive = ["GROW", "RESTORED"].includes(key);
+      const tone = isPositive ? "positive" : "negative";
+      panel(`
+        <div class="mc-final-layout" style="--final-color:${final.color}">
+          ${renderRafaelPortrait({
+            src: RAFAEL_IMAGES[key],
+            state: key.toLowerCase(),
+            size: "large",
+            caption: final.rafaelFelt,
+            tone
+          })}
+          <div>
+            <span class="mc-final-pill">${escapeHtml(final.label)}</span>
+            <h2 class="mc-final-title">${escapeHtml(final.title).replace("Rafael", "<strong>Rafael</strong>")}</h2>
+            <p class="mc-subtitle" style="margin-top:0">${escapeHtml(final.subtitle)}</p>
+            <div class="mc-final-reveal" data-reveal="1">
+              <div class="mc-text-card" style="border-left-color:${final.color};margin-top:18px">
+                <p class="mc-copy">${escapeHtml(final.desc)}</p>
+              </div>
+            </div>
+            <div class="mc-final-reveal" data-reveal="2">
+              <div class="mc-impact-row">
+                <div><span>Rafael se sentiu</span><strong>${escapeHtml(final.rafaelFelt)}</strong></div>
+              </div>
+              <div class="mc-impact-row">
+                <div><span>Custo emocional</span><strong>${escapeHtml(final.cost)}</strong></div>
+              </div>
+              <div class="mc-impact-row">
+                <div><span>Leitura acumulada</span><strong>${escapeHtml(impactSummary())}</strong></div>
+              </div>
+            </div>
+            <div class="mc-final-reveal" data-reveal="3" style="margin-top:16px">
+              <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+                <div class="mc-xp"><div><strong id="xp-count">+0</strong><span>XP demo</span></div></div>
+                <p class="mc-copy" style="max-width:390px;font-size:14px;font-style:italic;color:rgba(255,255,255,.5)">"${escapeHtml(final.insight)}"</p>
+              </div>
+              <div class="mc-actions">
+                <button class="mc-btn" id="restart" type="button">Jogar novamente</button>
+                <a class="mc-btn is-secondary" href="/app" style="text-decoration:none;display:inline-flex;align-items:center">Voltar para app</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      `, true);
+      audio.playReveal(isPositive);
+      timers.push(setTimeout(() => showFinalBlock(1), 450));
+      timers.push(setTimeout(() => showFinalBlock(2), 1200));
+      timers.push(setTimeout(() => {
+        showFinalBlock(3);
+        animateXP(totalXP);
+      }, 2100));
+      document.getElementById("restart").addEventListener("click", resetGame);
+    }
+
+    function showFinalBlock(index) {
+      const block = document.querySelector(`[data-reveal="${index}"]`);
+      if (block) block.classList.add("is-visible");
+    }
+
+    function animateXP(total) {
+      const target = document.getElementById("xp-count");
+      const start = performance.now();
+      const duration = 900;
+      const step = (now) => {
+        const progress = Math.min(1, (now - start) / duration);
+        const value = Math.round(total * progress);
+        target.textContent = total === 0 ? "+0" : `+${value}`;
+        if (progress < 1) frameId = requestAnimationFrame(step);
+      };
+      frameId = requestAnimationFrame(step);
+    }
+
+    function resetGame() {
+      clearTransient();
+      state.phase = "intro";
+      state.contextIndex = 0;
+      state.c1 = null;
+      state.c2 = null;
+      state.c3 = null;
+      state.c4 = null;
+      state.emotions = [];
+      state.impact = freshImpact();
+      state.finalKey = null;
+      state.sound = false; // Reset do estado de som
+      state.muted = false; // Reset do mute
+      audio.stopAll(); // Para a música completamente
+      render();
+    }
+
+    function wireTypewriter(text, buttonId, onDone) {
+      const target = document.getElementById("type-target");
+      const button = document.getElementById(buttonId);
+      let index = 0;
+      target.innerHTML = '<span class="mc-cursor">|</span>';
+      const finish = () => {
+        intervals.forEach(clearInterval);
+        intervals = [];
+        target.textContent = text;
+        finishTypewriter = null;
+        if (button) button.textContent = button.dataset.readyText || button.textContent;
+        onDone && onDone();
+      };
+      finishTypewriter = finish;
+      intervals.push(setInterval(() => {
+        index += 1;
+        target.innerHTML = `${escapeHtml(text.slice(0, index))}<span class="mc-cursor">|</span>`;
+        if (index >= text.length) finish();
+      }, 24));
+    }
+
+    function renderRafaelPortrait({ src, state: emotionState, size = "medium", caption = "", tone = "neutral" }) {
+      const className = [
+        "rafael-portrait",
+        `rafael-portrait--${size}`,
+        `rafael-portrait--${tone}`,
+        `rafael-portrait--${emotionState}`
+      ].join(" ");
+      return `
+        <figure class="${className}" data-state="${escapeHtml(emotionState)}">
+          <img src="${escapeHtml(src)}" alt="${escapeHtml(caption || "Rafael")}" loading="lazy" decoding="async" onerror="this.closest('.rafael-portrait').classList.add('is-missing');this.remove();">
+          <div class="portrait-fallback">Imagem pendente<br>${escapeHtml(emotionState)}</div>
+          ${caption ? `<figcaption class="portrait-caption">${escapeHtml(caption)}</figcaption>` : ""}
+        </figure>
+      `;
+    }
+
+    function portraitForDecision(number) {
+      if (number === 1) {
+        return { src: RAFAEL_IMAGES.worried, state: "preocupado", size: "medium", caption: "A tensão já existe antes da escolha.", tone: "neutral" };
+      }
+      if (number === 2 && state.c1 === "A") {
+        return { src: RAFAEL_IMAGES.worn, state: "desgastado", size: "medium", caption: "A sala decide rápido demais.", tone: "neutral" };
+      }
+      if (number === 2 && state.c1 === "B") {
+        return { src: RAFAEL_IMAGES.exhausted, state: "esgotado", size: "medium", caption: "A ausência pesa mais que a pauta.", tone: "negative" };
+      }
+      if (number === 2 && state.c1 === "C") {
+        return { src: RAFAEL_IMAGES.risk, state: "em_risco", size: "medium", caption: "O silêncio já virou movimento.", tone: "negative" };
+      }
+      if (number === 3 && state.c1 === "B") {
+        return { src: RAFAEL_IMAGES.overloaded, state: "sobrecarregado", size: "medium", caption: "Ele entrou na sala, mas não relaxou.", tone: "negative" };
+      }
+      if (number === 3 && state.c1 === "C") {
+        return { src: RAFAEL_IMAGES.risk, state: "em_risco", size: "medium", caption: "Rafael fala como quem mede cada palavra.", tone: "negative" };
+      }
+      if (number === 4) {
+        return { src: RAFAEL_IMAGES.bottom, state: "fundo_do_poco", size: "medium", caption: "A janela quase fechou.", tone: "negative" };
+      }
+      return null;
+    }
+
+    function portraitForConsequence(phase) {
+      if (phase === "cons1") {
+        if (state.c1 === "A") return { src: RAFAEL_IMAGES.worn, state: "desgastado", size: "medium", caption: "A resposta veio curta demais.", tone: "neutral" };
+        if (state.c1 === "B") return { src: RAFAEL_IMAGES.exhausted, state: "esgotado", size: "medium", caption: "A ausência chega antes dele.", tone: "negative" };
+        return { src: RAFAEL_IMAGES.risk, state: "em_risco", size: "medium", caption: "Ele já começou a se afastar.", tone: "negative" };
+      }
+      if (phase === "cons2") {
+        if (state.c1 === "B" && state.c2 === "X") return { src: RAFAEL_IMAGES.exhausted, state: "esgotado", size: "medium", caption: "A voz não acompanha a entrega.", tone: "negative" };
+        if (state.c1 === "B") return { src: RAFAEL_IMAGES.risk, state: "em_risco", size: "medium", caption: "O silêncio começa a responder por ele.", tone: "negative" };
+        if (state.c1 === "C" && state.c2 === "X") return { src: RAFAEL_IMAGES.overloaded, state: "sobrecarregado", size: "medium", caption: "Ainda existe espaço para verdade.", tone: "negative" };
+        return { src: RAFAEL_IMAGES.risk, state: "em_risco", size: "medium", caption: "A leitura defensiva cobra preço.", tone: "negative" };
+      }
+      if (phase === "cons3") {
+        return { src: RAFAEL_IMAGES.bottom, state: "fundo_do_poco", size: "medium", caption: "O pedido já está na mesa.", tone: "negative" };
+      }
+      return null;
+    }
+
+    function baseFinalKey() {
+      if (state.c1 === "A") return PATHS.A.finals[state.c2] || "SILENT";
+      if (state.c1 === "B") return PATHS.B.finals[(state.c2 || "") + (state.c3 || "")] || "SILENT";
+      if (state.c1 === "C") {
+        if (state.c2 === "X") return PATHS.C.finals["X" + (state.c3 || "P")] || "SILENT";
+        return PATHS.C.finals["Y" + (state.c3 || "P") + (state.c4 || "P")] || "SILENT";
+      }
+      return "SILENT";
+    }
+
+    function resolveFinalKey() {
+      const base = baseFinalKey();
+      const care = state.impact.trust + state.impact.openness;
+      const strain = state.impact.pressure + state.impact.distance;
+      if (base === "GROW" && (care < 5 || strain > 2)) return "RESTORED";
+      if (base === "RESTORED" && strain >= 5 && state.impact.trust < 3) return "SILENT";
+      if (base === "SILENT" && care >= 5 && state.impact.distance <= 3) return "RESTORED";
+      if (base === "TRANSFER" && strain >= 7 && state.impact.openness <= 2) return "EXIT";
+      if (base === "EXIT" && care >= 4 && state.impact.pressure <= 3) return "TRANSFER";
+      return base;
+    }
+
+    function impactSummary() {
+      const care = state.impact.trust + state.impact.openness;
+      const strain = state.impact.pressure + state.impact.distance;
+      if (care >= 5 && strain <= 2) return "Você criou presença antes de tentar controle.";
+      if (care >= 4) return "Houve escuta, mas ela chegou carregada de atraso.";
+      if (strain >= 5) return "A distância e a pressão pesaram mais que a intenção.";
+      return "As escolhas ficaram razoáveis. O silêncio também.";
+    }
+
+    function createAudioEngine() {
+      let ctx = null;
+      let master = null;
+      let bgMusic = null;
+      let bgMusicSource = null;
+      let muted = false;
+      let lastTension = 0;
+      let isPlaying = false;
+      
+      // Caminho para a OST local
+      const OST_PATH = "/frontend/assets/audio/Rafaelmoments.mp3";
+
+      function ensure() {
+        if (!ctx) {
+          ctx = new (window.AudioContext || window.webkitAudioContext)();
+          master = ctx.createGain();
+          master.gain.value = muted ? 0 : 0.3;
+          master.connect(ctx.destination);
+        }
+        if (ctx.state === "suspended") ctx.resume();
+        return ctx;
+      }
+
+      async function loadAudio() {
+        if (bgMusic) return bgMusic;
+        try {
+          const response = await fetch(OST_PATH);
+          const arrayBuffer = await response.arrayBuffer();
+          bgMusic = await ctx.decodeAudioData(arrayBuffer);
+          return bgMusic;
+        } catch (error) {
+          console.error('[Momento Crítico] Erro ao carregar OST:', error);
+          return null;
+        }
+      }
+
+      function stopAll() {
+        if (bgMusicSource) {
+          try {
+            bgMusicSource.stop();
+            bgMusicSource.disconnect();
+          } catch (_) {}
+          bgMusicSource = null;
+        }
+        isPlaying = false; // Reset da flag para permitir nova reprodução
+      }
+
+      async function setMood(key) {
+        // Se já está tocando, não faz nada (evita duplicação)
+        if (isPlaying) return;
+        
+        if (!state.sound || muted) return;
+        
+        const audioContext = ensure();
+        const buffer = await loadAudio();
+        
+        if (!buffer) return;
+        
+        // Toca a música inteira uma vez, do início ao fim
+        bgMusicSource = audioContext.createBufferSource();
+        bgMusicSource.buffer = buffer;
+        bgMusicSource.loop = true; // Loop contínuo da música inteira
+        bgMusicSource.connect(master);
+        bgMusicSource.start(0);
+        isPlaying = true;
+        
+        // Quando a música terminar, reinicia automaticamente (por causa do loop)
+        bgMusicSource.onended = () => {
+          isPlaying = false;
+        };
+      }
+
+      // Efeitos sonoros simples para cliques e tensão
+      function blip(freqA, freqB, duration, gainValue) {
+        if (!state.sound || muted) return;
+        const audioContext = ensure();
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(freqA, audioContext.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(freqB, audioContext.currentTime + duration);
+        gain.gain.setValueAtTime(gainValue, audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(master);
+        osc.start();
+        osc.stop(audioContext.currentTime + duration + 0.01);
+        timers.push(setTimeout(() => {
+          try { osc.disconnect(); } catch (_) {}
+        }, Math.ceil((duration + 0.08) * 1000)));
+      }
+
+      return {
+        unlock() { ensure(); },
+        setMood,
+        stopAll,
+        setMuted(value) {
+          muted = value;
+          if (master) master.gain.value = muted ? 0 : 0.3;
+          if (muted && bgMusicSource) {
+            stopAll();
+          } else if (!muted && !isPlaying && state.sound) {
+            setMood('context');
+          }
+        },
+        playClick() { blip(520, 420, 0.045, 0.026); },
+        playTension() {
+          const now = Date.now();
+          if (now - lastTension < 1100) return;
+          lastTension = now;
+          blip(155, 138, 0.08, 0.018);
+        },
+        playReveal(good) {
+          if (good) {
+            timers.push(setTimeout(() => blip(261, 329, 0.16, 0.032), 0));
+            timers.push(setTimeout(() => blip(329, 392, 0.18, 0.028), 190));
+          } else {
+            timers.push(setTimeout(() => blip(174, 155, 0.18, 0.024), 0));
+            timers.push(setTimeout(() => blip(155, 130, 0.22, 0.02), 240));
+          }
+        }
+      };
+    }
+
+    render();
+  </script>
+</body>
+</html>

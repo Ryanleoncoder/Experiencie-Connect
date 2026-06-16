@@ -1,0 +1,2326 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Duelos de Experiência - Card Game Diário de CX e EX">
+  <title>Duelos de Experiência</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      
+      --y: #FFC700;       
+      --y2: #E5A800;      
+      --y3: #FFE066;      
+      --y4: #FFF8D6;      
+      --k: #0A0A0A;       
+      --k2: #161616;      
+      --k3: #222222;      
+      --k4: #333333;      
+      --k5: #444444;      
+      --w: #ffffff;       
+      --ow: #F5F0E6;      
+      --ow2: #EAE4D4;     
+      --ow3: #DDD8C8;     
+      --ok: #16BF5C;      
+      --ok2: #D0F7E3;     
+      --er: #FF3B3B;      
+      --er2: #FFE5E5;     
+      --wn: #FF8C00;      
+      --wn2: #FFF0D4;     
+      --info: #0085FF;   
+      --info2: #E0F0FF;   
+      --p: #6B4FFF;       
+      --n1: #EAE6DE;      
+      --n2: #D8D3C8;      
+      --n3: #B5B0A5;     
+      --n4: #7A7570;      
+      --n5: #48443F;      
+
+      /* Fonts */
+      --fb: 'Bebas Neue', sans-serif;
+      --fd: 'DM Sans', system-ui, sans-serif;
+      --fm: 'Space Mono', monospace;
+
+      /* Shadows */
+      --s0: 1px 1px 0 var(--k);
+      --s1: 2px 2px 0 var(--k);
+      --s2: 3px 3px 0 var(--k);
+      --s3: 5px 5px 0 var(--k);
+      --s4: 8px 8px 0 var(--k);
+      --sy: 4px 4px 0 var(--y2);
+
+      /* Borders */
+      --b1: 1.5px solid var(--k);
+      --b2: 2px solid var(--k);
+      --b3: 3px solid var(--k);
+
+      /* Radii */
+      --r1: 4px;
+      --r2: 8px;
+      --r3: 12px;
+      --r4: 18px;
+      --rp: 9999px;
+
+      /* Motion */
+      --spring: cubic-bezier(.34,1.28,.64,1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { min-height: 100%; background: var(--ow); scrollbar-gutter: stable; }
+
+    body {
+      min-height: 100vh; margin: 0;
+      background-color: var(--ow);
+      color: var(--k);
+      font-family: var(--fd);
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+
+    button, a { font: inherit; }
+    button { color: inherit; border: none; background: none; }
+
+    .dx-shell {
+      position: relative; z-index: 1;
+      width: min(100%, 1120px); min-height: 100vh;
+      margin: 0 auto; padding: 24px 16px;
+      display: grid; grid-template-rows: auto 1fr; gap: 24px;
+    }
+
+    .dx-topbar {
+      min-height: 48px;
+      display: grid; grid-template-columns: 1fr auto 1fr;
+      align-items: center; gap: 14px;
+    }
+
+    .dx-home-link, .dx-audio-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 8px 16px; border: var(--b2); border-radius: var(--r2);
+      font-family: var(--fd); font-weight: 700; font-size: 11px;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      background: var(--w); color: var(--k); box-shadow: var(--s1);
+      cursor: pointer; text-decoration: none;
+      transition: transform 80ms, box-shadow 80ms, background-color 80ms;
+    }
+    .dx-home-link { justify-self: start; }
+    .dx-audio-btn { justify-self: end; }
+    .dx-home-link:hover, .dx-audio-btn:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: var(--s2);
+      background: var(--y4);
+    }
+    .dx-home-link:active, .dx-audio-btn:active {
+      transform: translate(1px, 1px);
+      box-shadow: var(--s0);
+    }
+
+    .dx-progress { display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .dx-dot {
+      width: 10px; height: 10px; border: var(--b1); border-radius: var(--rp);
+      background: var(--w); box-shadow: var(--s0);
+      transition: width 200ms var(--spring), background 200ms;
+    }
+    .dx-dot.is-active {
+      width: 24px; background: var(--y); box-shadow: var(--s1);
+    }
+
+    .dx-stage { display: grid; place-items: center; padding: 8px 0 24px; }
+    .dx-hidden { display: none !important; }
+
+    /* Panel */
+    .dx-panel {
+      position: relative; width: min(100%, 540px); min-height: 440px;
+      border: var(--b3); border-radius: var(--r4);
+      background: var(--w);
+      box-shadow: var(--s4);
+      overflow: hidden;
+      animation: dxFadeUp 300ms var(--spring) both;
+    }
+    .dx-panel.is-wide { width: min(100%, 860px); min-height: 590px; }
+    .dx-panel.is-wide .dx-panel-inner { padding: 20px 24px; }
+    .dx-panel-inner { position: relative; z-index: 1; padding: 32px; }
+
+    /* Signature crease - Neobrutalist folded corner */
+    .dx-crease {
+      position: absolute; top: -1px; left: -1px;
+      width: 32px; height: 32px;
+      background: var(--ow2);
+      border-bottom: 2.5px solid var(--k);
+      border-right: 2.5px solid var(--k);
+      border-top: 2.5px solid transparent;
+      border-left: 2.5px solid transparent;
+      z-index: 10;
+    }
+
+    /* Typography */
+    .dx-kicker {
+      font-family: var(--fm); font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--n5); margin: 0 0 10px;
+    }
+    .dx-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: var(--fd); font-weight: 700; font-size: 11px; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--k);
+      background: var(--y); border: var(--b1); padding: 4px 10px; border-radius: var(--r1);
+      box-shadow: var(--s1);
+    }
+    .dx-meta {
+      font-family: var(--fm); font-size: 11px; letter-spacing: 0.05em;
+      text-transform: uppercase; color: var(--n4);
+    }
+    .dx-title {
+      margin: 0; font-family: var(--fb); font-size: clamp(38px, 9vw, 56px);
+      line-height: 0.92; font-weight: 400; letter-spacing: 0;
+      text-transform: uppercase; color: var(--k);
+    }
+    .dx-title strong {
+      color: var(--k); font-weight: 400;
+      -webkit-text-stroke: 1.5px var(--k); background: var(--y);
+      padding: 0 6px; display: inline-block; transform: rotate(-1deg);
+      border: var(--b1); box-shadow: var(--s1);
+    }
+    .dx-subtitle {
+      margin: 16px 0 0; max-width: 500px;
+      color: var(--n5); font-size: 15px; line-height: 1.6;
+    }
+    .dx-phase-head {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 24px; gap: 14px;
+    }
+
+    /* Buttons */
+    .dx-btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      min-height: 44px; border: var(--b2);
+      border-radius: var(--r2); background: var(--w);
+      cursor: pointer; color: var(--k);
+      font-family: var(--fd); font-size: 13px; font-weight: 700;
+      letter-spacing: 0.02em; padding: 12px 24px; text-transform: uppercase;
+      box-shadow: var(--s2);
+      transition: transform 80ms, box-shadow 80ms, background-color 80ms;
+      user-select: none;
+    }
+    .dx-btn:hover:not(:disabled) {
+      transform: translate(-2px, -2px);
+      box-shadow: var(--s3);
+      background-color: var(--ow2);
+    }
+    .dx-btn:active:not(:disabled) {
+      transform: translate(1px, 1px);
+      box-shadow: var(--s0);
+    }
+    .dx-btn:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: var(--s0); transform: none; }
+    .dx-btn.is-secondary { background: var(--ow2); box-shadow: var(--s1); }
+    .dx-btn.is-secondary:hover:not(:disabled) { background: var(--ow3); box-shadow: var(--s2); }
+    .dx-btn.is-small { min-height: 32px; padding: 6px 14px; font-size: 11px; border-radius: var(--r1); box-shadow: var(--s1); }
+    .dx-btn.is-small:hover:not(:disabled) { box-shadow: var(--s2); }
+    .dx-btn.is-small:active:not(:disabled) { box-shadow: var(--s0); }
+    
+    .dx-btn-y { background: var(--y) !important; }
+    .dx-btn-y:hover:not(:disabled) { background: var(--y3) !important; }
+
+    .dx-actions { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
+    .dx-actions.is-forward { justify-content: flex-end; }
+    .dx-actions.is-center { justify-content: center; }
+
+    .dx-btn.has-icon { display: inline-flex; align-items: center; gap: 10px; }
+
+    /* === CARD COMPONENT === */
+    .dx-card {
+      position: relative; width: 104px; height: 146px; flex-shrink: 0;
+      border: var(--b2); border-radius: var(--r2);
+      background: var(--w); overflow: hidden;
+      box-shadow: var(--s2);
+      transition: transform 200ms var(--spring), box-shadow 200ms ease, border-color 200ms ease, opacity 300ms ease;
+    }
+    .dx-card[data-type="cx"] { --cc: var(--info); --cc-bg: var(--info2); }
+    .dx-card[data-type="ex"] { --cc: var(--wn); --cc-bg: var(--wn2); }
+    .dx-card[data-type="strategy"] { --cc: var(--p); --cc-bg: #EAE5FF; }
+    .dx-card[data-type="crisis"] { --cc: var(--er); --cc-bg: var(--er2); }
+
+    .dx-card-stripe { height: 6px; background: var(--cc); border-bottom: var(--b1); }
+    .dx-card-body { padding: 10px 8px 8px; display: flex; flex-direction: column; height: calc(100% - 6px); background: var(--w); }
+    .dx-card-type {
+      font-family: var(--fm); font-size: 8px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--cc);
+      background: var(--cc-bg); border: var(--b1); border-radius: var(--r1);
+      padding: 1px 4px; display: inline-block; width: max-content;
+    }
+    .dx-card-name {
+      margin: 6px 0 auto; font-size: 11px; font-weight: 800;
+      line-height: 1.2; color: var(--k); padding-right: 20px;
+      word-break: break-word;
+    }
+    .dx-card-power {
+      position: absolute; top: 12px; right: 8px;
+      width: 22px; height: 22px; border: var(--b1);
+      border-radius: var(--rp); display: grid; place-items: center;
+      font-family: var(--fm); font-size: 10px; font-weight: 700; color: var(--k);
+      background: var(--y); box-shadow: var(--s0);
+    }
+    .dx-card-desc {
+      margin: 4px 0 0; font-size: 9px; line-height: 1.3;
+      color: var(--n5); font-weight: 500;
+    }
+    .dx-card-illustration {
+      display: flex; justify-content: center; align-items: center;
+      height: 46px; margin: 4px 0; overflow: hidden; border-radius: var(--r1);
+    }
+    .dx-card-emoji {
+      font-size: 18px; text-align: center;
+    }
+    .dx-card-power.dx-card-power-bonus {
+      background: var(--ok2) !important;
+      color: var(--ok) !important;
+      border-color: var(--ok) !important;
+      box-shadow: 0 0 6px var(--ok);
+      font-weight: 800;
+    }
+    .dx-card.is-clickable { cursor: pointer; }
+    .dx-card.is-clickable:hover {
+      transform: translateY(-16px) translate(-1px, -1px);
+      box-shadow: var(--s3);
+      z-index: 20;
+    }
+    .dx-card.is-battlefield { width: 112px; height: 158px; }
+    .dx-card.is-battlefield .dx-card-name { font-size: 13px; }
+    .dx-card.is-battlefield .dx-card-power { width: 26px; height: 26px; font-size: 11px; }
+    .dx-card.is-battlefield .dx-card-illustration { height: 60px; margin: 6px 0; }
+    .dx-card.is-battlefield .dx-card-emoji { font-size: 24px; }
+    .dx-card.is-battlefield .dx-card-desc { font-size: 9.5px; }
+
+    /* Face-down card */
+    .dx-card.is-face-down {
+      background: var(--ow);
+      border: var(--b2);
+      display: grid; place-items: center; cursor: pointer;
+    }
+    .dx-card-back {
+      font-family: var(--fb); font-size: 40px;
+      color: var(--n3);
+      transform: rotate(-5deg);
+      text-shadow: var(--s1);
+    }
+
+    /* === FIELD SELECT === */
+    .dx-field-grid {
+      display: flex; justify-content: center; gap: 20px;
+      margin: 32px 0 16px; perspective: 1000px;
+      position: relative;
+    }
+    .dx-field-card {
+      width: 148px; height: 216px; cursor: pointer;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform .18s ease;
+    }
+    .dx-field-card:hover:not(.is-disabled):not(.is-chosen) {
+      transform: translateY(-10px) rotate(-2deg);
+    }
+    .dx-field-card.is-disabled {
+      pointer-events: none;
+      opacity: .35;
+      filter: grayscale(1);
+      transition: opacity 400ms ease, filter 400ms ease;
+    }
+    .dx-field-card.is-chosen {
+      animation: card-slam 1.5s cubic-bezier(.18,.9,.2,1) forwards;
+      z-index: 50;
+    }
+
+    .dx-field-card-back, .dx-field-card-front {
+      position: absolute; inset: 0; backface-visibility: hidden;
+      border-radius: var(--r3); overflow: hidden;
+      border: var(--b3);
+      box-shadow: var(--s2);
+    }
+    .dx-field-card-back {
+      background: var(--ow);
+      display: grid; place-items: center;
+      transition: background-color 200ms;
+    }
+    .dx-field-card:hover .dx-field-card-back {
+      background: var(--y4);
+      box-shadow: var(--s3);
+    }
+    .dx-field-q {
+      font-family: var(--fb); font-size: 72px;
+      color: var(--n3);
+    }
+    .dx-field-card-front {
+      transform: rotateY(180deg);
+      background: var(--w);
+      padding: 16px 12px; display: flex; flex-direction: column;
+    }
+    .dx-field-category {
+      font-family: var(--fm); font-size: 10px; font-weight: 700;
+      text-transform: uppercase; color: var(--k);
+      background: var(--y); border: var(--b1); border-radius: var(--r1);
+      padding: 2px 6px; width: max-content; margin-bottom: 8px;
+    }
+    .dx-field-name {
+      margin: 0; font-family: var(--fd); font-size: 15px; font-weight: 800; line-height: 1.2; color: var(--k);
+    }
+    .dx-field-emoji {
+      font-size: 32px; text-align: center; margin: 10px 0 5px;
+    }
+    .dx-field-desc {
+      margin: 5px 0 0; font-size: 10px; line-height: 1.4;
+      color: var(--n5); flex: 1; font-weight: 500;
+    }
+
+    /* Slam Reveal Effects */
+    .dx-panel.is-hit {
+      animation: screen-hit 200ms ease-out 1;
+    }
+
+    .dx-burst {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,199,0,.95), rgba(255,199,0,.12) 48%, transparent 72%);
+      transform: translate(-50%, -50%) scale(0);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .dx-burst.active {
+      animation: burst-anim 600ms ease-out 1;
+    }
+
+    @keyframes card-slam {
+      0% { transform: scale(1) rotateY(0deg) translateZ(0); }
+      35% { transform: scale(.65) rotateY(720deg) translateZ(-120px); }
+      68% { transform: scale(1.28) rotateY(1260deg) translateZ(170px); }
+      78% { transform: scale(.94) rotateY(1440deg) translateZ(0); }
+      88% { transform: scale(1.06) rotateY(1620deg) translateZ(30px); }
+      100% { transform: scale(1) rotateY(1980deg) translateZ(0); }
+    }
+
+    @keyframes screen-hit {
+      0% { transform: translate(0, 0); }
+      25% { transform: translate(-8px, 5px); }
+      50% { transform: translate(7px, -4px); }
+      75% { transform: translate(-4px, 3px); }
+      100% { transform: translate(0, 0); }
+    }
+
+    @keyframes burst-anim {
+      0% { transform: translate(-50%, -50%) scale(.2); opacity: 0; }
+      35% { opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+    }
+
+    /* === DEALT CARDS ROW === */
+    .dx-dealt-row {
+      display: flex; justify-content: center; gap: 12px;
+      flex-wrap: wrap; margin: 24px 0 16px; min-height: 160px;
+    }
+    .dx-deal-enter { animation: dxDealCard 400ms var(--spring) both; }
+
+    /* === ARENA (DUEL) === */
+    .dx-arena { display: flex; flex-direction: column; gap: 12px; min-height: auto; position: relative; }
+
+    .dx-combatant {
+      display: flex; align-items: center; gap: 16px; padding: 12px;
+      border-radius: var(--r3);
+      background: var(--w);
+    }
+    .dx-combatant.is-enemy {
+      background: var(--k2); color: var(--w);
+    }
+
+    /* Sentury face */
+    .dx-sentury-ring {
+      width: 44px; height: 44px; border-radius: var(--rp); flex-shrink: 0;
+      background: #000; border: 2px solid var(--y);
+      display: flex; align-items: center; justify-content: center; gap: 5px;
+      box-shadow: var(--s1);
+    }
+  .dx-sentury-eye {
+    width: 4px; height: 16px; border-radius: 2px;
+    background: var(--w);
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), height 0.08s ease, width 0.08s ease, border-radius 0.08s ease, opacity 0.2s ease, background-color 0.2s ease;
+  }
+    .dx-sentury-eye:nth-child(2) { animation-delay: 0.5s; }
+
+    /* Player ring */
+    .dx-player-ring {
+      width: 44px; height: 44px; border-radius: var(--rp); flex-shrink: 0;
+      background: var(--ow2); border: 2px solid var(--k);
+      display: flex; align-items: center; justify-content: center; font-size: 22px;
+      box-shadow: var(--s1);
+    }
+
+    .dx-combatant-info { flex: 1; min-width: 0; }
+    .dx-combatant-title-row {
+      display: flex; flex-direction: column; margin-bottom: 2px;
+    }
+    .dx-combatant-name {
+      font-family: var(--fb); font-size: 20px; font-weight: 400;
+      letter-spacing: 0.05em; text-transform: uppercase;
+      color: var(--k); line-height: 1; margin: 0;
+    }
+    .dx-combatant.is-enemy .dx-combatant-name { color: var(--y); }
+    .dx-combatant-sub {
+      font-family: var(--fm); font-size: 9px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--n4); display: block; margin-top: 1px;
+    }
+    .dx-combatant.is-enemy .dx-combatant-sub { color: var(--n3); }
+    .dx-hp-wrap { display: flex; align-items: center; gap: 12px; }
+    .dx-hp-bar {
+      flex: 1; height: 12px; border-radius: var(--rp); border: var(--b1);
+      background: var(--ow2); overflow: hidden;
+    }
+    .dx-combatant.is-enemy .dx-hp-bar {
+      background: var(--k3); border-color: var(--k5);
+    }
+    .dx-hp-fill {
+      height: 100%; border-radius: inherit;
+      transition: width 500ms var(--spring), background 300ms ease;
+    }
+    .dx-hp-fill.is-player { background: var(--ok); }
+    .dx-hp-fill.is-enemy { background: var(--er); }
+    .dx-hp-val {
+      font-family: var(--fm); font-size: 14px; font-weight: 700;
+      min-width: 32px; text-align: right;
+    }
+    .dx-hp-val.is-player { color: var(--ok); }
+    .dx-hp-val.is-enemy { color: var(--er); }
+
+    /* Battlefield */
+    .dx-battlefield {
+      display: flex; align-items: center; justify-content: center;
+      gap: 24px; padding: 20px 0; min-height: 200px; flex: 1;
+      position: relative;
+    }
+    .dx-bf-slot {
+      width: 120px; min-height: 168px;
+      border: 2px dashed var(--n3); border-radius: var(--r2);
+      display: grid; place-items: center;
+      background: rgba(0,0,0,0.02);
+      transition: border-color 300ms, background-color 300ms;
+    }
+    .dx-bf-slot:has(.dx-card) { border-color: transparent; background: transparent; }
+    .dx-bf-vs {
+      font-family: var(--fb); font-size: 32px; font-weight: 400;
+      color: var(--n3);
+      min-width: 40px; text-align: center;
+      text-shadow: var(--s1);
+    }
+
+    /* Round info & timer */
+    .dx-round-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 10px; padding: 6px 12px; background: var(--ow2); border-radius: var(--r1);
+    }
+    .has-theme-bg .dx-round-bar {
+      background: rgba(0, 0, 0, 0.45);
+    }
+    .dx-round-label {
+      font-family: var(--fb); font-size: 16px; font-weight: 400;
+      color: var(--k);
+    }
+    .has-theme-bg .dx-round-label {
+      color: var(--w);
+      text-shadow: 1px 1px 0 var(--k);
+    }
+    .dx-turn-label {
+      font-family: var(--fm); font-size: 10px; font-weight: 700;
+      color: var(--k);
+    }
+    .has-theme-bg .dx-turn-label {
+      color: var(--w);
+      text-shadow: 1px 1px 0 var(--k);
+    }
+    .dx-timer-bar {
+      height: 10px; border-radius: var(--rp); border: var(--b1);
+      background: var(--w); overflow: hidden; margin: 4px 0;
+      box-shadow: var(--s0);
+    }
+    .dx-timer-fill {
+      height: 100%; border-radius: inherit; background: var(--y);
+      transition: width 100ms linear, background 200ms;
+      transform-origin: left;
+    }
+    .dx-timer-fill.is-urgent { background: var(--er); }
+
+    /* Player hand */
+    .dx-hand {
+      display: flex; justify-content: center; align-items: flex-end;
+      padding: 12px 0 0; min-height: 110px;
+    }
+    .dx-hand .dx-card {
+      margin: 0 -12px; transform-origin: center bottom;
+      transition: transform 200ms var(--spring), box-shadow 200ms ease, border-color 200ms ease, z-index 0ms;
+    }
+    .dx-hand .dx-card:nth-child(1) { transform: translateY(5px) rotate(-8deg); z-index: 1; }
+    .dx-hand .dx-card:nth-child(2) { transform: translateY(2px) rotate(-4deg); z-index: 2; }
+    .dx-hand .dx-card:nth-child(3) { transform: rotate(0deg); z-index: 3; }
+    .dx-hand .dx-card:nth-child(4) { transform: translateY(2px) rotate(4deg); z-index: 4; }
+    .dx-hand .dx-card:nth-child(5) { transform: translateY(5px) rotate(8deg); z-index: 5; }
+    .dx-hand .dx-card:nth-child(6) { transform: translateY(8px) rotate(12deg); z-index: 6; }
+    .dx-hand .dx-card:nth-child(7) { transform: translateY(11px) rotate(16deg); z-index: 7; }
+
+    .dx-hand .dx-card.is-clickable:hover,
+    .dx-hand .dx-card.is-clickable:focus {
+      transform: translateY(-28px) scale(1.18) rotate(0deg) !important;
+      z-index: 50;
+      outline: none;
+      border-color: var(--y);
+    }
+
+    .dx-draw-wrap {
+      display: flex; justify-content: center; align-items: center;
+      height: 44px;
+    }
+
+    /* Floating text */
+    .dx-float {
+      position: absolute; left: 50%; z-index: 30; pointer-events: none;
+      font-family: var(--fb); font-size: 24px; font-weight: 400;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      animation: dxFloatUp 1300ms cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+      -webkit-text-stroke: 1.5px var(--k);
+      text-shadow: 2px 2px 0 var(--k);
+    }
+    .dx-float.is-big { font-size: 32px; letter-spacing: 2px; }
+
+    /* Results */
+    .dx-result-status {
+      font-family: var(--fb);
+      font-size: clamp(48px, 10vw, 76px); font-weight: 400;
+      line-height: 0.9; margin: 12px 0 8px;
+      -webkit-text-stroke: 2px var(--k);
+      text-shadow: 4px 4px 0 var(--k);
+    }
+    .dx-result-sub {
+      font-size: 15px; color: var(--n5); margin: 0 0 24px; font-weight: 500;
+    }
+    .dx-hp-compare {
+      display: flex; align-items: center; justify-content: center;
+      gap: 24px; margin: 0 0 28px;
+    }
+    .dx-hp-side {
+      text-align: center; background: var(--w); border: var(--b2); border-radius: var(--r3); padding: 12px 20px; box-shadow: var(--s2);
+    }
+    .dx-hp-side-label {
+      display: block; font-family: var(--fm); font-size: 10px; font-weight: 700;
+      letter-spacing: 0.05em; text-transform: uppercase;
+      color: var(--n4); margin-bottom: 4px;
+    }
+    .dx-hp-side-val { font-family: var(--fb); font-size: 40px; font-weight: 400; }
+    .dx-hp-side-vs {
+      font-family: var(--fb); font-size: 28px;
+      color: var(--n3);
+    }
+    .dx-stats-row {
+      display: flex; justify-content: center; gap: 24px; margin: 0 0 28px;
+    }
+    .dx-stat {
+      text-align: center; background: var(--w); border: var(--b2); border-radius: var(--r2); padding: 8px 16px; box-shadow: var(--s1);
+    }
+    .dx-stat-val {
+      display: block; font-family: var(--fb); font-size: 28px;
+      font-weight: 400; color: var(--k);
+    }
+    .dx-stat-label {
+      font-family: var(--fm); font-size: 9px; font-weight: 700; letter-spacing: 0.05em;
+      text-transform: uppercase; color: var(--n4);
+    }
+    
+    .dx-xp-table {
+      width: 100%; max-width: 320px; margin: 0 auto 12px;
+      border: var(--b2); border-radius: var(--r2); background: var(--w); box-shadow: var(--s2);
+      overflow: hidden;
+    }
+    .dx-xp-row {
+      display: flex; justify-content: space-between; padding: 10px 16px;
+      border-bottom: var(--b1);
+      font-size: 13px; color: var(--n5); font-weight: 600;
+    }
+    .dx-xp-row:last-of-type { border-bottom: none; }
+    .dx-xp-row span:last-child { color: var(--k); font-weight: 700; font-family: var(--fm); }
+    .dx-xp-total {
+      display: flex; justify-content: space-between; padding: 12px 16px;
+      background: var(--y4); border-top: var(--b2);
+      font-size: 15px; font-weight: 700;
+    }
+    .dx-xp-total span:first-child { color: var(--k); }
+    .dx-xp-total span:last-child { color: var(--k); font-size: 20px; font-family: var(--fm); }
+
+    /* Shake */
+    .dx-shake { animation: dxShake 400ms ease; }
+
+    /* Card enter/exit */
+    .dx-card-enter { animation: dxCardEnter 380ms ease both; }
+    .dx-card-exit { animation: dxCardExit 280ms ease forwards; pointer-events: none; }
+
+    /* Game banner */
+    .dx-banner {
+      width: 100%; height: auto; max-height: 200px; object-fit: cover;
+      border: var(--b2); border-radius: var(--r3);
+      box-shadow: var(--s2); margin: 24px 0;
+      display: block;
+    }
+
+    /* === THEME BACKGROUNDS & SLOTS SYSTEM === */
+    .battle-layer {
+      position: relative;
+      z-index: 10 !important;
+    }
+    .dx-panel.has-theme-bg::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: var(--theme-bg);
+      background-size: cover;
+      background-position: center;
+      filter: blur(3px) saturate(0.85) brightness(0.65);
+      transform: scale(1.04);
+      z-index: 0;
+    }
+
+    .dx-panel.has-theme-bg::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at center, rgba(255, 211, 77, 0.12), transparent 45%),
+        rgba(0, 0, 0, 0.55);
+      z-index: 1;
+    }
+
+    /* Theme Card Art */
+    .theme-card-art {
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .dx-bf-theme-card {
+      width: 112px;
+      height: 148px;
+      border: var(--b2);
+      border-radius: var(--r2);
+      background: var(--w);
+      box-shadow: var(--s2);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: transform 0.2s ease;
+    }
+
+    .dx-bf-theme-card:hover {
+      transform: scale(1.04) rotate(-1deg);
+    }
+
+    .dx-bf-theme-card .theme-card-art {
+      flex: 1;
+      border-bottom: var(--b2);
+    }
+
+    .dx-bf-theme-info {
+      padding: 6px 8px;
+      background: var(--w);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .dx-bf-theme-tag {
+      font-family: var(--fm);
+      font-size: 7px;
+      font-weight: 700;
+      color: var(--k);
+      background: var(--y);
+      border: var(--b1);
+      border-radius: var(--r1);
+      padding: 0px 3px;
+      width: max-content;
+      line-height: 1.2;
+    }
+
+    .dx-bf-theme-title {
+      font-family: var(--fd);
+      font-size: 9.5px;
+      font-weight: 800;
+      color: var(--k);
+      line-height: 1.1;
+      word-break: break-word;
+    }
+
+    /* Battlefield */
+    .dx-battlefield-new {
+      display: grid;
+      grid-template-columns: 124px 1fr;
+      gap: 20px;
+      padding: 8px 0;
+      min-height: auto;
+      flex: 1;
+      position: relative;
+      align-items: center;
+      width: 100%;
+    }
+
+    .dx-bf-theme-column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dx-bf-slots-column {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .dx-bf-row {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      width: 100%;
+    }
+
+    .dx-bf-row-label {
+      font-family: var(--fm);
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--n4);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transition: color 200ms;
+    }
+
+    .has-theme-bg .dx-bf-row-label {
+      color: var(--n1);
+      text-shadow: 1px 1px 0 var(--k);
+    }
+
+    .dx-bf-slots {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .card-slot {
+      width: 112px;
+      height: 158px;
+      border: 2px dashed rgba(0, 0, 0, 0.15);
+      border-radius: var(--r2);
+      background: rgba(0, 0, 0, 0.03);
+      display: grid;
+      place-items: center;
+      position: relative;
+      transition: border-color 200ms, box-shadow 200ms, background-color 200ms;
+    }
+
+    .has-theme-bg .card-slot {
+      border-color: rgba(255, 255, 255, 0.28);
+      background: rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(4px);
+    }
+
+    .slot-placeholder {
+      font-family: var(--fm);
+      font-size: 8px;
+      font-weight: 700;
+      color: rgba(0, 0, 0, 0.25);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      pointer-events: none;
+      user-select: none;
+    }
+    .has-theme-bg .slot-placeholder {
+      color: rgba(255, 255, 255, 0.25);
+      text-shadow: 1px 1px 0 var(--k);
+    }
+
+    .card-slot.is-active {
+      border-style: solid;
+      border-color: var(--y);
+      box-shadow: 0 0 20px rgba(255, 199, 0, 0.45);
+    }
+
+    .card-slot .dx-card {
+      position: absolute;
+      inset: -2px;
+      width: auto;
+      height: auto;
+      margin: 0;
+      z-index: 3;
+    }
+
+    .dx-card.is-current-turn {
+      transform: scale(1.03) !important;
+      filter: brightness(1.15) contrast(1.05);
+      border-color: var(--y) !important;
+      box-shadow: 0 0 12px var(--y) !important;
+    }
+
+    .dx-card.is-past-turn {
+      opacity: 0.65;
+      filter: saturate(0.75) brightness(0.9);
+      transform: scale(0.95) !important;
+      box-shadow: var(--s0) !important;
+      pointer-events: none;
+    }
+
+    /* Thinking dots */
+    .dx-thinking {
+      display: flex; gap: 6px; justify-content: center; padding: 20px 0;
+    }
+    .dx-thinking-dot {
+      width: 8px; height: 8px; border-radius: var(--rp); border: var(--b1);
+      background: var(--y);
+      animation: dxPulse 1.2s ease-in-out infinite;
+    }
+    .dx-thinking-dot:nth-child(2) { animation-delay: 0.2s; }
+    .dx-thinking-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    /* Combo banner */
+    .dx-combo-banner {
+      position: absolute; inset: 0; z-index: 40;
+      display: grid; place-items: center;
+      background: rgba(10, 10, 10, 0.85);
+      animation: dxFadeIn 200ms ease both;
+    }
+    .dx-combo-inner {
+      text-align: center; background: var(--w); border: var(--b3); border-radius: var(--r4); padding: 24px 32px; box-shadow: var(--s4);
+      animation: dxComboIn 500ms var(--spring) both;
+    }
+    .dx-combo-label {
+      font-family: var(--fm); font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--p); margin-bottom: 8px;
+    }
+    .dx-combo-name {
+      font-family: var(--fb); font-size: 36px; font-weight: 400; color: var(--k);
+    }
+
+    /* === ANIMATIONS === */
+    @keyframes dxFadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+    @keyframes dxFadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes dxDealCard {
+      0% { opacity: 0; transform: translateY(-80px) scale(0.6) rotateX(20deg) rotate(-5deg); }
+      100% { opacity: 1; transform: none; }
+    }
+    @keyframes dxCardEnter {
+      0% { opacity: 0; transform: scale(0.6) rotate(-3deg); }
+      70% { transform: scale(1.05) rotate(2deg); }
+      100% { opacity: 1; transform: scale(1) rotate(0); }
+    }
+    @keyframes dxCardExit { to { opacity: 0; transform: translateY(-32px) scale(0.8) rotate(5deg); } }
+    @keyframes dxFloatUp {
+      0% { opacity: 1; transform: translateX(-50%) translateY(0); }
+      80% { opacity: 1; }
+      100% { opacity: 0; transform: translateX(-50%) translateY(-48px); }
+    }
+    @keyframes dxShake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-4px); }
+      40%, 80% { transform: translateX(4px); }
+    }
+    @keyframes dxEyePulse {
+      0%, 90%, 100% { transform: scaleY(1); }
+      95% { transform: scaleY(0.1); }
+    }
+    @keyframes dxPulse {
+      0%, 100% { transform: scale(0.8); opacity: 0.5; }
+      50% { transform: scale(1.2); opacity: 1; }
+    }
+    @keyframes dxComboIn {
+      0% { opacity: 0; transform: scale(0.5) rotate(-5deg); }
+      100% { opacity: 1; transform: scale(1) rotate(0); }
+    }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 700px) {
+      .dx-field-grid { gap: 12px; }
+      .dx-field-card { width: 116px; height: 176px; }
+      .dx-field-name { font-size: 13px; }
+      .dx-field-desc { font-size: 9px; }
+      .dx-field-emoji { font-size: 24px; margin: 6px 0 3px; }
+      .dx-card { width: 82px; height: 116px; }
+      .dx-card-name { font-size: 9px; padding-right: 18px; margin: 4px 0 auto; }
+      .dx-card-power { width: 18px; height: 18px; font-size: 8px; top: 9px; right: 5px; }
+      .dx-card-desc { font-size: 8px; line-height: 1.2; }
+      .dx-card-illustration { height: 34px; margin: 2px 0; }
+      .dx-card-emoji { font-size: 13px; }
+      .dx-card.is-battlefield { width: 92px; height: 130px; }
+      .dx-card.is-battlefield .dx-card-illustration { height: 40px; }
+      .dx-card.is-battlefield .dx-card-emoji { font-size: 16px; }
+      .dx-hand .dx-card { margin: 0 -10px; }
+
+      .card-slot { width: 92px; height: 130px; }
+      .dx-bf-theme-card { width: 90px; height: 122px; }
+      .dx-bf-theme-title { font-size: 8px; }
+      .dx-battlefield-new {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        padding: 8px 0;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .dx-shell { padding: 14px 10px; }
+      .dx-panel { min-height: auto; border-radius: var(--r3); }
+      .dx-panel-inner { padding: 20px 16px; }
+      .dx-topbar { grid-template-columns: 1fr; justify-items: center; gap: 12px; }
+      .dx-home-link { justify-self: center; }
+      .dx-audio-btn { justify-self: center; }
+      .dx-battlefield { gap: 14px; min-height: 140px; }
+      .dx-bf-slot { width: 80px; min-height: 112px; }
+      
+      .dx-card { width: 72px; height: 102px; }
+      .dx-card-name { font-size: 8px; padding-right: 14px; margin: 3px 0 auto; }
+      .dx-card-power { width: 16px; height: 16px; font-size: 8px; top: 8px; right: 4px; }
+      .dx-card-desc { font-size: 7.5px; line-height: 1.1; }
+      .dx-card-illustration { height: 28px; margin: 1px 0; }
+      .dx-card-emoji { font-size: 11px; }
+
+      .dx-card.is-battlefield { width: 80px; height: 112px; }
+      .dx-card.is-battlefield .dx-card-illustration { height: 34px; }
+      .dx-card.is-battlefield .dx-card-emoji { font-size: 14px; }
+
+      .dx-actions { flex-direction: column; }
+      .dx-btn { width: 100%; }
+      .dx-dealt-row { gap: 8px; }
+
+      .card-slot { width: 80px; height: 112px; }
+      .dx-bf-theme-card { width: 80px; height: 110px; }
+      .dx-bf-slots { gap: 8px; }
+      .dx-battlefield-new { min-height: 340px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 1ms !important; transition-duration: 1ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="dx-shell">
+    <header class="dx-topbar" aria-label="Controles">
+      <a class="dx-home-link" href="/app">Voltar</a>
+      <div class="dx-progress" id="dx-progress"></div>
+      <button class="dx-audio-btn dx-hidden" id="dx-audio-toggle" type="button">Som ativo</button>
+    </header>
+    <section class="dx-stage" id="dx-stage" aria-live="polite"></section>
+  </main>
+
+  <script>
+    const TYPE_COLORS = { cx: 'var(--info)', ex: 'var(--wn)', strategy: 'var(--p)', crisis: 'var(--er)' };
+    const TYPE_LABELS = { cx: 'CX', ex: 'EX', strategy: 'ESTRATÉGIA', crisis: 'CRISE' };
+
+    const CARD_EMOJIS = {
+      // CX
+      'empatia': '🤝',
+      'escuta-ativa': '👂',
+      'transparencia': '🔍',
+      'comunicacao-clara': '📢',
+      'follow-up': '🔄',
+      'investigacao': '🕵️‍♂️',
+      // EX
+      'colaboracao': '👥',
+      'reconhecimento': '🏆',
+      'bem-estar': '🌱',
+      'autonomia': '🔓',
+      'feedback': '💬',
+      'desenvolvimento': '📈',
+      // Strategy
+      'priorizacao': '🎯',
+      'planejamento': '📅',
+      'gestao-de-crise': '🛡️',
+      'alinhamento': '⚖️',
+      'escalonamento': '🚀',
+      'resolucao-rapida': '⚡',
+      // Crisis
+      'reclamacao-publica': '💣',
+      'promessa-quebrada': '💔',
+      'sobrecarga': '🥵',
+      'conflito': '⚔️',
+      'falha-critica': '🔥',
+      'ruido-comunicacao': '📴'
+    };
+
+    const FIELD_EMOJIS = {
+      'cliente-irritado': '😠',
+      'colaborador-exausto': '😫',
+      'crise-operacional': '🚨',
+      'promessa-quebrada': '💔',
+      'conflito-areas': '⚔️',
+      'fila-atendimento': '⏳'
+    };
+
+    const ALL_CARDS = [
+      { id: 'empatia', name: 'Empatia', type: 'cx', power: 15, ability: { type: 'heal', value: 10 } },
+      { id: 'escuta-ativa', name: 'Escuta Ativa', type: 'cx', power: 18, ability: null },
+      { id: 'transparencia', name: 'Transparência', type: 'cx', power: 20, ability: null },
+      { id: 'comunicacao-clara', name: 'Comunicação Clara', type: 'cx', power: 16, ability: { type: 'buff', value: 8 } },
+      { id: 'follow-up', name: 'Follow-up', type: 'cx', power: 14, ability: { type: 'regen', value: 5, turns: 2 } },
+      { id: 'investigacao', name: 'Investigação', type: 'cx', power: 22, ability: null },
+      { id: 'colaboracao', name: 'Colaboração', type: 'ex', power: 16, ability: { type: 'buff', value: 10 } },
+      { id: 'reconhecimento', name: 'Reconhecimento', type: 'ex', power: 14, ability: { type: 'regen', value: 5, turns: 2 } },
+      { id: 'bem-estar', name: 'Bem-estar', type: 'ex', power: 12, ability: { type: 'heal', value: 15 } },
+      { id: 'autonomia', name: 'Autonomia', type: 'ex', power: 15, ability: { type: 'shield' } },
+      { id: 'feedback', name: 'Feedback', type: 'ex', power: 18, ability: null },
+      { id: 'desenvolvimento', name: 'Desenvolvimento', type: 'ex', power: 20, ability: null },
+      { id: 'priorizacao', name: 'Priorização', type: 'strategy', power: 20, ability: null },
+      { id: 'planejamento', name: 'Planejamento', type: 'strategy', power: 18, ability: { type: 'buff', value: 8 } },
+      { id: 'gestao-de-crise', name: 'Gestão de Crise', type: 'strategy', power: 22, ability: { type: 'reversal' } },
+      { id: 'alinhamento', name: 'Alinhamento', type: 'strategy', power: 16, ability: { type: 'heal', value: 10 } },
+      { id: 'escalonamento', name: 'Escalonamento', type: 'strategy', power: 24, ability: null },
+      { id: 'resolucao-rapida', name: 'Resolução Rápida', type: 'strategy', power: 15, ability: { type: 'buff', value: 12 } },
+      { id: 'reclamacao-publica', name: 'Reclamação Pública', type: 'crisis', power: 20, ability: { type: 'debuff', value: 8 } },
+      { id: 'promessa-quebrada', name: 'Promessa Quebrada', type: 'crisis', power: 22, ability: null },
+      { id: 'sobrecarga', name: 'Sobrecarga', type: 'crisis', power: 18, ability: { type: 'debuff', value: 10 } },
+      { id: 'conflito', name: 'Conflito', type: 'crisis', power: 16, ability: null },
+      { id: 'falha-critica', name: 'Falha Crítica', type: 'crisis', power: 25, ability: null },
+      { id: 'ruido-comunicacao', name: 'Ruído de Comunicação', type: 'crisis', power: 15, ability: { type: 'debuff', value: 5 } }
+    ];
+
+    const FIELDS = [
+      {
+        id: 'cliente-irritado',
+        name: 'Cliente Irritado',
+        category: 'CX',
+        description: 'Um cliente importante está insatisfeito com promessas não cumpridas. A situação pode escalar.',
+        perfectCards: ['empatia', 'escuta-ativa', 'transparencia'],
+        threats: ['reclamacao-publica', 'conflito'],
+        image: './frontend/assets/image/cardgame/theme-cliente-irritado.webp',
+        overlay: 'red'
+      },
+      {
+        id: 'prioridades-conflito',
+        name: 'Prioridades em Conflito',
+        category: 'EX',
+        description: 'Divergências sobre prioridades geram atrito entre equipes e sobrecarga.',
+        perfectCards: ['alinhamento', 'colaboracao', 'feedback'],
+        threats: ['conflito', 'sobrecarga'],
+        image: './frontend/assets/image/cardgame/theme-prioridades-conflito.webp',
+        overlay: 'yellow'
+      },
+      {
+        id: 'crise-operacional',
+        name: 'Crise Operacional',
+        category: 'ESTRATÉGIA',
+        description: 'Um processo crítico falhou e o impacto está se espalhando. Cada decisão conta.',
+        perfectCards: ['gestao-de-crise', 'priorizacao', 'escalonamento'],
+        threats: ['falha-critica', 'ruido-comunicacao'],
+        image: './frontend/assets/image/cardgame/theme-crise-operacional.webp',
+        overlay: 'red'
+      }
+    ];
+
+    const COMBOS = [
+      { cards: ['empatia', 'escuta-ativa'], name: 'Experiência Humanizada', damage: 25, heal: 0 },
+      { cards: ['transparencia', 'follow-up'], name: 'Confiança Recuperada', damage: 0, heal: 20 },
+      { cards: ['reconhecimento', 'autonomia'], name: 'Engajamento', damage: 15, heal: 10 },
+      { cards: ['bem-estar', 'feedback'], name: 'Time Saudável', damage: 0, heal: 20 },
+      { cards: ['planejamento', 'priorizacao'], name: 'Execução Eficiente', damage: 30, heal: 0 },
+      { cards: ['empatia', 'colaboracao'], name: 'Experiência Sustentável', damage: 20, heal: 10 },
+      { cards: ['comunicacao-clara', 'reconhecimento'], name: 'Cultura Centrada', damage: 25, heal: 0 }
+    ];
+
+    const state = {
+      phase: 'intro',
+      field: null,
+      playerHP: 100,
+      enemyHP: 100,
+      playerHand: [],
+      enemyHand: [],
+      playerDeck: [],
+      round: 0,
+      maxRounds: 5,
+      lastPlayerCard: null,
+      lastEnemyCard: null,
+      playerBuff: 0,
+      enemyBuff: 0,
+      playerDebuff: 0,
+      enemyDebuff: 0,
+      playerShield: false,
+      enemyShield: false,
+      playerRegen: { amount: 0, turns: 0 },
+      enemyRegen: { amount: 0, turns: 0 },
+      playerPlayed: [],
+      enemyPlayed: [],
+      combosTriggered: [],
+      perfectResponses: 0,
+      duelResult: null,
+      sound: false,
+      muted: false
+    };
+
+    const stageEl = document.getElementById('dx-stage');
+    const progressEl = document.getElementById('dx-progress');
+    const audioToggle = document.getElementById('dx-audio-toggle');
+    let timers = [];
+    let intervals = [];
+    let timerInterval = null;
+    const audio = createAudioEngine();
+
+    audioToggle.addEventListener('click', () => {
+      state.muted = !state.muted;
+      audio.setMuted(state.muted);
+      audioToggle.textContent = state.muted ? 'Som pausado' : 'Som ativo';
+    });
+
+    function escapeHtml(s) {
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function clearTransient() {
+      intervals.forEach(clearInterval);
+      timers.forEach(clearTimeout);
+      intervals = [];
+      timers = [];
+      stopTimer();
+    }
+
+    function stopTimer() {
+      if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+    }
+
+    function setPhase(phase) {
+      clearTransient();
+      state.phase = phase;
+      render();
+    }
+
+    function panel(content, wide) {
+      stageEl.innerHTML = `
+        <article class="dx-panel${wide ? ' is-wide' : ''}" id="dx-panel">
+          <div class="dx-burst" id="dx-burst"></div>
+          <div class="dx-crease"></div>
+          <div class="dx-panel-inner battle-layer">${content}</div>
+        </article>`;
+    }
+
+    const PHASE_INDEX = { intro: 0, field: 1, distribute: 2, duel: 3, results: 4 };
+
+    function renderProgress() {
+      const total = 5;
+      const current = PHASE_INDEX[state.phase] || 0;
+      progressEl.innerHTML = state.phase === 'intro' ? '' :
+        Array.from({ length: total }, (_, i) =>
+          `<span class="dx-dot${i <= current ? ' is-active' : ''}"></span>`
+        ).join('');
+    }
+
+    function render() {
+      renderProgress();
+      audioToggle.classList.toggle('dx-hidden', !state.sound);
+      const renderers = {
+        intro: renderIntro,
+        field: renderFieldSelect,
+        distribute: renderDistribute,
+        duel: renderDuel,
+        results: renderResults
+      };
+      (renderers[state.phase] || renderIntro)();
+    }
+
+    function getAbilityText(ability) {
+      if (!ability) return 'Ataque padrão';
+      switch (ability.type) {
+        case 'heal': return `Recupera ${ability.value} pts`;
+        case 'shield': return 'Bloqueia próximo ataque';
+        case 'buff': return `Próxima carta +${ability.value}`;
+        case 'debuff': return `Inimigo: próxima -${ability.value}`;
+        case 'regen': return `+${ability.value} pts/${ability.turns} turnos`;
+        case 'reversal': return 'Converte dano Crise em cura';
+        default: return 'Ataque padrão';
+      }
+    }
+
+    function cardMatchesField(cardType) {
+      if (!state.field) return false;
+      const cat = state.field.category.toLowerCase();
+      if (cat === 'cx' && cardType === 'cx') return true;
+      if (cat === 'ex' && cardType === 'ex') return true;
+      if (cat === 'estratégia' && cardType === 'strategy') return true;
+      return false;
+    }
+
+    function renderCardIllustration(card) {
+      if (card.image) {
+        return `<div class="dx-card-illustration theme-card-art" style="background-image: url('${card.image}');"></div>`;
+      }
+      const emoji = CARD_EMOJIS[card.id] || '🃏';
+      return `<div class="dx-card-illustration"><div class="dx-card-emoji">${emoji}</div></div>`;
+    }
+
+    function renderCard(card, opts = {}) {
+      const { battlefield, clickable } = opts;
+      const ab = getAbilityText(card.ability);
+      
+      const hasBonus = cardMatchesField(card.type);
+      const displayPower = hasBonus ? card.power + 3 : card.power;
+      const powerClass = hasBonus ? ' dx-card-power-bonus' : '';
+      
+      return `<div class="dx-card${battlefield ? ' is-battlefield' : ''}${clickable ? ' is-clickable' : ''}"
+        data-type="${card.type}" data-id="${card.id}">
+        <div class="dx-card-stripe"></div>
+        <div class="dx-card-body">
+          <span class="dx-card-type">${TYPE_LABELS[card.type]}</span>
+          <div class="dx-card-power${powerClass}">${displayPower}</div>
+          <h3 class="dx-card-name">${escapeHtml(card.name)}</h3>
+          ${renderCardIllustration(card)}
+          <p class="dx-card-desc">${ab}</p>
+        </div>
+      </div>`;
+    }
+
+    /* ============ INTRO ============ */
+    function renderIntro() {
+      panel(`
+        <div>
+          <p class="dx-kicker">Daily Game</p>
+          <h1 class="dx-title">Duelos de<br><strong>Experiência</strong></h1>
+          <p class="dx-subtitle">Enfrente o Sentury em um duelo de cartas. Use CX, EX e Estratégia para resolver crises e proteger seus pontos.</p>
+          <img class="dx-banner" src="./frontend/assets/image/cardgame/gamecard.webp" alt="Duelo de Experiência Banner">
+          <div class="dx-actions" style="margin-top:24px">
+            <button class="dx-btn dx-btn-y" id="start-sound" type="button">
+              🔊 <span>Entrar com som</span>
+            </button>
+            <button class="dx-btn is-secondary" id="start-silent" type="button">
+              🔇 <span>Entrar sem som</span>
+            </button>
+          </div>
+          <p class="dx-meta" style="margin-top:20px;color:var(--n5)">5 rodadas. Vantagem de tipos. Combos. Respostas perfeitas.</p>
+        </div>
+      `);
+      document.getElementById('start-sound').addEventListener('click', () => {
+        state.sound = true; state.muted = false;
+        audio.setMuted(false); audio.unlock();
+        setPhase('field');
+      });
+      document.getElementById('start-silent').addEventListener('click', () => {
+        state.sound = false; audio.stopAll();
+        setPhase('field');
+      });
+    }
+
+    /* ============ FIELD SELECT ============ */
+    function renderFieldSelect() {
+      const options = shuffle([...FIELDS]).slice(0, 3);
+      panel(`
+        <div class="dx-phase-head">
+          <span class="dx-tag">Escolha do Campo</span>
+        </div>
+        <p style="color:var(--n5);font-size:14px;margin:0 0 8px;font-weight:600">Três cenários. Escolha um para revelar.</p>
+        <div class="dx-field-grid" id="field-grid">
+          ${options.map((f, i) => `
+            <div class="dx-field-card" data-idx="${i}">
+              <div class="dx-field-card-back"><span class="dx-field-q">?</span></div>
+              <div class="dx-field-card-front">
+                <span class="dx-field-category">${escapeHtml(f.category)}</span>
+                <div class="theme-card-art" style="background-image: url('${f.image}'); height: 80px; margin: 6px 0; border: var(--b1); border-radius: var(--r2);"></div>
+                <h3 class="dx-field-name" style="font-size: 13px; line-height: 1.2;">${escapeHtml(f.name)}</h3>
+                <p class="dx-field-desc" style="font-size: 9px; line-height: 1.3; margin-top: 4px;">${escapeHtml(f.description)}</p>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+        <div class="dx-actions is-forward dx-hidden" id="field-actions">
+          <button class="dx-btn dx-btn-y" id="field-go">Preparar Cartas</button>
+        </div>
+      `);
+      document.querySelectorAll('.dx-field-card').forEach((el, i) => {
+        el.setAttribute('tabindex', '0');
+        el.setAttribute('role', 'button');
+        el.setAttribute('aria-label', `Cenário ${options[i].name}, Categoria ${options[i].category}. ${options[i].description}`);
+        
+        const selectHandler = () => {
+          if (el.classList.contains('is-chosen') || el.classList.contains('is-disabled')) return;
+          state.field = options[i];
+          audio.playClick();
+          
+          document.querySelectorAll('.dx-field-card').forEach((o, j) => {
+            if (j !== i) o.classList.add('is-disabled');
+          });
+          
+          el.classList.add('is-chosen');
+          
+          // Slam timing (1000ms) - shake, sound impact, burst and vibrate
+          timers.push(setTimeout(() => {
+            const panelEl = document.getElementById('dx-panel');
+            if (panelEl) panelEl.classList.add('is-hit');
+            
+            const burstEl = document.getElementById('dx-burst');
+            if (burstEl) burstEl.classList.add('active');
+            
+            if (audio.playSlam) audio.playSlam();
+            
+            if (navigator.vibrate) navigator.vibrate(45);
+          }, 1000));
+          
+          // Auto-transition to distribute phase when slam finishes (1600ms)
+          timers.push(setTimeout(() => {
+            setPhase('distribute');
+          }, 1600));
+        };
+        
+        el.addEventListener('click', selectHandler);
+        el.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            selectHandler();
+          }
+        });
+      });
+    }
+
+    /* ============ DISTRIBUTE ============ */
+    function buildDecks() {
+      const pool = shuffle(ALL_CARDS.filter(c => c.type !== 'crisis'));
+      const crisis = shuffle(ALL_CARDS.filter(c => c.type === 'crisis'));
+      state.playerHand = pool.slice(0, 5).map(c => ({ ...c }));
+      state.playerDeck = pool.slice(5, 8).map(c => ({ ...c }));
+      state.enemyHand = shuffle([
+        ...crisis.slice(0, 3).map(c => ({ ...c })),
+        ...pool.slice(8, 10).map(c => ({ ...c }))
+      ]);
+    }
+
+    function renderDistribute() {
+      if (!state.playerHand.length) buildDecks();
+      panel(`
+        <div class="dx-phase-head">
+          <span class="dx-tag">Distribuição</span>
+          <span class="dx-meta"><span id="deal-n">0</span>/5</span>
+        </div>
+        <p class="dx-kicker">Suas cartas para este duelo</p>
+        <div class="dx-dealt-row" id="dealt-cards"></div>
+        <div class="dx-actions is-forward dx-hidden" id="deal-go-wrap">
+          <button class="dx-btn dx-btn-y" id="deal-go">Iniciar Duelo</button>
+        </div>
+      `);
+      const container = document.getElementById('dealt-cards');
+      const counter = document.getElementById('deal-n');
+      state.playerHand.forEach((card, i) => {
+        timers.push(setTimeout(() => {
+          const wrap = document.createElement('div');
+          wrap.innerHTML = renderCard(card);
+          const el = wrap.firstElementChild;
+          el.classList.add('dx-deal-enter');
+          container.appendChild(el);
+          counter.textContent = i + 1;
+          audio.playClick();
+          if (i === 4) {
+            timers.push(setTimeout(() => {
+              document.getElementById('deal-go-wrap').classList.remove('dx-hidden');
+              document.getElementById('deal-go').addEventListener('click', () => setPhase('duel'));
+            }, 250));
+          }
+        }, 180 * (i + 1)));
+      });
+    }
+
+    /* ============ DUEL ============ */
+    let senturyIdleInterval = null;
+    let senturyBlinkTimeout = null;
+
+    function setSenturyExpression(stateName) {
+      const eyeL = document.getElementById('sentury-eye-L');
+      const eyeR = document.getElementById('sentury-eye-R');
+      const face = document.getElementById('sentury-face');
+      if (!eyeL || !eyeR) return;
+
+      eyeL.style.transform = '';
+      eyeL.style.height = '16px';
+      eyeL.style.width = '4px';
+      eyeL.style.borderRadius = '2px';
+      eyeL.style.opacity = '1';
+      eyeL.style.backgroundColor = 'var(--w)';
+      
+      eyeR.style.transform = '';
+      eyeR.style.height = '16px';
+      eyeR.style.width = '4px';
+      eyeR.style.borderRadius = '2px';
+      eyeR.style.opacity = '1';
+      eyeR.style.backgroundColor = 'var(--w)';
+
+      if (face) face.style.borderColor = 'var(--y)';
+
+      if (senturyIdleInterval && stateName !== 'idle') {
+        clearInterval(senturyIdleInterval);
+        senturyIdleInterval = null;
+      }
+      if (senturyBlinkTimeout && stateName !== 'idle') {
+        clearTimeout(senturyBlinkTimeout);
+        senturyBlinkTimeout = null;
+      }
+
+      switch (stateName) {
+        case 'idle':
+          startSenturyIdle();
+          break;
+        case 'thinking':
+          senturyIdleInterval = setInterval(() => {
+            const gazes = [{x:-3, y:0}, {x:3, y:0}, {x:0, y:-3}, {x:0, y:3}, {x:-2, y:-2}, {x:2, y:2}];
+            const g = gazes[Math.floor(Math.random() * gazes.length)];
+            const t = `translate(${g.x}px, ${g.y}px)`;
+            eyeL.style.transform = t;
+            eyeR.style.transform = t;
+          }, 150);
+          break;
+        case 'pain':
+          eyeL.style.height = '8px';
+          eyeL.style.width = '8px';
+          eyeL.style.borderRadius = '50%';
+          eyeL.style.transform = 'translateY(-2px)';
+          eyeL.style.backgroundColor = 'var(--er)';
+
+          eyeR.style.height = '8px';
+          eyeR.style.width = '8px';
+          eyeR.style.borderRadius = '50%';
+          eyeR.style.transform = 'translateY(-2px)';
+          eyeR.style.backgroundColor = 'var(--er)';
+          
+          if (face) face.style.borderColor = 'var(--er)';
+          break;
+        case 'happy':
+          eyeL.style.height = '4px';
+          eyeL.style.transform = 'translateY(-5px) scaleX(1.8)';
+          eyeL.style.borderRadius = '1px';
+          eyeR.style.height = '4px';
+          eyeR.style.transform = 'translateY(-5px) scaleX(1.8)';
+          eyeR.style.borderRadius = '1px';
+          if (face) face.style.borderColor = 'var(--ok)';
+          break;
+        case 'shock':
+          eyeL.style.height = '10px';
+          eyeL.style.width = '6px';
+          eyeL.style.borderRadius = '50%';
+          eyeL.style.transform = 'translateY(-4px) rotate(-10deg)';
+          eyeR.style.height = '10px';
+          eyeR.style.width = '6px';
+          eyeR.style.borderRadius = '50%';
+          eyeR.style.transform = 'translateY(-4px) rotate(10deg)';
+          break;
+        case 'dead':
+          eyeL.style.height = '3px';
+          eyeL.style.width = '14px';
+          eyeL.style.transform = 'translateY(3px)';
+          eyeL.style.opacity = '0.35';
+          eyeR.style.height = '3px';
+          eyeR.style.width = '14px';
+          eyeR.style.transform = 'translateY(3px)';
+          eyeR.style.opacity = '0.35';
+          if (face) face.style.borderColor = 'var(--n4)';
+          break;
+      }
+    }
+
+    function startSenturyIdle() {
+      if (senturyIdleInterval) clearInterval(senturyIdleInterval);
+      if (senturyBlinkTimeout) clearTimeout(senturyBlinkTimeout);
+
+      const eyeL = document.getElementById('sentury-eye-L');
+      const eyeR = document.getElementById('sentury-eye-R');
+      if (!eyeL || !eyeR) return;
+
+      senturyIdleInterval = setInterval(() => {
+        if (Math.random() > 0.5) {
+          const gazes = [{x:0, y:0}, {x:0, y:-3}, {x:0, y:3}, {x:-2, y:0}, {x:2, y:0}];
+          const g = gazes[Math.floor(Math.random() * gazes.length)];
+          const t = `translate(${g.x}px, ${g.y}px)`;
+          eyeL.style.transform = t;
+          eyeR.style.transform = t;
+        }
+      }, 1500);
+
+      function blink() {
+        const delay = 2200 + Math.random() * 2500;
+        senturyBlinkTimeout = setTimeout(() => {
+          const prevHeightL = eyeL.style.height || '16px';
+          const prevHeightR = eyeR.style.height || '16px';
+          const prevTransformL = eyeL.style.transform || '';
+          const prevTransformR = eyeR.style.transform || '';
+          eyeL.style.height = '2px';
+          eyeR.style.height = '2px';
+          setTimeout(() => {
+            eyeL.style.height = prevHeightL;
+            eyeR.style.height = prevHeightR;
+            eyeL.style.transform = prevTransformL;
+            eyeR.style.transform = prevTransformR;
+            blink();
+          }, 130);
+        }, delay);
+      }
+      blink();
+    }
+
+    function renderHistory(side, forceFaceUp = false) {
+      const history = side === 'player' ? state.playerHistory : state.enemyHistory;
+      const prefix = side === 'player' ? 'p' : 'e';
+      
+      for (let i = 0; i < 3; i++) {
+        const slot = document.getElementById(`${prefix}-slot-${i}`);
+        if (!slot) continue;
+        
+        const card = history[i];
+        if (!card) {
+          slot.innerHTML = `<span class="slot-placeholder">Slot ${i + 1}</span>`;
+          slot.classList.remove('is-active');
+          continue;
+        }
+        
+        const isLast = (i === history.length - 1);
+        const isEnemyActiveFaceDown = (side === 'enemy') && isLast && (state.lastEnemyCard && !state.lastPlayerCard) && !forceFaceUp;
+        
+        if (isEnemyActiveFaceDown) {
+          slot.innerHTML = `
+            <div class="dx-card is-battlefield is-face-down" style="width: 100%; height: 100%;">
+              <div class="dx-card-stripe" style="background: var(--k5)"></div>
+              <div class="dx-card-body" style="background: var(--k2); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; height: 100%;">
+                <div class="dx-card-back" style="color: var(--y); font-family: var(--fb); font-size: 32px; transform: rotate(-5deg); text-shadow: var(--s1); line-height: 1;">?</div>
+                <div style="font-family: var(--fm); font-size: 8px; font-weight: 700; color: var(--er); text-transform: uppercase; letter-spacing: 0.05em; border: 1.5px solid var(--er); padding: 1px 4px; border-radius: var(--r1); background: var(--er2); text-shadow: none;">
+                  Ameaça Detectada
+                </div>
+              </div>
+            </div>
+          `;
+          slot.classList.add('is-active');
+        } else {
+          slot.innerHTML = renderCard(card, { battlefield: true });
+          const cardEl = slot.querySelector('.dx-card');
+          
+          if (isLast && (state.lastPlayerCard || state.lastEnemyCard)) {
+            slot.classList.add('is-active');
+            cardEl?.classList.add('is-current-turn');
+          } else {
+            slot.classList.remove('is-active');
+            cardEl?.classList.add('is-past-turn');
+          }
+        }
+      }
+    }
+
+    function renderDuel() {
+      state.round = 0;
+      state.playerHistory = [];
+      state.enemyHistory = [];
+      state.drawnThisRound = false;
+      
+      const personalities = ['Analítico', 'Empático', 'Operacional'];
+      state.enemyPersonality = personalities[Math.floor(Math.random() * personalities.length)];
+      
+      panel(`
+        <div class="dx-arena" id="arena">
+          <div class="dx-combatant is-enemy">
+            <div class="dx-sentury-ring" id="sentury-face">
+              <div class="dx-sentury-eye" id="sentury-eye-L"></div>
+              <div class="dx-sentury-eye" id="sentury-eye-R"></div>
+            </div>
+            <div class="dx-combatant-info">
+              <div class="dx-combatant-title-row">
+                <span class="dx-combatant-name">SENTURY [${state.enemyPersonality.toUpperCase()}]</span>
+                <span class="dx-combatant-sub">Adversário de treino</span>
+              </div>
+              <div class="dx-hp-wrap" aria-live="polite">
+                <div class="dx-hp-bar" aria-label="HP do Adversário"><div class="dx-hp-fill is-enemy" id="e-hp-fill" style="width:100%"></div></div>
+                <span class="dx-hp-val is-enemy" id="e-hp-val">100</span>
+              </div>
+            </div>
+          </div>
+          <div class="dx-battlefield-new" id="battlefield">
+            <!-- Left side: Theme Card -->
+            <div class="dx-bf-theme-column">
+              <span class="dx-bf-row-label">Cenário</span>
+              <div class="dx-bf-theme-card">
+                <div class="theme-card-art" style="background-image: url('${state.field.image}');"></div>
+                <div class="dx-bf-theme-info">
+                  <span class="dx-bf-theme-tag">${escapeHtml(state.field.category)}</span>
+                  <h4 class="dx-bf-theme-title">${escapeHtml(state.field.name)}</h4>
+                </div>
+              </div>
+              <div class="dx-bf-theme-bonus" style="font-family:var(--fm); font-size:8.5px; font-weight:700; color:var(--y); margin-top:4px; text-transform:uppercase; text-shadow: 1px 1px 0 var(--k); text-align:center;">
+                Bônus +3: Tipo ${escapeHtml(state.field.category)}
+              </div>
+            </div>
+
+            <!-- Right side: Game Slots -->
+            <div class="dx-bf-slots-column">
+              <!-- Adversary Row -->
+              <div class="dx-bf-row is-adversary">
+                <span class="dx-bf-row-label">Cartas do Adversário</span>
+                <div class="dx-bf-slots">
+                  <div class="card-slot" id="e-slot-0"><span class="slot-placeholder">Slot 1</span></div>
+                  <div class="card-slot" id="e-slot-1"><span class="slot-placeholder">Slot 2</span></div>
+                  <div class="card-slot" id="e-slot-2"><span class="slot-placeholder">Slot 3</span></div>
+                </div>
+              </div>
+
+              <!-- Player Row -->
+              <div class="dx-bf-row is-player">
+                <span class="dx-bf-row-label">Cartas do Jogador</span>
+                <div class="dx-bf-slots">
+                  <div class="card-slot" id="p-slot-0"><span class="slot-placeholder">Slot 1</span></div>
+                  <div class="card-slot" id="p-slot-1"><span class="slot-placeholder">Slot 2</span></div>
+                  <div class="card-slot" id="p-slot-2"><span class="slot-placeholder">Slot 3</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div id="bf-vs" style="display:none"></div>
+          </div>
+          <div class="dx-round-bar" aria-live="polite">
+            <span class="dx-round-label" id="round-label">—</span>
+            <span class="dx-turn-label" id="turn-label"></span>
+          </div>
+          <div class="dx-timer-bar" id="timer-wrap"><div class="dx-timer-fill" id="timer-fill" style="width:0%"></div></div>
+          <div class="dx-combatant">
+            <div class="dx-player-ring">👤</div>
+            <div class="dx-combatant-info">
+              <div class="dx-combatant-title-row">
+                <span class="dx-combatant-name">VOCÊ</span>
+                <span class="dx-combatant-sub">Resposta em campo</span>
+              </div>
+              <div class="dx-hp-wrap" aria-live="polite">
+                <div class="dx-hp-bar" aria-label="Seu HP"><div class="dx-hp-fill is-player" id="p-hp-fill" style="width:100%"></div></div>
+                <span class="dx-hp-val is-player" id="p-hp-val">100</span>
+              </div>
+            </div>
+          </div>
+          <div class="dx-hand" id="p-hand">
+            ${state.playerHand.map(c => renderCard(c)).join('')}
+          </div>
+          ${state.playerDeck.length > 0 ? `
+            <div class="dx-draw-wrap">
+              <button class="dx-btn is-small is-secondary dx-hidden" id="draw-btn">
+                Comprar carta (${state.playerDeck.length} restantes)
+              </button>
+            </div>
+          ` : ''}
+        </div>
+      `, true);
+
+      const panelEl = document.getElementById('dx-panel');
+      if (panelEl && state.field) {
+        panelEl.classList.add('has-theme-bg');
+        panelEl.style.setProperty('--theme-bg', `url("${state.field.image}")`);
+      }
+
+      startRound();
+    }
+
+    function startRound() {
+      state.round++;
+      if (state.round > state.maxRounds) { endDuel(state.playerHP > state.enemyHP ? 'time-win' : state.playerHP < state.enemyHP ? 'time-loss' : 'draw'); return; }
+
+      state.drawnThisRound = false;
+      setSenturyExpression('idle');
+
+      if (state.playerRegen.turns > 0) {
+        state.playerHP = Math.min(100, state.playerHP + state.playerRegen.amount);
+        state.playerRegen.turns--;
+        showFloat('player', `+${state.playerRegen.amount} REGEN`, 'var(--ok)');
+      }
+      if (state.enemyRegen.turns > 0) {
+        state.enemyHP = Math.min(100, state.enemyHP + state.enemyRegen.amount);
+        state.enemyRegen.turns--;
+      }
+      updateHP();
+
+      const rl = document.getElementById('round-label');
+      if (rl) rl.textContent = `RODADA ${state.round} DE ${state.maxRounds}`;
+      const tl = document.getElementById('turn-label');
+      if (tl) tl.textContent = '';
+
+      timers.push(setTimeout(startEnemyTurn, 500));
+    }
+
+    function senturySelect() {
+      const hand = state.enemyHand;
+      if (!hand.length) return null;
+      if (state.enemyHP < 30) {
+        const def = hand.find(c => c.ability && (c.ability.type === 'heal' || c.ability.type === 'shield'));
+        if (def) return def;
+      }
+      if (state.lastPlayerCard) {
+        const counter = hand.find(c => getTypeMult(c.type, state.lastPlayerCard.type) > 1);
+        if (counter) return counter;
+      }
+      const threat = hand.find(c => state.field && state.field.threats.includes(c.id));
+      if (threat) return threat;
+
+      const personality = state.enemyPersonality;
+      let biasType = '';
+      if (personality === 'Analítico') biasType = 'strategy';
+      else if (personality === 'Empático') biasType = 'cx';
+      else if (personality === 'Operacional') biasType = 'crisis';
+
+      if (biasType && Math.random() < 0.6) {
+        const biasCard = hand.find(c => c.type === biasType);
+        if (biasCard) return biasCard;
+      }
+
+      return hand.reduce((best, c) => c.power > best.power ? c : best, hand[0]);
+    }
+
+    function startEnemyTurn() {
+      const tl = document.getElementById('turn-label');
+      if (tl) tl.textContent = 'SENTURY SIMULANDO AMEAÇA...';
+
+      setSenturyExpression('thinking');
+
+      if (state.enemyHand.length === 0) { startPlayerTurn(); return; }
+
+      const card = senturySelect();
+      const idx = state.enemyHand.indexOf(card);
+      if (idx > -1) state.enemyHand.splice(idx, 1);
+      state.lastEnemyCard = card;
+      state.enemyPlayed.push(card);
+
+      // Chronological history sliding queue
+      state.enemyHistory.push(card);
+      if (state.enemyHistory.length > 3) {
+        state.enemyHistory.shift();
+      }
+
+      timers.push(setTimeout(() => {
+        setSenturyExpression('idle');
+        renderHistory('enemy');
+        const vs = document.getElementById('bf-vs');
+        if (vs) vs.textContent = 'VS';
+        audio.playClick();
+        timers.push(setTimeout(startPlayerTurn, 500));
+      }, 600 + Math.random() * 400));
+    }
+
+    function startPlayerTurn() {
+      const tl = document.getElementById('turn-label');
+      if (tl) tl.textContent = 'SUA VEZ — ESCOLHA UMA CARTA';
+      const hand = document.getElementById('p-hand');
+      if (!hand) return;
+
+      hand.querySelectorAll('.dx-card').forEach(el => {
+        el.classList.add('is-clickable');
+        el.setAttribute('tabindex', '0');
+        el.setAttribute('role', 'button');
+        
+        const cardId = el.dataset.id;
+        const card = state.playerHand.find(c => c.id === cardId);
+        if (card) {
+          const ab = getAbilityText(card.ability);
+          const bonusText = cardMatchesField(card.type) ? ' (Bônus de cenário ativo +3)' : '';
+          el.setAttribute('aria-label', `Carta ${card.name}, tipo ${TYPE_LABELS[card.type]}, poder ${card.power}${bonusText}. Efeito: ${ab}. Pressione Enter ou Espaço para jogar.`);
+        }
+
+        const playHandler = () => onCardPlayed(el.dataset.id);
+        el.onclick = playHandler;
+        el.onkeydown = (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            playHandler();
+          }
+        };
+      });
+
+      const drawBtn = document.getElementById('draw-btn');
+      if (drawBtn) {
+        if (state.playerDeck.length > 0 && state.playerHand.length < 7 && !state.drawnThisRound) {
+          drawBtn.classList.remove('dx-hidden');
+          drawBtn.textContent = `Comprar carta (${state.playerDeck.length} restantes)`;
+          drawBtn.setAttribute('aria-label', `Comprar carta. ${state.playerDeck.length} restantes no baralho.`);
+          drawBtn.onclick = onDrawCard;
+        } else {
+          drawBtn.classList.add('dx-hidden');
+          drawBtn.onclick = null;
+        }
+      }
+
+      startTimerBar(20, onTimerExpired);
+    }
+
+    function startTimerBar(seconds, onExpire) {
+      let remaining = seconds;
+      const fill = document.getElementById('timer-fill');
+      if (fill) { fill.style.width = '100%'; fill.classList.remove('is-urgent'); }
+
+      timerInterval = setInterval(() => {
+        remaining -= 0.1;
+        if (fill) {
+          fill.style.width = Math.max(0, remaining / seconds * 100) + '%';
+          if (remaining <= 5) fill.classList.add('is-urgent');
+        }
+        if (remaining <= 0) { stopTimer(); onExpire(); }
+      }, 100);
+      intervals.push(timerInterval);
+    }
+
+    function onTimerExpired() {
+      if (state.playerHand.length > 0) {
+        onCardPlayed(state.playerHand[0].id);
+      } else {
+        renderHistory('enemy', true);
+        audio.playClick();
+        timers.push(setTimeout(() => resolveEnemyOnly(), 500));
+      }
+    }
+
+    function onCardPlayed(cardId) {
+      const ci = state.playerHand.findIndex(c => c.id === cardId);
+      if (ci === -1) return;
+      const card = state.playerHand.splice(ci, 1)[0];
+      state.lastPlayerCard = card;
+      state.playerPlayed.push(card);
+
+      stopTimer();
+      const hand = document.getElementById('p-hand');
+      const cardEl = hand?.querySelector(`[data-id="${cardId}"]`);
+      if (cardEl) cardEl.classList.add('dx-card-exit');
+
+      hand?.querySelectorAll('.dx-card').forEach(el => {
+        el.classList.remove('is-clickable');
+        el.onclick = null;
+        el.onkeydown = null;
+        el.removeAttribute('tabindex');
+        el.removeAttribute('role');
+        el.removeAttribute('aria-label');
+      });
+      const drawBtn = document.getElementById('draw-btn');
+      if (drawBtn) {
+        drawBtn.classList.add('dx-hidden');
+        drawBtn.onclick = null;
+      }
+
+      // Chronological history sliding queue
+      state.playerHistory.push(card);
+      if (state.playerHistory.length > 3) {
+        state.playerHistory.shift();
+      }
+
+      renderHistory('player');
+      audio.playClick();
+
+      // Show player card, pause 400ms, flip enemy card face-up with sound, pause 500ms, resolve combat
+      timers.push(setTimeout(() => {
+        renderHistory('enemy', true);
+        audio.playClick();
+
+        if (state.lastEnemyCard) {
+          const perf = isPerfect(card);
+          if (perf) {
+            setSenturyExpression('shock');
+          }
+        }
+
+        timers.push(setTimeout(() => {
+          resolveCombat(card, state.lastEnemyCard);
+        }, 500));
+      }, 400));
+    }
+
+    function onDrawCard() {
+      if (!state.playerDeck.length || state.playerHand.length >= 7 || state.drawnThisRound) return;
+      state.drawnThisRound = true;
+
+      const card = state.playerDeck.shift();
+      state.playerHand.push(card);
+
+      const hand = document.getElementById('p-hand');
+      if (hand) {
+        hand.innerHTML = state.playerHand.map(c => renderCard(c)).join('');
+      }
+
+      showFloat('player', 'CARTA COMPRADA', 'var(--y)');
+      audio.playClick();
+
+      startPlayerTurn();
+    }
+
+    function getTypeMult(atkType, defType) {
+      const w = { cx: 'crisis', crisis: 'strategy', strategy: 'ex', ex: 'cx' };
+      if (w[atkType] === defType) return 2;
+      if (w[defType] === atkType) return 0.5;
+      return 1;
+    }
+
+    function isPerfect(card) {
+      return state.field && state.field.perfectCards.includes(card.id);
+    }
+
+    function resolveCombat(pCard, eCard) {
+      if (!eCard) { applyAbility(pCard, 'player'); updateHP(); timers.push(setTimeout(nextRoundCleanup, 600)); return; }
+
+      // Compute base damage with scenario modifiers (+3)
+      let pBase = pCard.power;
+      if (cardMatchesField(pCard.type)) pBase += 3;
+      let pDmg = pBase + state.playerBuff - state.playerDebuff;
+      const pMult = getTypeMult(pCard.type, eCard.type);
+      const perf = isPerfect(pCard);
+      pDmg = Math.max(0, Math.round(pDmg * pMult * (perf ? 2 : 1)));
+
+      let eBase = eCard.power;
+      if (cardMatchesField(eCard.type)) eBase += 3;
+      let eDmg = eBase + state.enemyBuff - state.enemyDebuff;
+      const eMult = getTypeMult(eCard.type, pCard.type);
+      eDmg = Math.max(0, Math.round(eDmg * eMult));
+
+      if (pCard.ability?.type === 'reversal' && eCard.type === 'crisis') {
+        state.playerHP = Math.min(100, state.playerHP + eDmg);
+        eDmg = 0;
+        showFloat('battlefield', 'REVERSÃO!', 'var(--ok)');
+      }
+      if (state.playerShield && eDmg > 0) {
+        eDmg = 0; state.playerShield = false;
+        showFloat('player', 'ESCUDO!', 'var(--info)');
+      }
+      if (state.enemyShield && pDmg > 0) {
+        pDmg = 0; state.enemyShield = false;
+        showFloat('enemy', 'BLOQUEIO!', 'var(--info)');
+      }
+
+      state.enemyHP = Math.max(0, state.enemyHP - pDmg);
+      state.playerHP = Math.max(0, state.playerHP - eDmg);
+
+      state.playerBuff = 0; state.playerDebuff = 0;
+      state.enemyBuff = 0; state.enemyDebuff = 0;
+
+      applyAbility(pCard, 'player');
+      applyAbility(eCard, 'enemy');
+
+      // Set Sentury expression based on damage/HP
+      if (state.enemyHP <= 0) {
+        setSenturyExpression('dead');
+      } else if (pDmg > eDmg) {
+        setSenturyExpression('pain');
+      } else if (eDmg > pDmg) {
+        setSenturyExpression('happy');
+      } else {
+        if (!perf) setSenturyExpression('idle');
+      }
+
+      if (pDmg > 0) { showFloat('enemy', `-${pDmg}`, 'var(--er)'); shakeEl('e-hp-fill'); }
+      if (eDmg > 0) { showFloat('player', `-${eDmg}`, 'var(--er)'); shakeEl('p-hp-fill'); }
+
+      if (pMult > 1) timers.push(setTimeout(() => showFloat('battlefield', 'VANTAGEM ×2', 'var(--y)'), 200));
+      else if (pMult < 1) timers.push(setTimeout(() => showFloat('battlefield', 'DESVANTAGEM', 'var(--wn)'), 200));
+
+      if (perf) {
+        state.perfectResponses++;
+        timers.push(setTimeout(() => showFloat('battlefield', 'RESPOSTA PERFEITA!', 'var(--y)', true), 100));
+        audio.playReveal(true);
+      } else {
+        audio.playReveal(pDmg > eDmg);
+      }
+
+      timers.push(setTimeout(checkCombos, 300));
+      updateHP();
+
+      timers.push(setTimeout(() => {
+        if (state.enemyHP <= 0) { showFloat('battlefield', 'NOCAUTE!', 'var(--ok)', true); timers.push(setTimeout(() => endDuel('ko-win'), 600)); }
+        else if (state.playerHP <= 0) { showFloat('battlefield', 'DERROTA', 'var(--er)', true); timers.push(setTimeout(() => endDuel('ko-loss'), 600)); }
+        else if (state.round >= state.maxRounds) {
+          const r = state.playerHP > state.enemyHP ? 'time-win' : state.playerHP < state.enemyHP ? 'time-loss' : 'draw';
+          timers.push(setTimeout(() => endDuel(r), 600));
+        }
+        else timers.push(setTimeout(nextRoundCleanup, 500));
+      }, 750));
+    }
+
+    function resolveEnemyOnly() {
+      const eCard = state.lastEnemyCard;
+      if (!eCard) { timers.push(setTimeout(nextRoundCleanup, 400)); return; }
+
+      let eBase = eCard.power;
+      if (cardMatchesField(eCard.type)) eBase += 3;
+      let dmg = eBase + state.enemyBuff;
+      if (state.playerShield) { dmg = 0; state.playerShield = false; showFloat('player', 'ESCUDO!', 'var(--info)'); }
+      state.playerHP = Math.max(0, state.playerHP - dmg);
+      state.enemyBuff = 0;
+      applyAbility(eCard, 'enemy');
+
+      if (state.playerHP <= 0) {
+        setSenturyExpression('happy');
+      } else if (dmg > 0) {
+        setSenturyExpression('happy');
+      }
+
+      if (dmg > 0) { showFloat('player', `-${dmg}`, 'var(--er)'); shakeEl('p-hp-fill'); }
+      updateHP();
+
+      timers.push(setTimeout(() => {
+        if (state.playerHP <= 0) { showFloat('battlefield', 'DERROTA', 'var(--er)', true); timers.push(setTimeout(() => endDuel('ko-loss'), 600)); }
+        else if (state.round >= state.maxRounds) { endDuel(state.playerHP > state.enemyHP ? 'time-win' : 'time-loss'); }
+        else timers.push(setTimeout(nextRoundCleanup, 500));
+      }, 750));
+    }
+
+    function applyAbility(card, owner) {
+      if (!card.ability) return;
+      const isP = owner === 'player';
+      switch (card.ability.type) {
+        case 'heal':
+          if (isP) { state.playerHP = Math.min(100, state.playerHP + card.ability.value); showFloat('player', `+${card.ability.value}`, 'var(--ok)'); }
+          else { state.enemyHP = Math.min(100, state.enemyHP + card.ability.value); }
+          updateHP(); break;
+        case 'shield':
+          if (isP) { state.playerShield = true; showFloat('player', 'ESCUDO ATIVO', 'var(--info)'); }
+          else state.enemyShield = true;
+          break;
+        case 'buff':
+          if (isP) { state.playerBuff += card.ability.value; showFloat('player', `+${card.ability.value} BUFF`, 'var(--y)'); }
+          else state.enemyBuff += card.ability.value;
+          break;
+        case 'debuff':
+          if (isP) state.enemyDebuff += card.ability.value;
+          else { state.playerDebuff += card.ability.value; showFloat('player', `DEBUFF -${card.ability.value}`, 'var(--wn)'); }
+          break;
+        case 'regen':
+          if (isP) { state.playerRegen = { amount: card.ability.value, turns: card.ability.turns }; showFloat('player', `REGEN ×${card.ability.turns}`, 'var(--ok)'); }
+          else state.enemyRegen = { amount: card.ability.value, turns: card.ability.turns };
+          break;
+      }
+    }
+
+    function checkCombos() {
+      const ids = state.playerPlayed.map(c => c.id);
+      COMBOS.forEach(combo => {
+        if (state.combosTriggered.includes(combo.name)) return;
+        if (!combo.cards.every(id => ids.includes(id))) return;
+        state.combosTriggered.push(combo.name);
+
+        if (combo.damage > 0) { state.enemyHP = Math.max(0, state.enemyHP - combo.damage); }
+        if (combo.heal > 0) { state.playerHP = Math.min(100, state.playerHP + combo.heal); }
+        if (combo.shield) state.playerShield = true;
+        updateHP();
+
+        const arena = document.getElementById('arena');
+        if (arena) {
+          const banner = document.createElement('div');
+          banner.className = 'dx-combo-banner';
+          banner.innerHTML = `<div class="dx-combo-inner"><div class="dx-combo-label">COMBO</div><div class="dx-combo-name">${escapeHtml(combo.name)}</div></div>`;
+          arena.appendChild(banner);
+          timers.push(setTimeout(() => banner.remove(), 1800));
+        }
+        audio.playReveal(true);
+      });
+    }
+
+    function nextRoundCleanup() {
+      document.querySelectorAll('.card-slot').forEach(slot => {
+        slot.classList.remove('is-active');
+        const card = slot.querySelector('.dx-card');
+        if (card) {
+          card.classList.remove('is-current-turn');
+          card.classList.add('is-past-turn');
+        }
+      });
+      const vs = document.getElementById('bf-vs');
+      if (vs) vs.textContent = '';
+      document.querySelectorAll('.dx-card-exit').forEach(el => el.remove());
+      state.lastEnemyCard = null;
+      state.lastPlayerCard = null;
+      startRound();
+    }
+
+    function endDuel(result) {
+      state.duelResult = result;
+      clearTransient();
+
+      if (result.includes('win')) {
+        setSenturyExpression('dead');
+      } else if (result.includes('loss')) {
+        setSenturyExpression('happy');
+      } else {
+        setSenturyExpression('idle');
+      }
+
+      timers.push(setTimeout(() => setPhase('results'), 800));
+    }
+
+    function updateHP() {
+      const pf = document.getElementById('p-hp-fill');
+      const ef = document.getElementById('e-hp-fill');
+      const pv = document.getElementById('p-hp-val');
+      const ev = document.getElementById('e-hp-val');
+      if (pf) {
+        pf.style.width = state.playerHP + '%';
+        pf.style.background = state.playerHP > 60 ? 'var(--ok)' : state.playerHP > 30 ? 'var(--y)' : 'var(--er)';
+      }
+      if (ef) ef.style.width = state.enemyHP + '%';
+      if (pv) { pv.textContent = state.playerHP; pv.style.color = state.playerHP > 60 ? 'var(--ok)' : state.playerHP > 30 ? 'var(--y)' : 'var(--er)'; }
+      if (ev) ev.textContent = state.enemyHP;
+    }
+
+    function showFloat(target, text, color, big) {
+      const container = document.getElementById('arena') || document.getElementById('battlefield') || stageEl;
+      const el = document.createElement('div');
+      el.className = 'dx-float' + (big ? ' is-big' : '');
+      el.style.color = color;
+      el.textContent = text;
+      if (target === 'enemy') el.style.top = '8px';
+      else if (target === 'player') el.style.bottom = '110px';
+      else { el.style.top = '50%'; el.style.marginTop = '-10px'; }
+      container.style.position = 'relative';
+      container.appendChild(el);
+      timers.push(setTimeout(() => el.remove(), 1400));
+    }
+
+    function shakeEl(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.closest('.dx-hp-wrap')?.classList.add('dx-shake');
+      timers.push(setTimeout(() => el.closest('.dx-hp-wrap')?.classList.remove('dx-shake'), 450));
+    }
+
+    /* ============ RESULTS ============ */
+    function renderResults() {
+      const r = state.duelResult;
+      let label, color, baseXP, sub;
+
+      if (r === 'ko-win') {
+        label = 'NOCAUTE'; color = 'var(--ok)';
+        baseXP = state.playerHP > 50 ? 150 : 100;
+        sub = 'Treino concluído com sucesso. Desafio superado.';
+      } else if (r === 'time-win') {
+        label = 'VITÓRIA'; color = 'var(--ok)'; baseXP = 100;
+        sub = 'Você terminou com mais pontos de simulação.';
+      } else if (r === 'draw') {
+        label = 'EMPATE'; color = 'var(--y)'; baseXP = 60;
+        sub = 'Nenhum lado cedeu na simulação.';
+      } else if (r === 'ko-loss') {
+        label = 'DERROTA'; color = 'var(--er)'; baseXP = 40;
+        sub = 'Simulação encerrada. Revise a sua estratégia e tente de novo.';
+      } else {
+        label = 'DERROTA'; color = 'var(--er)'; baseXP = 40;
+        sub = 'Sentury terminou com mais pontos. Continue treinando!';
+      }
+
+      const perfXP = state.perfectResponses * 10;
+      const comboXP = state.combosTriggered.length * 15;
+      const totalXP = baseXP + perfXP + comboXP;
+
+      panel(`
+        <div style="text-align:center">
+          <p class="dx-kicker">Resultado do Duelo</p>
+          <h1 class="dx-result-status" style="color:${color}">${label}</h1>
+          <p class="dx-result-sub">${sub}</p>
+          <div class="dx-hp-compare">
+            <div class="dx-hp-side">
+              <span class="dx-hp-side-label">VOCÊ</span>
+              <span class="dx-hp-side-val" style="color:var(--ok)">${state.playerHP}</span>
+            </div>
+            <span class="dx-hp-side-vs">×</span>
+            <div class="dx-hp-side">
+              <span class="dx-hp-side-label">SENTURY</span>
+              <span class="dx-hp-side-val" style="color:var(--er)">${state.enemyHP}</span>
+            </div>
+          </div>
+          <div class="dx-stats-row">
+            <div class="dx-stat"><span class="dx-stat-val">${state.round}</span><span class="dx-stat-label">Rodadas</span></div>
+            <div class="dx-stat"><span class="dx-stat-val">${state.perfectResponses}</span><span class="dx-stat-label">Perfeitas</span></div>
+            <div class="dx-stat"><span class="dx-stat-val">${state.combosTriggered.length}</span><span class="dx-stat-label">Combos</span></div>
+          </div>
+          <div class="dx-xp-table">
+            <div class="dx-xp-row"><span>Base</span><span>+${baseXP} XP</span></div>
+            ${perfXP > 0 ? `<div class="dx-xp-row"><span>Respostas Perfeitas</span><span>+${perfXP} XP</span></div>` : ''}
+            ${comboXP > 0 ? `<div class="dx-xp-row"><span>Combos</span><span>+${comboXP} XP</span></div>` : ''}
+            <div class="dx-xp-total"><span>Total</span><span>+${totalXP} XP</span></div>
+          </div>
+          <div class="dx-actions is-center" style="margin-top:24px">
+            <button class="dx-btn is-secondary" onclick="location.href='/app'">Voltar</button>
+            <button class="dx-btn dx-btn-y" id="replay-btn">Jogar Novamente</button>
+          </div>
+        </div>
+      `);
+      document.getElementById('replay-btn')?.addEventListener('click', () => {
+        resetState();
+        setPhase('intro');
+      });
+    }
+
+    function resetState() {
+      state.phase = 'intro'; state.field = null;
+      state.playerHP = 100; state.enemyHP = 100;
+      state.playerHand = []; state.enemyHand = []; state.playerDeck = [];
+      state.playerHistory = []; state.enemyHistory = [];
+      state.round = 0; state.lastPlayerCard = null; state.lastEnemyCard = null;
+      state.playerBuff = 0; state.enemyBuff = 0;
+      state.playerDebuff = 0; state.enemyDebuff = 0;
+      state.playerShield = false; state.enemyShield = false;
+      state.playerRegen = { amount: 0, turns: 0 };
+      state.enemyRegen = { amount: 0, turns: 0 };
+      state.playerPlayed = []; state.enemyPlayed = [];
+      state.combosTriggered = []; state.perfectResponses = 0;
+      state.duelResult = null;
+      state.drawnThisRound = false;
+      state.enemyPersonality = '';
+    }
+
+    /* ============ AUDIO ============ */
+    function createAudioEngine() {
+      let ctx, master, muted = false;
+      function ensure() {
+        if (!ctx) { ctx = new (window.AudioContext || window.webkitAudioContext)(); master = ctx.createGain(); master.gain.value = muted ? 0 : 0.25; master.connect(ctx.destination); }
+        if (ctx.state === 'suspended') ctx.resume();
+        return ctx;
+      }
+      function blip(fA, fB, dur, vol) {
+        if (muted) return;
+        const c = ensure();
+        const o = c.createOscillator(); const g = c.createGain();
+        o.type = 'sine';
+        o.frequency.setValueAtTime(fA, c.currentTime);
+        o.frequency.exponentialRampToValueAtTime(fB, c.currentTime + dur);
+        g.gain.setValueAtTime(vol, c.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + dur);
+        o.connect(g); g.connect(master);
+        o.start(); o.stop(c.currentTime + dur + 0.01);
+        timers.push(setTimeout(() => { try { o.disconnect(); } catch (_) {} }, Math.ceil((dur + 0.08) * 1000)));
+      }
+      return {
+        unlock() { ensure(); },
+        stopAll() {},
+        setMuted(v) { muted = v; if (master) master.gain.value = muted ? 0 : 0.25; },
+        playClick() { blip(480, 380, 0.04, 0.02); },
+        playReveal(good) {
+          if (good) { setTimeout(() => blip(261, 329, 0.14, 0.025), 0); setTimeout(() => blip(329, 440, 0.16, 0.02), 170); }
+          else { setTimeout(() => blip(174, 155, 0.16, 0.02), 0); setTimeout(() => blip(155, 130, 0.2, 0.016), 200); }
+        },
+        playSlam() {
+          if (muted) return;
+          const c = ensure();
+          const o = c.createOscillator(); const g = c.createGain();
+          o.type = 'square';
+          o.frequency.setValueAtTime(120, c.currentTime);
+          o.frequency.exponentialRampToValueAtTime(55, c.currentTime + 0.08);
+          g.gain.setValueAtTime(0.08, c.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.12);
+          o.connect(g); g.connect(master);
+          o.start(); o.stop(c.currentTime + 0.13);
+        }
+      };
+    }
+
+    render();
+  </script>
+</body>
+</html>

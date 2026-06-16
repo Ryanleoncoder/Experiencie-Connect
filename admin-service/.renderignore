@@ -1,0 +1,68 @@
+# Render ignore file - files to exclude from deployment
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+test_*.sh
+*_test.py
+tests/
+
+# Documentation (not needed in production)
+docs/
+*.md
+!README.md
+
+# Examples
+examples/
+
+# Development files
+.env.example
+.env.local
+.env.development
+.gitignore
+
+# Database files (migrations run separately)
+database/
+
+# CLI files (not needed in web service)
+CLI_*.md
+cli.py
+setup.py
+
+# Secrets and sensitive files
+*SECRETS*.md
+SECRETS_PARA_RENDER.md
+PROXIMOS_PASSOS.md
+
+# Test scripts
+test_endpoints.sh
+test_endpoints_complete.sh
+
+# Logs
+logs/
+*.log

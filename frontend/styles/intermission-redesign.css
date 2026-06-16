@@ -1,0 +1,288 @@
+/* ============================================================
+   INTERMISSION REDESIGN (EC) — template limpo, sobre o background, SEM modal.
+   Mira as classes REAIS do runtime (override). Carregar DEPOIS de intermission-game.css.
+   Fonte de verdade: HANDOFF-DESIGN-TEMPLATE.md + mocks _*-redesign.html
+   ============================================================ */
+:root{
+  --ec-paper:#F5F0E6; --ec-paper2:#EAE4D4; --ec-paper3:#DDD8C8; --ec-yellow:#FFC700; --ec-yellow2:#E5A800;
+  --ec-ink:#0A0A0A; --ec-white:#fff; --ec-coral:#D85A30; --ec-coral-deep:#B8481F; --ec-coral-soft:#F6C9B6;
+  --ec-grey:#CFC9BC; --ec-muted:#7A7570; --ec-purple:#6B4FFF;
+  --ec-b2:2px solid var(--ec-ink); --ec-b3:3px solid var(--ec-ink);
+  --ec-s2:3px 3px 0 var(--ec-ink); --ec-s3:4px 4px 0 var(--ec-ink);
+  --ec-disp:'Bebas Neue',Impact,sans-serif; --ec-body:'DM Sans',system-ui,sans-serif; --ec-mono:'Space Mono',monospace;
+}
+
+/* ===== PLAY-CARD vira STAGE sobre o background (sem cara de modal/card) ===== */
+.intermission-play-card{background:transparent !important;border:none !important;box-shadow:none !important;padding:0 !important;}
+.intermission-card-stripe,.intermission-game-footer{display:none !important;}
+.intermission-play-header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px;background:transparent !important;border:none !important;box-shadow:none !important;padding:0 !important;}
+.intermission-play-badge{background:var(--ec-white) !important;border:var(--ec-b2) !important;box-shadow:var(--ec-s2) !important;
+  color:var(--ec-coral) !important;transform:rotate(-2deg);font-family:var(--ec-disp);font-size:20px;letter-spacing:.05em;padding:9px 16px;border-radius:8px;}
+.intermission-play-title{display:flex;align-items:center;gap:12px;}
+.intermission-play-title strong{font-family:var(--ec-disp);font-size:40px;line-height:.95;color:var(--ec-ink);letter-spacing:.01em;}
+.intermission-play-title small{display:block;font-family:var(--ec-body);font-size:13px;color:var(--ec-muted);font-weight:500;}
+.intermission-play-icon{display:none;}
+/* stats + tela cheia */
+.intermission-header-actions{display:flex;align-items:stretch;gap:10px;}
+.intermission-time-display,.intermission-score-display{background:var(--ec-white) !important;border:var(--ec-b2) !important;
+  box-shadow:var(--ec-s2) !important;border-radius:10px !important;padding:6px 14px !important;text-align:center;min-width:78px;}
+.time-label,.score-label{font-family:var(--ec-body) !important;font-weight:800;font-size:10px;letter-spacing:.1em;color:var(--ec-ink) !important;}
+.time-value,.score-value{font-family:var(--ec-disp) !important;font-size:24px !important;line-height:1;color:var(--ec-coral) !important;}
+.score-max{font-size:9px;color:var(--ec-muted);}
+.intermission-fullscreen-btn{width:46px;background:var(--ec-white) !important;border:var(--ec-b2) !important;box-shadow:var(--ec-s2) !important;border-radius:10px !important;color:var(--ec-ink) !important;}
+
+/* ===== PAINÉIS / BOTÕES / TEXTO (base dos games) ===== */
+.ig-panel,.ig-panel-lg,.intermission-seq-section,.intermission-seq-brief,.intermission-quem-disse-question,.intermission-termo-board{
+  background:var(--ec-white) !important;border:var(--ec-b3) !important;box-shadow:var(--ec-s3) !important;border-radius:14px !important;}
+.ig-btn{font-family:var(--ec-disp) !important;font-size:20px !important;letter-spacing:.04em;padding:11px 22px !important;border-radius:10px !important;border:var(--ec-b2) !important;cursor:pointer;}
+.ig-btn--primary{background:var(--ec-yellow) !important;color:var(--ec-ink) !important;box-shadow:var(--ec-s2) !important;}
+.ig-btn--primary:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ec-ink) !important;}
+.ig-btn--ghost{background:var(--ec-white) !important;color:var(--ec-coral) !important;box-shadow:var(--ec-s2) !important;}
+.ig-btn:disabled{opacity:.5;}
+
+/* ===== TERMO ===== */
+.intermission-termo-cell{background:var(--ec-white) !important;border:var(--ec-b3) !important;box-shadow:var(--ec-s2) !important;
+  border-radius:10px !important;font-family:var(--ec-disp) !important;color:var(--ec-ink) !important;}
+.intermission-termo-cell.correct{background:var(--ec-coral) !important;border-color:var(--ec-ink) !important;color:#fff !important;}
+.intermission-termo-cell.present{background:var(--ec-coral-soft) !important;border-color:var(--ec-ink) !important;color:var(--ec-ink) !important;}
+.intermission-termo-cell.absent{background:var(--ec-grey) !important;border-color:var(--ec-ink) !important;color:var(--ec-ink) !important;}
+.intermission-termo-input{border:var(--ec-b2) !important;border-radius:9px !important;font-family:var(--ec-disp) !important;}
+
+/* ===== QUEM DISSE (perfis) ===== */
+.intermission-profile-btn{background:var(--ec-white) !important;border:var(--ec-b3) !important;box-shadow:var(--ec-s3) !important;
+  border-radius:12px !important;font-family:var(--ec-body) !important;font-weight:700;color:var(--ec-ink) !important;}
+.intermission-profile-btn.correct{background:var(--ec-coral) !important;color:#fff !important;border-color:var(--ec-ink) !important;}
+.intermission-profile-btn.wrong{background:#FFE5E5 !important;border-color:#FF3B3B !important;}
+
+/* ===== SEQUÊNCIA ===== */
+.intermission-seq-slot,.intermission-seq-step{background:var(--ec-white) !important;border:var(--ec-b2) !important;box-shadow:var(--ec-s2) !important;border-radius:10px !important;}
+.intermission-seq-slot:not(.intermission-seq-slot--filled){border-style:dashed !important;color:var(--ec-muted) !important;background:transparent !important;box-shadow:none !important;}
+.intermission-seq-slot--filled{background:var(--ec-coral-soft) !important;color:var(--ec-ink) !important;}
+
+/* ===== CONEXO ===== */
+.intermission-tile-btn{background:var(--ec-white) !important;border:var(--ec-b3) !important;box-shadow:var(--ec-s2) !important;
+  border-radius:10px !important;font-family:var(--ec-body) !important;font-weight:700;color:var(--ec-ink) !important;}
+.intermission-tile-btn.selected{background:var(--ec-coral) !important;color:#fff !important;border-color:var(--ec-ink) !important;box-shadow:var(--ec-s3) !important;}
+.intermission-conexo-life{background:var(--ec-coral) !important;border:var(--ec-b2) !important;}
+.intermission-conexo-life--lost{background:var(--ec-white) !important;opacity:.5;}
+.intermission-conexo-solved-group{background:var(--ec-coral-soft) !important;border:var(--ec-b2) !important;border-radius:10px !important;}
+
+/* ===== DICA (panel) ===== */
+.hint-panel{background:var(--ec-white) !important;border:var(--ec-b2) !important;box-shadow:var(--ec-s2) !important;border-radius:12px !important;}
+.hint-btn{background:var(--ec-yellow) !important;border:var(--ec-b2) !important;box-shadow:var(--ec-s2) !important;border-radius:9px !important;font-family:var(--ec-disp) !important;color:var(--ec-ink) !important;}
+.hint-counter{color:var(--ec-coral) !important;font-family:var(--ec-mono) !important;}
+.hint-message{font-family:var(--ec-mono) !important;background:var(--ec-paper) !important;border:var(--ec-b2) !important;border-radius:8px !important;}
+
+/* ===== SETOR CX / EX — INLINE no título (caixa alta, coral), NÃO card.
+   Ex.: "QUEM DISSE? CX" / "QUEM DISSE? EX" · "TERMO DE CX" / "TERMO DE EX" ===== */
+.ec-sector{color:var(--ec-coral);font-family:var(--ec-disp);}
+/* o nome do game (this.meta.name) ja vem com o setor (ex.: "Termo CX"); colorir o sufixo: */
+.intermission-play-title strong .sector{color:var(--ec-coral);}
+
+/* ===== RESPONSIVO (todas as telas) ===== */
+@media (max-width:720px){
+  .intermission-play-title strong{font-size:30px;}
+  .intermission-play-header{justify-content:center;}
+  .intermission-play-badge{display:none;}
+  .intermission-seq-board,.intermission-profile-grid{grid-template-columns:1fr !important;}
+  .intermission-conexo-grid{grid-template-columns:repeat(2,1fr) !important;}
+  /* GOTCHA: DICA do Termo NUNCA abaixo do teclado no mobile */
+  .intermission-termo-layout .hint-panel{position:sticky;bottom:8px;z-index:5;}
+}
+@media (max-width:420px){
+  .intermission-termo-cell{font-size:24px !important;}
+}
+
+/* ===== QUEM DISSE — UI de chat (por canal) ===== */
+.qd-chat{background:var(--ec-white) !important;border:var(--ec-b3) !important;box-shadow:var(--ec-s3) !important;border-radius:16px !important;overflow:hidden;}
+.qd-chat-head{display:flex;align-items:center;gap:10px;background:var(--ec-ink);color:var(--ec-white);padding:11px 16px;}
+.qd-chat-head .ch-dot{width:9px;height:9px;border-radius:50%;background:#16BF5C;box-shadow:0 0 0 3px rgba(22,191,92,.3);}
+.qd-chat-head .ch-name{font-family:var(--ec-body);font-weight:700;font-size:14px;}
+.qd-chat-head .ch-icon{margin-left:auto;font-size:16px;}
+.qd-chat-body{padding:18px;background:var(--ec-paper2);display:flex;flex-direction:column;gap:10px;
+  background-image:radial-gradient(var(--ec-paper3) 1px,transparent 1px);background-size:16px 16px;}
+.qd-meta{font-family:var(--ec-mono);font-size:11px;color:var(--ec-muted);letter-spacing:.08em;text-transform:uppercase;}
+.qd-msg{display:flex;align-items:flex-end;gap:12px;}
+.qd-avatar{width:46px;height:46px;border-radius:50%;border:var(--ec-b2);background:var(--ec-coral-soft);box-shadow:var(--ec-s2);
+  display:flex;align-items:center;justify-content:center;font-family:var(--ec-disp);font-size:26px;color:var(--ec-ink);flex:none;}
+.qd-bubble{position:relative;background:var(--ec-white);border:var(--ec-b2);box-shadow:var(--ec-s2);border-radius:14px;
+  border-bottom-left-radius:3px;padding:13px 17px;font-family:var(--ec-body);font-weight:500;font-size:18px;line-height:1.4;max-width:80%;}
+.qd-bubble::before{content:'';position:absolute;left:-8px;bottom:-2px;width:13px;height:13px;background:var(--ec-white);
+  border-left:var(--ec-b2);border-bottom:var(--ec-b2);transform:rotate(45deg);}
+.qd-chat[data-channel="whatsapp"] .qd-chat-head{background:#075E54;}
+.qd-chat[data-channel="email"] .qd-chat-head{background:#1A1A2E;}
+.qd-chat[data-channel="email"] .qd-chat-body{background:#fff;background-image:none;}
+.qd-chat[data-channel="telefone"] .qd-chat-head{background:#0A0A0A;}
+
+/* ===== SAVING CHIP (sem modal/spinner) ===== */
+.ig-saving-chip{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:60;
+  background:var(--ec-ink);color:var(--ec-white);border:2px solid var(--ec-coral);box-shadow:var(--ec-s2);
+  border-radius:999px;padding:8px 18px;font-family:var(--ec-body);font-weight:700;font-size:13px;letter-spacing:.02em;}
+
+/* canais extra (Redes Sociais / interno EX) — nome+icone diferenciam; cor sobria (sem roxo=Sentury) */
+.qd-chat[data-channel="social"] .qd-chat-head{background:#222;}
+.qd-chat[data-channel="interno"] .qd-chat-head{background:#161616;}
+.qd-chat[data-channel="interno"] .qd-chat-body,.qd-chat[data-channel="email"] .qd-chat-body{background-image:none;}
+
+/* ===== ANIMACOES (polish) — movimento com proposito; respeita reduced-motion ===== */
+@keyframes ig-rise { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+@keyframes ig-pop  { 0%{transform:scale(.85)} 60%{transform:scale(1.06)} 100%{transform:scale(1)} }
+@keyframes ig-shake{ 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-6px)} 40%,80%{transform:translateX(6px)} }
+/* Quem Disse: balao entra subindo (chega como mensagem) */
+.qd-msg{animation:ig-rise .3s ease-out both;}
+/* acerto da pop (Termo correto / perfil correto / tile selecionado) */
+.intermission-profile-btn.correct,.intermission-tile-btn.selected,.intermission-termo-cell.correct{animation:ig-pop .32s cubic-bezier(.68,-.55,.265,1.55);}
+/* erro da shake */
+.intermission-profile-btn.wrong{animation:ig-shake .35s ease;}
+/* Conexo: grupo resolvido entra deslizando */
+.intermission-conexo-solved-group{animation:ig-rise .35s ease-out both;}
+/* press neobrutalista (afunda) em todos os interativos */
+.ig-btn:not(:disabled):active,.hint-btn:active,.btn-dica:active,.intermission-tile-btn:active,
+.intermission-profile-btn:not(:disabled):active,.key:active,.intermission-seq-step:active,
+.intermission-seq-slot:active,.intermission-fullscreen-btn:active{
+  transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ec-ink) !important;
+}
+/* hover lift no desktop */
+@media (hover:hover){
+  .intermission-tile-btn:not(.selected):hover,.intermission-profile-btn:not(.correct):not(.wrong):hover,
+  .intermission-seq-step:hover,.key:hover{transform:translate(-1px,-1px);}
+}
+@media (prefers-reduced-motion:reduce){
+  .qd-msg,.intermission-profile-btn.correct,.intermission-tile-btn.selected,.intermission-termo-cell.correct,
+  .intermission-profile-btn.wrong,.intermission-conexo-solved-group{animation:none !important;}
+}
+
+/* ============================================================
+   TERMO v2 — anatomia do mock (_termo-redesign.html) portada pro runtime real.
+   Escopo: .intermission-v2-termo-shell (renderTermoV2) — NAO afeta os games legados.
+   ============================================================ */
+.intermission-v2-termo-shell{
+  --paper:#F5F0E6; --paper2:#EAE4D4; --paper3:#DDD8C8; --yellow:#FFC700; --yellow2:#E5A800;
+  --ink:#0A0A0A; --white:#fff; --coral:#D85A30; --coral-deep:#B8481F; --coral-soft:#F6C9B6;
+  --grey:#CFC9BC; --muted:#7A7570; --purple:#6B4FFF;
+  --b2:2px solid var(--ink); --b3:3px solid var(--ink);
+  --s2:3px 3px 0 var(--ink); --s3:4px 4px 0 var(--ink);
+  --disp:'Bebas Neue',Impact,sans-serif; --body:'DM Sans',system-ui,sans-serif; --mono:'Space Mono',monospace;
+  display:flex; flex-direction:column; gap:0; max-width:860px; margin:0 auto;
+  background:transparent !important; border:none !important; box-shadow:none !important; padding:0 !important;
+}
+.intermission-v2-termo-shell .progress-strip{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;margin:2px 0 10px;}
+.intermission-v2-termo-shell .mcol{display:flex;align-items:center;}
+.intermission-v2-termo-shell .mdot{width:26px;height:26px;border-radius:50%;border:var(--b2);display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-size:14px;background:var(--white);color:#B5B0A5;}
+.intermission-v2-termo-shell .mdot.done.normal{background:var(--yellow);color:var(--ink);border-color:var(--ink);}
+.intermission-v2-termo-shell .mdot.done.game{background:var(--coral);color:#fff;border-color:var(--ink);}
+.intermission-v2-termo-shell .mdot.done.logum{background:var(--purple);color:#fff;border-color:var(--ink);}
+.intermission-v2-termo-shell .mdot.current{background:var(--yellow);color:var(--ink);border-color:var(--ink);box-shadow:3px 3px 0 var(--coral-deep);}
+.intermission-v2-termo-shell .mconn{width:14px;height:3px;background:var(--paper3);}
+.intermission-v2-termo-shell .mconn.on{background:var(--yellow2);}
+.intermission-v2-termo-shell .stats-strip{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px;flex-wrap:wrap;}
+.intermission-v2-termo-shell .badge{position:relative;background:var(--white);border:var(--b2);box-shadow:var(--s2);transform:rotate(-2deg);padding:9px 16px;font-family:var(--disp);font-size:20px;letter-spacing:.05em;color:var(--coral);}
+.intermission-v2-termo-shell .stats-right{display:flex;align-items:stretch;gap:10px;flex-wrap:wrap;}
+.intermission-v2-termo-shell .stat-box{background:var(--white)!important;border:var(--b2)!important;box-shadow:var(--s2)!important;border-radius:10px!important;padding:6px 14px!important;text-align:center;min-width:78px;}
+.intermission-v2-termo-shell .stat-label{font-family:var(--body)!important;font-weight:800;font-size:10px;letter-spacing:.1em;color:var(--ink)!important;}
+.intermission-v2-termo-shell .stat-value{font-family:var(--disp)!important;font-size:24px!important;line-height:1;color:var(--coral)!important;}
+.intermission-v2-termo-shell .stat-box.tries .stat-value{color:var(--ink)!important;}
+.intermission-v2-termo-shell .score-max{font-size:9px;color:var(--muted);}
+.intermission-v2-termo-shell .fs-btn{width:46px;background:var(--white)!important;border:var(--b2)!important;box-shadow:var(--s2)!important;border-radius:10px!important;display:flex;align-items:center;justify-content:center;color:var(--ink)!important;cursor:pointer;}
+.intermission-v2-termo-shell .title{font-family:var(--disp);font-size:52px;line-height:.9;text-align:center;margin:6px 0 4px;color:var(--ink);}
+.intermission-v2-termo-shell .title .k{color:var(--ink);}
+.intermission-v2-termo-shell .title .c{color:var(--coral);}
+.intermission-v2-termo-shell .subtitle{text-align:center;font-size:14px;max-width:460px;margin:0 auto;line-height:1.35;color:var(--ink);}
+.intermission-v2-termo-shell .sub-underline{display:block;width:150px;height:4px;background:var(--coral);border-radius:3px;margin:5px auto 0;}
+.intermission-v2-termo-shell .rule{height:3px;background:var(--ink);border-radius:2px;margin:10px 0 12px;}
+.intermission-v2-termo-shell .play{display:flex;align-items:flex-start;justify-content:center;gap:40px;flex-wrap:wrap;}
+.intermission-v2-termo-shell .play>.intermission-termo-board{flex:0 0 auto;width:max-content;}
+.intermission-v2-termo-shell .aside-left,.intermission-v2-termo-shell .legend{flex:0 0 auto;}
+.intermission-v2-termo-shell .aside-left{font-size:15px;font-weight:500;padding-top:14px;}
+.intermission-v2-termo-shell .aside-left b{color:var(--coral);}
+.intermission-v2-termo-shell .arrow{color:var(--coral);font-size:30px;font-weight:700;}
+.intermission-v2-termo-shell .intermission-termo-board{display:flex!important;flex-direction:column!important;gap:7px!important;background:transparent!important;border:none!important;box-shadow:none!important;padding:0!important;width:auto!important;max-width:none!important;overflow:visible!important;}
+.intermission-v2-termo-shell .play{overflow:visible!important;}
+.intermission-v2-termo-shell .intermission-v2-termo-row{display:flex!important;align-items:center;gap:10px;}
+.intermission-v2-termo-shell .rownum{font-family:var(--disp);font-size:22px;color:var(--coral);width:24px;text-align:center;border-bottom:3px solid var(--coral);line-height:1.1;flex:none;}
+.intermission-v2-termo-shell .cells{display:flex;gap:7px;}
+.intermission-v2-termo-shell .intermission-termo-cell,
+.intermission-v2-termo-shell .intermission-termo-cell:empty{width:44px!important;height:44px!important;min-width:44px!important;flex:0 0 44px!important;aspect-ratio:auto!important;background:var(--white)!important;border:var(--b3)!important;border-style:solid!important;box-shadow:2px 2px 0 var(--ink)!important;border-radius:9px!important;display:flex;align-items:center;justify-content:center;font-family:var(--disp)!important;font-size:24px!important;color:var(--ink)!important;}
+.intermission-v2-termo-shell .intermission-termo-cell.correct{background:var(--coral)!important;border-color:var(--ink)!important;color:#fff!important;}
+.intermission-v2-termo-shell .intermission-termo-cell.present{background:var(--coral-soft)!important;border-color:var(--ink)!important;color:var(--ink)!important;}
+.intermission-v2-termo-shell .intermission-termo-cell.absent{background:var(--grey)!important;border-color:var(--ink)!important;color:var(--ink)!important;}
+.intermission-v2-termo-shell .legend{display:flex;flex-direction:column;gap:14px;padding-top:8px;font-size:13px;line-height:1.25;}
+.intermission-v2-termo-shell .leg{display:flex;align-items:center;gap:10px;}
+.intermission-v2-termo-shell .sw{width:34px;height:34px;border:var(--b2);border-radius:8px;box-shadow:2px 2px 0 var(--ink);flex:none;}
+.intermission-v2-termo-shell .sw.c{background:var(--coral);}
+.intermission-v2-termo-shell .sw.p{background:var(--coral-soft);}
+.intermission-v2-termo-shell .sw.a{background:var(--grey);}
+.intermission-v2-termo-shell .kb{margin:30px auto 0;max-width:640px;display:flex;flex-direction:column;gap:9px;align-items:center;}
+.intermission-v2-termo-shell .krow{display:flex;gap:8px;justify-content:center;}
+.intermission-v2-termo-shell .key{min-width:48px;height:54px;background:var(--white);border:var(--b2);box-shadow:var(--s2);border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-size:24px;color:var(--ink);padding:0 10px;}
+.intermission-v2-termo-shell .key.act{background:var(--coral);color:var(--white);min-width:84px;font-size:20px;}
+.intermission-v2-termo-shell .intermission-termo-input-panel{margin-top:10px;}
+.intermission-v2-termo-shell .intermission-termo-input-container{display:flex;gap:10px;}
+.intermission-v2-termo-shell .intermission-termo-input{flex:1;background:var(--white);border:var(--b2)!important;box-shadow:var(--s2);border-radius:10px;padding:14px 18px;font-family:var(--disp);font-size:24px;letter-spacing:.3em;text-align:center;color:var(--ink);}
+.intermission-v2-termo-shell .ig-btn--primary{background:var(--yellow)!important;color:var(--ink)!important;border:var(--b2)!important;box-shadow:var(--s2)!important;border-radius:10px!important;font-family:var(--disp)!important;font-size:20px!important;padding:0 26px!important;cursor:pointer;}
+.intermission-v2-termo-shell .hintbar{display:flex;align-items:center;gap:16px;margin-top:12px;}
+.intermission-v2-termo-shell .bubble{width:42px;height:42px;border:var(--b2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-family:var(--disp);flex:none;}
+.intermission-v2-termo-shell .btn-dica{background:var(--white);border:var(--b2);box-shadow:var(--s2);color:var(--coral);font-family:var(--disp);font-size:20px;letter-spacing:.04em;padding:9px 18px;border-radius:8px;cursor:pointer;}
+.intermission-v2-termo-shell .btn-dica.is-disabled,.intermission-v2-termo-shell .btn-dica:disabled{opacity:.5;}
+.intermission-v2-termo-shell .hint-sep{width:3px;height:38px;background:var(--ink);flex:none;}
+.intermission-v2-termo-shell .hint-txt{font-size:15px;line-height:1.35;flex:1;}
+.intermission-v2-termo-shell .hint-counter{font-family:var(--mono);font-weight:700;color:var(--coral);}
+@media (max-width:720px){
+  .intermission-v2-termo-shell .title{font-size:48px;}
+  .intermission-v2-termo-shell .play{grid-template-columns:1fr;}
+  .intermission-v2-termo-shell .aside-left,.intermission-v2-termo-shell .legend{flex-direction:row;flex-wrap:wrap;justify-content:center;padding-top:0;}
+  .intermission-v2-termo-shell .badge{display:none;}
+  .intermission-v2-termo-shell .kb{display:none;}
+  .intermission-v2-termo-shell .intermission-termo-cell{width:46px!important;height:46px!important;font-size:26px!important;}
+}
+
+/* ============================================================
+   SHELL COMPARTILHADO v2 — usado por Conexo / Sequencia / Quem Disse (renderV2Shell).
+   Reusa o mesmo look do Termo. Os CORPOS dos games ja sao estilizados pelas regras
+   .intermission-profile-btn / .intermission-tile-btn / .intermission-seq-* / .ig-* acima.
+   ============================================================ */
+.intermission-v2-shell{
+  --paper:#F5F0E6; --paper3:#DDD8C8; --yellow:#FFC700; --yellow2:#E5A800; --ink:#0A0A0A; --white:#fff;
+  --coral:#D85A30; --coral-deep:#B8481F; --coral-soft:#F6C9B6; --muted:#7A7570; --purple:#6B4FFF;
+  --b2:2px solid var(--ink); --s2:3px 3px 0 var(--ink);
+  --disp:'Bebas Neue',Impact,sans-serif; --body:'DM Sans',system-ui,sans-serif; --mono:'Space Mono',monospace;
+  display:flex;flex-direction:column;gap:0;max-width:760px;margin:0 auto;
+  background:transparent!important;border:none!important;box-shadow:none!important;padding:0!important;
+}
+.intermission-v2-shell .progress-strip{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;margin:2px 0 10px;}
+.intermission-v2-shell .mcol{display:flex;align-items:center;}
+.intermission-v2-shell .mdot{width:26px;height:26px;border-radius:50%;border:var(--b2);display:flex;align-items:center;justify-content:center;font-family:var(--disp);font-size:14px;background:var(--white);color:#B5B0A5;}
+.intermission-v2-shell .mdot.done.normal{background:var(--yellow);color:var(--ink);}
+.intermission-v2-shell .mdot.done.game{background:var(--coral);color:#fff;}
+.intermission-v2-shell .mdot.done.logum{background:var(--purple);color:#fff;}
+.intermission-v2-shell .mdot.current{background:var(--yellow);color:var(--ink);box-shadow:3px 3px 0 var(--coral-deep);}
+.intermission-v2-shell .mconn{width:14px;height:3px;background:var(--paper3);}
+.intermission-v2-shell .mconn.on{background:var(--yellow2);}
+.intermission-v2-shell .stats-strip{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px;flex-wrap:wrap;}
+.intermission-v2-shell .badge{background:var(--white);border:var(--b2);box-shadow:var(--s2);transform:rotate(-2deg);padding:9px 16px;font-family:var(--disp);font-size:20px;letter-spacing:.05em;color:var(--coral);}
+.intermission-v2-shell .stats-right{display:flex;align-items:stretch;gap:10px;flex-wrap:wrap;}
+.intermission-v2-shell .stat-box{background:var(--white)!important;border:var(--b2)!important;box-shadow:var(--s2)!important;border-radius:10px!important;padding:6px 14px!important;text-align:center;min-width:78px;}
+.intermission-v2-shell .stat-label{font-family:var(--body)!important;font-weight:800;font-size:10px;letter-spacing:.1em;color:var(--ink)!important;}
+.intermission-v2-shell .stat-value{font-family:var(--disp)!important;font-size:24px!important;line-height:1;color:var(--coral)!important;}
+.intermission-v2-shell .stat-box.tries .stat-value{color:var(--ink)!important;}
+.intermission-v2-shell .score-max{font-size:9px;color:var(--muted);}
+.intermission-v2-shell .fs-btn{width:46px;background:var(--white)!important;border:var(--b2)!important;box-shadow:var(--s2)!important;border-radius:10px!important;display:flex;align-items:center;justify-content:center;color:var(--ink)!important;cursor:pointer;}
+.intermission-v2-shell .title{font-family:var(--disp);font-size:52px;line-height:.9;text-align:center;margin:6px 0 4px;color:var(--ink);}
+.intermission-v2-shell .title .c{color:var(--coral);}
+.intermission-v2-shell .subtitle{text-align:center;font-size:14px;max-width:460px;margin:0 auto;line-height:1.35;color:var(--ink);}
+.intermission-v2-shell .sub-underline{display:block;width:150px;height:4px;background:var(--coral);border-radius:3px;margin:5px auto 0;}
+.intermission-v2-shell .rule{height:3px;background:var(--ink);border-radius:2px;margin:10px 0 14px;}
+.intermission-v2-shell .intermission-game-layout{margin-top:0;}
+@media (max-width:720px){
+  .intermission-v2-shell .title{font-size:40px;}
+  .intermission-v2-shell .badge{display:none;}
+}
+
+/* ===== CONEXO — cada categoria resolvida com sua cor (estilo Connections, paleta EC) ===== */
+.intermission-conexo-solved-group{padding:9px 14px!important;border-left-width:7px!important;border-radius:10px!important;}
+.intermission-conexo-solved-group[data-color] strong{display:block;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.03em;color:#0A0A0A!important;}
+.intermission-conexo-solved-group[data-color] p{font-size:12px;color:#0A0A0A!important;opacity:.7;margin:2px 0 0;}
+.intermission-conexo-solved-group[data-color="0"]{background:#FBEAE0!important;border-color:#0A0A0A!important;border-left-color:#D85A30!important;}
+.intermission-conexo-solved-group[data-color="1"]{background:#D0F7E3!important;border-color:#0A0A0A!important;border-left-color:#16BF5C!important;}
+.intermission-conexo-solved-group[data-color="2"]{background:#FFF0D4!important;border-color:#0A0A0A!important;border-left-color:#E5A800!important;}
+.intermission-conexo-solved-group[data-color="3"]{background:#ECE7FF!important;border-color:#0A0A0A!important;border-left-color:#6B4FFF!important;}

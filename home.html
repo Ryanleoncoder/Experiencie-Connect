@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <script src="./frontend/js/console-control.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://favicon.rysn-craft.workers.dev">
+    <title>Experience Connect — Redirecionando</title>
+    <link rel="canonical" href="/app">
+    <meta http-equiv="refresh" content="0; url=app.html">
+    <script>
+        (function redirectLegacyHome() {
+            var target = window.location.protocol === 'file:' ? 'app.html' : '/app';
+            var suffix = window.location.search + window.location.hash;
+            window.location.replace(target + suffix);
+        })();
+    </script>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            font-family: Arial, sans-serif;
+            background: #0a0a0a;
+            color: #f5f5f5;
+        }
+
+        a {
+            color: #ffd600;
+        }
+    </style>
+</head>
+<body>
+    <p>Redirecionando para <a href="app.html">app.html</a>...</p>
+</body>
+</html>
