@@ -8,26 +8,21 @@ from app.core.config import settings
 SESSION_COOKIE = "cx_session"
 
 
-def _resolve_token(authorization: str | None, cx_session: str | None) -> str:
-    
-    if authorization:
-        scheme, _, token = authorization.partition(" ")
-        if scheme.lower() != "bearer" or not token:
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Token invalido")
-        return token
-
+def _candidate_tokens(authorization: str | None, cx_session: str | None) -> list[str]:
+    # Cookie primeiro (fonte canonica da sessao). O Bearer entra como fallback
+    # para nao quebrar clientes legados, mas um Bearer velho/invalido NAO deve
+    # bloquear um cookie valido.
+    candidates: list[str] = []
     if cx_session:
-        return cx_session
+        candidates.append(cx_session)
+    if authorization:
+        scheme, _, bearer = authorization.partition(" ")
+        if scheme.lower() == "bearer" and bearer:
+            candidates.append(bearer)
+    return candidates
 
-    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Token ausente")
 
-
-async def require_session_user(
-    authorization: str | None = Header(default=None),
-    cx_session: str | None = Cookie(default=None),
-) -> dict:
-    token = _resolve_token(authorization, cx_session)
-
+def _decode_session(token: str) -> dict | None:
     try:
         payload = jwt.decode(
             token,
@@ -36,10 +31,26 @@ async def require_session_user(
             issuer="cx-game",
             audience="cxgame-vps",
         )
-    except JWTError as exc:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Token invalido") from exc
+    except JWTError:
+        return None
 
     if payload.get("typ") != "cx_session" or not payload.get("sub"):
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Token invalido")
+        return None
 
     return payload
+
+
+async def require_session_user(
+    authorization: str | None = Header(default=None),
+    cx_session: str | None = Cookie(default=None),
+) -> dict:
+    candidates = _candidate_tokens(authorization, cx_session)
+    if not candidates:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Token ausente")
+
+    for token in candidates:
+        payload = _decode_session(token)
+        if payload is not None:
+            return payload
+
+    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Token invalido")

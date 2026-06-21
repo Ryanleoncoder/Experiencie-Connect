@@ -627,13 +627,14 @@ function progressFlowDebugLog(...args) {
           isProcessed = isSuccess;
         }
       } else {
+        const completedInProgress = completedBaseSet.has(challengeId);
         const intermissionStatus = intermissionStatusMap.get(challengeId);
         if (intermissionStatus) {
-          isSuccess = Boolean(intermissionStatus.success);
-          isProcessed = Boolean(intermissionStatus.processed || intermissionStatus.success);
+          isProcessed = Boolean(intermissionStatus.processed || intermissionStatus.success) || completedInProgress;
+          isSuccess = Boolean(intermissionStatus.success) || completedInProgress;
         } else {
-          isSuccess = completedBaseSet.has(challengeId);
-          isProcessed = isSuccess;
+          isSuccess = completedInProgress;
+          isProcessed = completedInProgress;
         }
       }
 

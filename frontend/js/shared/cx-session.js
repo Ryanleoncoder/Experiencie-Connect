@@ -250,7 +250,8 @@
   function redirectToLogin() {
     if (authFailureRedirecting) return;
     authFailureRedirecting = true;
-    clearSessionState();
+    clearStorageKeys(getPrimaryStorage());
+    clearStorageKeys(getFallbackStorage());
     redirect('login.html');
   }
 
