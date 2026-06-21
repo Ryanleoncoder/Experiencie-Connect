@@ -82,16 +82,20 @@ class ProgressSyncService {
 
   async fetchProtectedJSON(url) {
     const token = this.getSessionToken();
-    if (!token) {
-      throw new Error('Missing session token');
+    const authed = (typeof window !== 'undefined' && window.CxSession?.hasActiveSession)
+      ? window.CxSession.hasActiveSession()
+      : !!token;
+    if (!authed) {
+      throw new Error('Missing session');
     }
+
+    const headers = { Accept: 'application/json' };
+    if (token) headers.Authorization = `Bearer ${token}`;
 
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        Authorization: `Bearer ${token}`
-      }
+      credentials: 'include',
+      headers
     });
 
     if (!response.ok) {

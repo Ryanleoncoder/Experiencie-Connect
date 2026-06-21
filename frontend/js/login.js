@@ -229,9 +229,6 @@ async function _storeSessionAndSync(data, usernameInput) {
     storage.setItem('cx_display_name', user.display_name);
   }
   storage.setItem('loggedIn', 'true');
-  if (data.sessionToken) {
-    storage.setItem('cx_session_token', data.sessionToken);
-  }
 
   var users = JSON.parse(storage.getItem('cx_users') || '{}');
   if (!users[uid]) {

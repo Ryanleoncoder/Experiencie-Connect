@@ -288,7 +288,7 @@
             if (u.ranking_code) storage.setItem('cx_ranking_code', u.ranking_code);
             if (u.display_name) storage.setItem('cx_display_name', u.display_name);
             storage.setItem('loggedIn', 'true');
-            if (data.sessionToken) storage.setItem('cx_session_token', data.sessionToken);
+            
 
             const users = JSON.parse(storage.getItem('cx_users') || '{}');
             if (!users[uid]) {

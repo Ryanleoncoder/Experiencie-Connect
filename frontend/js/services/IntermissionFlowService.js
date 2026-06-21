@@ -311,7 +311,7 @@
   class IntermissionFlowService {
     constructor(options = {}) {
       this.apiBase = normalizeApiBase(options.apiBase);
-      this.fetchImpl = options.fetchImpl || root?.fetch?.bind(root);
+      this.fetchImpl = options.fetchImpl || (root?.fetch ? (u, o) => root.fetch(u, o) : null);
       this.sessionStorageRef = options.sessionStorageRef || root?.sessionStorage;
       this.manifest = null;
       this.phaseSession = null;
@@ -423,9 +423,10 @@
       const token = getStoredSessionToken({
         sessionStorageRef: this.sessionStorageRef
       });
+      const authed = root?.CxSession?.hasActiveSession ? root.CxSession.hasActiveSession() : !!token;
 
-      if (!token || !this.fetchImpl) {
-        console.warn('[IntermissionFlow] Session token or fetch unavailable; using challenge-only flow');
+      if (!authed || !this.fetchImpl) {
+        console.warn('[IntermissionFlow] Sessao ou fetch indisponivel; usando fluxo challenge-only');
         return null;
       }
 
@@ -472,9 +473,10 @@
       const token = getStoredSessionToken({
         sessionStorageRef: this.sessionStorageRef
       });
+      const authed = root?.CxSession?.hasActiveSession ? root.CxSession.hasActiveSession() : !!token;
 
-      if (!token || !this.fetchImpl) {
-        console.warn('[IntermissionFlow] Session token or fetch unavailable; phase session unavailable');
+      if (!authed || !this.fetchImpl) {
+        console.warn('[IntermissionFlow] Sessao ou fetch indisponivel; phase session indisponivel');
         return null;
       }
 
@@ -527,8 +529,9 @@
       const token = getStoredSessionToken({
         sessionStorageRef: this.sessionStorageRef
       });
+      const authed = root?.CxSession?.hasActiveSession ? root.CxSession.hasActiveSession() : !!token;
 
-      if (!token || !this.fetchImpl || !phaseSessionId || !flowChallengeId) {
+      if (!authed || !this.fetchImpl || !phaseSessionId || !flowChallengeId) {
         return null;
       }
 

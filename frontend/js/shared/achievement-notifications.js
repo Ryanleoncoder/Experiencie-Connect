@@ -23,16 +23,20 @@ function getCxSessionToken() {
 
 async function loadProtectedFlowStatus(seasonId = 'S-2025-01') {
     const token = getCxSessionToken();
-    if (!token) {
+    const authed = (typeof window !== 'undefined' && window.CxSession?.hasActiveSession)
+        ? window.CxSession.hasActiveSession()
+        : !!token;
+    if (!authed) {
         return null;
     }
 
+    const headers = { Accept: 'application/json' };
+    if (token) headers.Authorization = `Bearer ${token}`;
+
     const response = await fetch(`/api/user-flow-status?seasonId=${encodeURIComponent(seasonId)}`, {
         method: 'GET',
-        headers: {
-            Accept: 'application/json',
-            Authorization: `Bearer ${token}`
-        }
+        credentials: 'include',
+        headers
     });
 
     if (!response.ok) {

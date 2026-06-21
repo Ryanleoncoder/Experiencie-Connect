@@ -169,6 +169,8 @@ module.exports = async (req, res) => {
       res.setHeader('Set-Cookie', buildSessionCookies(sessionToken));
     }
 
+    // O JWT NAO volta no corpo: vive apenas no cookie httpOnly (cx_session),
+    // setado acima. Assim o token nunca fica acessivel ao JavaScript.
     return res.status(200).json({
       success: true,
       user: {
@@ -177,8 +179,7 @@ module.exports = async (req, res) => {
         display_name: user.display_name || null,
         ranking_code: user.ranking_code || null,
         avatar_file_name: user.avatar_file_name || null
-      },
-      sessionToken
+      }
     });
 
   } catch (error) {
