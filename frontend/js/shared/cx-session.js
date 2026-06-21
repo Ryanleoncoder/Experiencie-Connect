@@ -120,7 +120,21 @@
     prunePrefixedEntries(storage);
   }
 
+  function clearServerSession() {
+    // Best-effort: limpa o cookie httpOnly de sessao no servidor.
+    // keepalive permite concluir mesmo durante navegacao/logout.
+    try {
+      if (typeof root?.fetch === 'function') {
+        root.fetch('/api/logout', { method: 'POST', credentials: 'include', keepalive: true })
+          .catch(() => {});
+      }
+    } catch (error) {
+      // ignore
+    }
+  }
+
   function clearSessionState() {
+    clearServerSession();
     clearStorageKeys(getPrimaryStorage());
     clearStorageKeys(getFallbackStorage());
   }
