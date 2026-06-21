@@ -59,6 +59,26 @@
     return primary?.getItem?.(key) || fallback?.getItem?.(key) || null;
   }
 
+  function getCookie(name) {
+    if (typeof root?.document?.cookie !== 'string') return null;
+    const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const match = root.document.cookie.match(new RegExp('(?:^|; )' + escaped + '=([^;]*)'));
+    return match ? decodeURIComponent(match[1]) : null;
+  }
+
+  function hasAuthCookie() {
+    return getCookie('cx_auth') === '1';
+  }
+
+  function getVpsApiHost() {
+    try {
+      const base = root?.CXGAME_VPS_API_BASE || root?.__APP_CONFIG__?.CXGAME_VPS_API_BASE;
+      return base ? new URL(base).host : null;
+    } catch (error) {
+      return null;
+    }
+  }
+
   function getSessionSnapshot() {
     return {
       token: getSessionValue('cx_session_token'),
@@ -71,7 +91,11 @@
 
   function hasActiveSession() {
     const session = getSessionSnapshot();
-    return Boolean(session.token && session.userId && session.loggedIn);
+    if (session.token && session.userId && session.loggedIn) {
+      return true;
+    }
+    // Aba/dispositivo sem o token no storage, mas com cookie de sessao valido.
+    return hasAuthCookie();
   }
 
   function prunePrefixedEntries(storage) {
@@ -273,6 +297,14 @@
     return PROTECTED_PATH_PATTERNS.some(pattern => pattern.test(path));
   }
 
+  function shouldSendCredentials(input) {
+    const url = getRequestUrl(input);
+    if (!url) return false;
+    const vpsHost = getVpsApiHost();
+    if (vpsHost && url.host === vpsHost) return true;
+    return PROTECTED_PATH_PATTERNS.some(pattern => pattern.test(url.pathname));
+  }
+
   function installProtectedFetchGuard() {
     if (fetchGuardInstalled || typeof root?.fetch !== 'function') {
       return;
@@ -280,8 +312,18 @@
 
     const originalFetch = root.fetch.bind(root);
     root.fetch = async function guardedFetch(input, init) {
-      const response = await originalFetch(input, init);
-      if (shouldHandleProtectedFailure(input, init, response)) {
+      let nextInit = init;
+      // Garante que o cookie de sessao viaje nas chamadas protegidas/VPS
+      // (cross-origin precisa de credentials: 'include').
+      if ((typeof input === 'string' || init) && shouldSendCredentials(input)) {
+        nextInit = { ...(init || {}) };
+        if (!nextInit.credentials) {
+          nextInit.credentials = 'include';
+        }
+      }
+
+      const response = await originalFetch(input, nextInit);
+      if (shouldHandleProtectedFailure(input, nextInit, response)) {
         root.setTimeout(() => redirectToLogin(), 0);
       }
       return response;

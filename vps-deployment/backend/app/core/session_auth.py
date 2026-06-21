@@ -1,24 +1,32 @@
 """Session-token validation for frontend-to-VPS requests."""
 
-from fastapi import Header, HTTPException, status
+from fastapi import Cookie, Header, HTTPException, status
 from jose import JWTError, jwt
 
 from app.core.config import settings
 
-
-def _extract_bearer_token(authorization: str | None) -> str:
-    if not authorization:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Token ausente")
-
-    scheme, _, token = authorization.partition(" ")
-    if scheme.lower() != "bearer" or not token:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Token invalido")
-
-    return token
+SESSION_COOKIE = "cx_session"
 
 
-async def require_session_user(authorization: str | None = Header(default=None)) -> dict:
-    token = _extract_bearer_token(authorization)
+def _resolve_token(authorization: str | None, cx_session: str | None) -> str:
+    
+    if authorization:
+        scheme, _, token = authorization.partition(" ")
+        if scheme.lower() != "bearer" or not token:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Token invalido")
+        return token
+
+    if cx_session:
+        return cx_session
+
+    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Token ausente")
+
+
+async def require_session_user(
+    authorization: str | None = Header(default=None),
+    cx_session: str | None = Cookie(default=None),
+) -> dict:
+    token = _resolve_token(authorization, cx_session)
 
     try:
         payload = jwt.decode(

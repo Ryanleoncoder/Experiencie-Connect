@@ -8,6 +8,7 @@ const {
   clearLoginAttempts: clearLoginAttemptsRedis
 } = require('./_middleware/redis-login-attempts');
 const { createSessionToken } = require('./_utils/session-token');
+const { buildSessionCookies } = require('./_utils/cookies');
 
 function createSupabaseClient() {
   return createClient(
@@ -162,6 +163,10 @@ module.exports = async (req, res) => {
       });
     } catch (tokenError) {
       console.warn('[login] Session token unavailable; intermission games will be disabled until configured:', tokenError.message);
+    }
+
+    if (sessionToken) {
+      res.setHeader('Set-Cookie', buildSessionCookies(sessionToken));
     }
 
     return res.status(200).json({

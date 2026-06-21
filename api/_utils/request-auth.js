@@ -1,5 +1,6 @@
 const { verifySessionToken } = require('./session-token');
 const { getSessionTokenHash } = require('./privacy');
+const { getSessionCookie } = require('./cookies');
 
 function extractBearerToken(req) {
   const authHeader = req?.headers?.authorization || req?.headers?.Authorization || '';
@@ -7,8 +8,12 @@ function extractBearerToken(req) {
   return match ? match[1].trim() : null;
 }
 
+function extractSessionToken(req) {
+  return extractBearerToken(req) || getSessionCookie(req);
+}
+
 function requireCxSession(req) {
-  const token = extractBearerToken(req);
+  const token = extractSessionToken(req);
 
   if (!token) {
     return {
@@ -68,6 +73,7 @@ function rejectConflictingUserId(bodyUserId, sessionUserId) {
 
 module.exports = {
   extractBearerToken,
+  extractSessionToken,
   rejectConflictingUserId,
   requireCxSession
 };
