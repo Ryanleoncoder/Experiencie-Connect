@@ -94,7 +94,7 @@
     if (session.token && session.userId && session.loggedIn) {
       return true;
     }
-    // Aba/dispositivo sem o token no storage, mas com cookie de sessao valido.
+    
     return hasAuthCookie();
   }
 
@@ -121,15 +121,14 @@
   }
 
   function clearServerSession() {
-    // Best-effort: limpa o cookie httpOnly de sessao no servidor.
-    // keepalive permite concluir mesmo durante navegacao/logout.
+   
     try {
       if (typeof root?.fetch === 'function') {
         root.fetch('/api/logout', { method: 'POST', credentials: 'include', keepalive: true })
           .catch(() => {});
       }
     } catch (error) {
-      // ignore
+
     }
   }
 
@@ -137,6 +136,57 @@
     clearServerSession();
     clearStorageKeys(getPrimaryStorage());
     clearStorageKeys(getFallbackStorage());
+  }
+
+
+  let hydrationPromise = null;
+  function ensureSessionHydrated() {
+    if (getSessionValue('cx_logged_in_user')) return Promise.resolve(true);
+    if (!hasAuthCookie() || typeof root?.fetch !== 'function') return Promise.resolve(false);
+    if (hydrationPromise) return hydrationPromise;
+
+    hydrationPromise = (async () => {
+      try {
+        const response = await root.fetch('/api/progress', { credentials: 'include' });
+        if (!response.ok) {
+          
+          if (response.status === 401 || response.status === 403) {
+            try { await root.fetch('/api/logout', { method: 'POST', credentials: 'include' }); } catch (error) {}
+          }
+          return false;
+        }
+        const data = await response.json();
+        if (!data || !data.user_id) return false;
+
+        const storage = getPrimaryStorage() || getFallbackStorage();
+        if (storage) {
+          storage.setItem('cx_logged_in_user', data.user_id);
+          storage.setItem('loggedIn', 'true');
+          if (data.nickname) storage.setItem('cx_logged_in_user_email', data.nickname);
+          if (data.display_name) storage.setItem('cx_display_name', data.display_name);
+          if (data.ranking_code) storage.setItem('cx_ranking_code', data.ranking_code);
+          let users = {};
+          try { users = JSON.parse(storage.getItem('cx_users') || '{}'); } catch (error) { users = {}; }
+          users[data.user_id] = {
+            ...(users[data.user_id] || {}),
+            id: data.user_id,
+            nickname: data.nickname || null,
+            display_name: data.display_name || null,
+            ranking_code: data.ranking_code || null,
+            avatar_file_name: data.avatar_file_name || null,
+            completedChallenges: data.completed_challenges || [],
+            completedMinigames: data.completed_minigames || []
+          };
+          storage.setItem('cx_users', JSON.stringify(users));
+        }
+        return true;
+      } catch (error) {
+        return false;
+      } finally {
+        hydrationPromise = null;
+      }
+    })();
+    return hydrationPromise;
   }
 
   function hideDocument() {
@@ -200,7 +250,7 @@
         timestamp: Date.now()
       }));
     } catch (error) {
-      // Ignore cache failures.
+     
     }
   }
 
@@ -375,6 +425,15 @@
       return false;
     }
 
+    // So tem o cookie (aba nova): hidrata a identidade local antes de seguir.
+    if (mode === 'protected' && !getSessionValue('cx_logged_in_user')) {
+      const hydrated = await ensureSessionHydrated();
+      if (!hydrated) {
+        redirect(redirectUnauthenticatedTo);
+        return false;
+      }
+    }
+
     if (enforcePlatformStatus) {
       const status = await checkPlatformStatus();
       if (!status.allowed) {
@@ -466,6 +525,7 @@
     buildProtectedHeaders,
     checkPlatformStatus,
     clearSessionState,
+    ensureSessionHydrated,
     getPrimaryStorage,
     getSessionSnapshot,
     getSessionValue,

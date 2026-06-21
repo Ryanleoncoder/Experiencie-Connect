@@ -694,8 +694,16 @@ window.addEventListener('pagehide', () => {
 });
 
 document.addEventListener('DOMContentLoaded', async () => {
-    const loggedInUser = getLoggedInUser();
-    const hasActiveSession = window.CxSession?.hasActiveSession?.() ?? Boolean(loggedInUser && getStorageType().getItem('loggedIn'));
+    let loggedInUser = getLoggedInUser();
+    let hasActiveSession = window.CxSession?.hasActiveSession?.() ?? Boolean(loggedInUser && getStorageType().getItem('loggedIn'));
+
+    
+    if (!loggedInUser && hasActiveSession && window.CxSession?.ensureSessionHydrated) {
+        await window.CxSession.ensureSessionHydrated();
+        loggedInUser = getLoggedInUser();
+        hasActiveSession = window.CxSession?.hasActiveSession?.() ?? hasActiveSession;
+    }
+
     const homeUrlParams = new URLSearchParams(window.location.search);
     if (homeUrlParams.get('reason') === 'duplicate_session') {
         const cleanUrl = window.location.pathname;
