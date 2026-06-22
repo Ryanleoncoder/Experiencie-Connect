@@ -1031,13 +1031,14 @@ async function loadFlowStatusFromRpc(supabaseClient, userId, seasonId) {
     const rpcProcessedIds = new Set();
     const progressFlow = getProgressFlowApi();
 
-    if (!getCxSessionToken()) {
+    if (!getCxSessionToken() && !(window.CxSession?.hasActiveSession?.())) {
         return { challengeStatusMap, intermissionStatusMap, rpcSuccessIds, rpcProcessedIds };
     }
 
     homeDebugLog('[Home] Querying protected user flow status API...');
     const response = await fetch(`/api/user-flow-status?seasonId=${encodeURIComponent(seasonId || 'S-2025-01')}`, {
         method: 'GET',
+        credentials: 'include',
         headers: buildProtectedHeaders({ Accept: 'application/json' })
     });
 

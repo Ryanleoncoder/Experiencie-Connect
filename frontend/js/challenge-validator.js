@@ -134,8 +134,8 @@
             const level = extractLevelFromChallengeId(challengeId);
             const seasonId = await getActiveSeasonId();
 
-            if (!getCxSessionToken()) {
-                log('warn', 'Missing session token, blocking challenge access');
+            if (!getCxSessionToken() && !(window.CxSession?.hasActiveSession?.())) {
+                log('warn', 'Sem sessao ativa, bloqueando acesso ao desafio');
                 return {
                     isValid: false,
                     redirectTo: null,
