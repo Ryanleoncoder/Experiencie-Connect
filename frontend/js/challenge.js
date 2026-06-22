@@ -438,8 +438,8 @@ function appendPhaseSessionToTarget(target) {
 async function loadServerChallengeStatusMap(seasonId = 'S-2025-01') {
     const statusMap = new Map();
     const token = getCxSessionToken();
-    if (!token) {
-        console.warn('[Challenge] Missing session token, cannot load server challenge status');
+    if (!token && !(window.CxSession?.hasActiveSession?.())) {
+        console.warn('[Challenge] Sem sessao ativa; nao carrega status do servidor');
         return statusMap;
     }
 

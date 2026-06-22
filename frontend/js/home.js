@@ -1175,7 +1175,8 @@ async function renderLevels(data, user, seasonId = null, renderRequestId = null)
     try {
         const supabaseClient = window.progressSync?.supabase;
 
-        if (getCxSessionToken()) {
+        
+        if (window.CxSession?.hasActiveSession?.() || getCxSessionToken()) {
             const flowStatus = await loadFlowStatusFromRpc(supabaseClient, user.id, seasonId);
             challengeStatusMap = flowStatus.challengeStatusMap;
             intermissionStatusMap = flowStatus.intermissionStatusMap;
