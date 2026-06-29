@@ -98,9 +98,10 @@
     if (!sb) throw new Error('Supabase content client unavailable');
     const { data, error } = await sb.from('achievements').select('*');
     if (error) throw error;
+    const cv = (v) => (v != null && v !== '' && !isNaN(v)) ? Number(v) : v;
     return (data || []).map((a) => Object.assign({}, a.metadata || {}, {
       id: a.id, nome: a.nome, descricao: a.descricao, categoria: a.categoria, tipo: a.tipo,
-      icone: a.icone, criterio_tipo: a.criterio_tipo, criterio_valor: a.criterio_valor,
+      icone: a.icone, criterio_tipo: a.criterio_tipo, criterio_valor: cv(a.criterio_valor),
       xp_bonus: a.xp_bonus, nivel_requerido: a.nivel_requerido, ativo: a.ativo,
     }));
   }

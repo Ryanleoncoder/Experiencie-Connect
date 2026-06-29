@@ -82,6 +82,33 @@ function withTimeout(promise, ms) {
 }
 
 async function loadAchievementsFromFirebase() {
+    try { await window.__APP_CONFIG_READY__; } catch (_) {}
+    const sb = window.SupabaseContent;
+    if (sb && sb.isEnabled()) {
+        const SB_CACHE_KEY = 'cx_achievements_supabase';
+        const cachedSb = localStorage.getItem(SB_CACHE_KEY);
+        if (cachedSb) {
+            try {
+                const parsed = JSON.parse(cachedSb);
+                if (parsed._ts && Date.now() - parsed._ts < CACHE_TTL_MS) {
+                    conquistasDebugLog('[Conquistas] ✅ Achievements do cache local (Supabase)');
+                    return parsed.data;
+                }
+            } catch (_) {}
+            localStorage.removeItem(SB_CACHE_KEY);
+        }
+        try {
+            const achievements = await sb.loadAchievements();
+            if (achievements && achievements.length) {
+                localStorage.setItem(SB_CACHE_KEY, JSON.stringify({ data: achievements, _ts: Date.now() }));
+                conquistasDebugLog(`[Conquistas] ✅ ${achievements.length} achievements do Supabase`);
+                return achievements;
+            }
+        } catch (e) {
+            console.warn('[Conquistas] Supabase achievements falhou, fallback Firebase:', e && e.message);
+        }
+    }
+
     // 1. Checar cache local (24h — definições de conquistas não mudam durante a temporada)
     const cached = localStorage.getItem(CACHE_KEY);
     if (cached) {
