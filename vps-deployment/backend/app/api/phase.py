@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import copy
 import logging
+import os
 from typing import Any, Dict, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
@@ -211,12 +212,20 @@ async def create_phase_session(
         )
         return service.sanitize_phase_session(persisted)
 
-    # 2. Nao existe: gera 1x (ancoras fixas) -> persiste no Supabase -> cacheia no Redis.
-    level_document = await firebase_client.load_level(
-        season_id=payload.season_id,
-        setor=payload.setor,
-        level=payload.level,
-    )
+    
+    content_source = (os.environ.get("CONTENT_SOURCE") or "firebase").strip().lower()
+    if content_source == "supabase":
+        level_document = await supabase_client.load_level(
+            season_id=payload.season_id,
+            setor=payload.setor,
+            level=payload.level,
+        )
+    else:
+        level_document = await firebase_client.load_level(
+            season_id=payload.season_id,
+            setor=payload.setor,
+            level=payload.level,
+        )
     phase_generation = await get_phase_generation(user_id, payload.season_id, payload.level)
     phase_session = service.build_phase_session(
         user_id=user_id,

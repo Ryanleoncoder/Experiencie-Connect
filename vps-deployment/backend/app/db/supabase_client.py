@@ -59,6 +59,44 @@ class SupabaseClient:
         result = self.client.rpc(function_name, params or {}).execute()
         return result.data
     
+    async def load_level(self, season_id: str, setor: str, level: int) -> Dict[str, Any]:
+        """Carrega o conteudo do nivel da tabela `challenges` (Supabase).
+        Espelha o shape do firebase_client.load_level: {season_id, setor, level, questions:[...]}.
+        Gera o mesmo manifesto que o Firebase (validado: 150/150 iguais)."""
+        if self.client is None:
+            raise RuntimeError("Supabase client not initialized. Call connect() first.")
+
+        rows = (
+            self.table("challenges")
+            .select("*")
+            .eq("season_id", season_id)
+            .eq("setor", setor)
+            .eq("level", level)
+            .order("ordem")
+            .execute()
+            .data
+        ) or []
+
+        questions = []
+        for r in rows:
+            question = {
+                "id": r.get("challenge_id"),
+                "tipo": r.get("tipo"),
+                "ordem": r.get("ordem"),
+                "titulo": r.get("titulo"),
+                "descricao": r.get("descricao"),
+                "categoria": r.get("categoria"),
+                "alternativas": r.get("alternativas"),
+                "xp": r.get("xp"),
+                "tempo_limite": r.get("tempo_limite"),
+                "ativo": r.get("ativo"),
+                "tags": r.get("tags"),
+            }
+            question.update(r.get("metadata") or {})
+            questions.append(question)
+
+        return {"season_id": season_id, "setor": setor, "level": level, "questions": questions}
+
     async def health_check(self) -> dict:
         try:
             start_time = __import__('time').time()

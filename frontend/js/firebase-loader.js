@@ -287,21 +287,32 @@ async function loadLevel(level, setor, seasonId) {
     }
 
     const levelLoadPromise = (async () => {
-      const { doc, getDoc } = await getFirestoreModule();
-      const docRef = doc(GameState.db, `seasons/${seasonId}/levels/${stateKey}`);
-      const docSnap = await withTimeout(getDoc(docRef), FIRESTORE_TIMEOUT_MS);
-
-      if (!docSnap.exists()) {
-        throw new Error(`Level ${stateKey} not found`);
+      let levelData = null;
+      const sbContent = (typeof window !== 'undefined') ? window.SupabaseContent : null;
+      if (sbContent && sbContent.isEnabled()) {
+        try {
+          levelData = await sbContent.loadLevelDoc(seasonId, setor, Number(level));
+        } catch (e) {
+          console.warn('[Content] Supabase load_level falhou, fallback Firebase:', e && e.message);
+          levelData = null;
+        }
+      }
+      if (!levelData) {
+        const { doc, getDoc } = await getFirestoreModule();
+        const docRef = doc(GameState.db, `seasons/${seasonId}/levels/${stateKey}`);
+        const docSnap = await withTimeout(getDoc(docRef), FIRESTORE_TIMEOUT_MS);
+        if (!docSnap.exists()) {
+          throw new Error(`Level ${stateKey} not found`);
+        }
+        levelData = docSnap.data();
       }
 
-      const levelData = docSnap.data();
       GameState.questions = levelData.questions;
       GameState.levelCache[stateKey] = levelData;
       sessionStorage.setItem(cacheKey, JSON.stringify(levelData));
       enforceCacheSizeLimit(seasonId, setor, Number(level));
 
-      firebaseDebugLog(`[Firebase] Level ${stateKey} loaded from Firestore (${levelData.challenge_count} questions)`);
+      firebaseDebugLog(`[Content] Level ${stateKey} pronto (${levelData.challenge_count} questions)`);
       return levelData;
     })();
 
@@ -350,15 +361,30 @@ async function loadHomeBundle(seasonId, setor = 'CX', levels = [1, 2, 3]) {
     }
 
     const bundlePromise = (async () => {
-      const { collection, query, where, documentId, getDocs } = await getFirestoreModule();
-      const levelsRef = collection(GameState.db, `seasons/${seasonId}/levels`);
-      const levelQuery = query(levelsRef, where(documentId(), 'in', levelStateKeys));
-      const snapshot = await withTimeout(getDocs(levelQuery), FIRESTORE_TIMEOUT_MS);
       const dataByStateKey = new Map();
-
-      snapshot.forEach(docSnap => {
-        dataByStateKey.set(docSnap.id, docSnap.data());
-      });
+      const sbContent = (typeof window !== 'undefined') ? window.SupabaseContent : null;
+      let usedSupabase = false;
+      if (sbContent && sbContent.isEnabled()) {
+        try {
+          await Promise.all(normalizedLevels.map(async (level) => {
+            const stateKey = getLevelStateKey(level, setor);
+            dataByStateKey.set(stateKey, await sbContent.loadLevelDoc(seasonId, setor, Number(level)));
+          }));
+          usedSupabase = true;
+        } catch (e) {
+          console.warn('[Content] Supabase home bundle falhou, fallback Firebase:', e && e.message);
+          dataByStateKey.clear();
+        }
+      }
+      if (!usedSupabase) {
+        const { collection, query, where, documentId, getDocs } = await getFirestoreModule();
+        const levelsRef = collection(GameState.db, `seasons/${seasonId}/levels`);
+        const levelQuery = query(levelsRef, where(documentId(), 'in', levelStateKeys));
+        const snapshot = await withTimeout(getDocs(levelQuery), FIRESTORE_TIMEOUT_MS);
+        snapshot.forEach(docSnap => {
+          dataByStateKey.set(docSnap.id, docSnap.data());
+        });
+      }
 
       const resolvedLevels = normalizedLevels.map(level => {
         const stateKey = getLevelStateKey(level, setor);

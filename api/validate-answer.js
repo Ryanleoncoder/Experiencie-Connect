@@ -247,6 +247,54 @@ async function getAnswerKeyFromFirebase(challengeId) {
   }
 }
 
+async function getAnswerKeyFromSupabase(challengeId) {
+  const cached = answerKeyCache.get(challengeId);
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+    return cached.data;
+  }
+
+  try {
+    const supabase = createSupabaseClient();
+    const { data, error } = await supabase
+      .from('answer_keys')
+      .select('correct_answers, resposta_correta, points, is_text_question')
+      .eq('challenge_id', challengeId)
+      .maybeSingle();
+
+    if (error) {
+      console.error('[validate-answer] Error fetching answer key from Supabase:', error.message);
+      return null;
+    }
+    if (!data) {
+      console.warn(`[validate-answer] Answer key not found in Supabase: ${challengeId}`);
+      return null;
+    }
+
+    let answers = Array.isArray(data.correct_answers) ? data.correct_answers : [];
+    if (answers.length === 0 && data.resposta_correta != null) {
+      answers = Array.isArray(data.resposta_correta) ? data.resposta_correta : [data.resposta_correta];
+    }
+    const answerKey = {
+      answers,
+      points: data.points || 0,
+      is_text_question: data.is_text_question || false
+    };
+
+    answerKeyCache.set(challengeId, { data: answerKey, timestamp: Date.now() });
+    return answerKey;
+  } catch (error) {
+    console.error('[validate-answer] Error fetching answer key from Supabase:', error);
+    return null;
+  }
+}
+
+async function getAnswerKey(challengeId) {
+  const source = String(process.env.CONTENT_SOURCE || 'firebase').trim().toLowerCase();
+  return source === 'supabase'
+    ? getAnswerKeyFromSupabase(challengeId)
+    : getAnswerKeyFromFirebase(challengeId);
+}
+
 function detectQuestionType(answerKey) {
   if (!answerKey) {
     return { isTextQuestion: false, answerKey: null };
@@ -705,8 +753,8 @@ module.exports = async (req, res) => {
         challengeId: contentChallengeId,
         logicalChallengeId
       });
-      entry = await getAnswerKeyFromFirebase(contentChallengeId);
-      debugLog('[validate-answer] Firebase fetch result:', {
+      entry = await getAnswerKey(contentChallengeId);
+      debugLog('[validate-answer] answer key fetch result:', {
         challengeId: contentChallengeId,
         logicalChallengeId,
         entryExists: !!entry,
