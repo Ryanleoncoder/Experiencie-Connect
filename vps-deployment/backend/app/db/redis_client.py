@@ -4,6 +4,7 @@ import redis.asyncio as aioredis
 from typing import Optional, Any
 import logging
 import json
+import secrets
 
 from app.core.config import settings
 
@@ -156,12 +157,30 @@ class RedisClient:
     async def exists(self, key: str) -> bool:
         if not self.is_available():
             raise RuntimeError("Redis not available")
-        
+
         try:
             return await self.redis.exists(key) > 0
         except Exception as e:
             logger.error(f"Redis EXISTS failed for key '{key}': {e}")
             raise
+
+    async def acquire_lock(self, key: str, ttl_seconds: int = 5) -> Optional[str]:
+        if not self.is_available():
+            raise RuntimeError("Redis not available")
+        token = secrets.token_hex(16)
+        acquired = await self.redis.set(key, token, nx=True, px=ttl_seconds * 1000)
+        return token if acquired else None
+
+    async def release_lock(self, key: str, token: str) -> bool:
+        # Compare-and-del atomico: so libera se o token bater (nao apaga lock de outro dono).
+        if not self.is_available():
+            return False
+        script = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end"
+        try:
+            return bool(await self.redis.eval(script, 1, key, token))
+        except Exception as e:
+            logger.error(f"Redis release_lock failed for key '{key}': {e}")
+            return False
 
 
 redis_client = RedisClient()

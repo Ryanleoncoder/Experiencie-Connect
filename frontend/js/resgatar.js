@@ -1,7 +1,3 @@
-function escapeHtml(str) {
-    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-}
-
 function getStorageType() {
     if (sessionStorage.getItem('cx_logged_in_user')) {
         return sessionStorage;
@@ -203,12 +199,61 @@ function setupRedeemForm() {
         resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
+    const REDEEM_API = ((window.__APP_CONFIG__ && window.__APP_CONFIG__.CXGAME_VPS_API_BASE) || 'https://api.expconnect.com.br').replace(/\/+$/, '');
+
+    async function postRedeem(code) {
+        const idempotencyKey = (window.crypto && crypto.randomUUID)
+            ? crypto.randomUUID()
+            : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+        const res = await fetch(`${REDEEM_API}/api/redeem`, {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ codigo: code, idempotency_key: idempotencyKey })
+        });
+        let data = {};
+        try { data = await res.json(); } catch (_) {}
+        return { status: res.status, data };
+    }
+
+    function renderOutcome(outcome) {
+        if (outcome.networkError) {
+            showResult('er', 'Sem conexão', 'Não foi possível resgatar agora. Verifique sua conexão e tente de novo.');
+            return;
+        }
+        const { status, data } = outcome;
+        if (status === 503) {
+            showResult('info', 'Resgate indisponível', 'O resgate está temporariamente indisponível. Tente de novo em instantes.');
+            return;
+        }
+        if (status === 429) {
+            showResult('er', 'Muitas tentativas', 'Aguarde um instante antes de tentar novamente.');
+            return;
+        }
+        if (status === 409) {
+            showResult('er', 'Resgate em andamento', 'Já há um resgate em processamento. Aguarde um instante e tente de novo.');
+            return;
+        }
+        if (data && data.ok) {
+            if (data.reward_type === 'xp') {
+                const xp = data.reward && data.reward.xp;
+                showResult('ok', 'Resgate concluído!', xp ? `Você ganhou ${xp} XP.` : 'Recompensa aplicada à sua conta.');
+            } else {
+                const nome = data.reward && data.reward.nome;
+                showResult('ok', 'Brinde reservado!', nome
+                    ? `Seu brinde "${nome}" foi reservado. Aguarde as instruções de retirada.`
+                    : 'Seu brinde foi reservado.');
+            }
+            return;
+        }
+        showResult('er', 'Não foi possível resgatar', (data && data.message) || 'Código inválido ou indisponível.');
+    }
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (submitBtn.classList.contains('loading')) return;
 
         const code = codeInput.value.trim();
-
         if (!code || code.length < 3) {
             hint.textContent = 'O código deve ter pelo menos 3 caracteres.';
             hint.classList.add('is-error');
@@ -219,24 +264,24 @@ function setupRedeemForm() {
 
         hint.classList.remove('is-error');
         resultDiv.hidden = true;
-
-        // Roda o Action Morph Loader (flow de resgate) e, ao concluir, mostra o resultado.
         submitBtn.classList.add('loading');
         submitBtn.setAttribute('aria-busy', 'true');
 
-        runAmlFlow(stage, RESGATE_FLOW, () => {
-            submitBtn.classList.remove('loading');
-            submitBtn.removeAttribute('aria-busy');
-            stage.innerHTML = '';
+        // A animacao roda junto da requisicao e serve de indicador de carregamento.
+        const animation = new Promise((resolve) => runAmlFlow(stage, RESGATE_FLOW, resolve));
+        let outcome;
+        try {
+            outcome = await postRedeem(code);
+        } catch (_) {
+            outcome = { networkError: true };
+        }
+        await animation;
 
-            // Funcionalidade real será ativada no Experience Week — resposta "em breve".
-            showResult(
-                'info',
-                'Funcionalidade em breve',
-                'O resgate de códigos será ativado durante o Experience Week. Fique atento às transmissões ao vivo!'
-            );
-            codeInput.value = '';
-        });
+        submitBtn.classList.remove('loading');
+        submitBtn.removeAttribute('aria-busy');
+        stage.innerHTML = '';
+        renderOutcome(outcome);
+        if (outcome.data && outcome.data.ok) codeInput.value = '';
     });
 
     codeInput.addEventListener('input', () => {
@@ -287,58 +332,14 @@ async function initSyncIndicators() {
     }, 500);
 }
 
-function loadRedemptionHistory(userKey) {
-    const raw = localStorage.getItem(`cx_redemptions_${userKey}`) || '[]';
-    try { return JSON.parse(raw); } catch { return []; }
-}
-
-function renderHistoryTable(userKey) {
-    const table = document.getElementById('rd-history-table');
-    const body = document.getElementById('rd-history-body');
-    const empty = document.getElementById('rd-history-empty');
-    if (!table || !body || !empty) return;
-
-    const history = loadRedemptionHistory(userKey);
-
-    if (history.length === 0) {
-        table.hidden = true;
-        empty.hidden = false;
-        return;
-    }
-
-    const BADGE = {
-        xp: '<span class="rd-history__badge rd-history__badge--xp">XP</span>',
-        brinde: '<span class="rd-history__badge rd-history__badge--brinde">Brinde</span>',
-        conquista: '<span class="rd-history__badge rd-history__badge--conquista">Conquista</span>'
-    };
-
-    body.innerHTML = history.slice().reverse().slice(0, 10).map(entry => {
-        const date = entry.date ? new Date(entry.date).toLocaleDateString('pt-BR') : '—';
-        const type = typeof entry.type === 'string' ? entry.type : '';
-        const badge = BADGE[type] || `<span class="rd-history__badge">${escapeHtml(type) || '—'}</span>`;
-        return `<tr>
-            <td><span class="rd-history__code">${escapeHtml(entry.code || '—')}</span></td>
-            <td>${badge}</td>
-            <td>${date}</td>
-            <td>${escapeHtml(entry.reward || '—')}</td>
-        </tr>`;
-    }).join('');
-
-    empty.hidden = true;
-    table.hidden = false;
-}
-
 document.addEventListener('DOMContentLoaded', async () => {
     const user = loadUserData();
     if (!user) return;
 
-    const userKey = window.CxSession?.getSessionValue?.('cx_logged_in_user')
-        || localStorage.getItem('cx_logged_in_user')
-        || sessionStorage.getItem('cx_logged_in_user');
-
     await initSyncIndicators();
     setupRedeemForm();
-    renderHistoryTable(userKey);
+    // Historico real (via endpoint da VPS) fica pra depois; oculta a secao na v1.
+    document.querySelector('.rd-history')?.setAttribute('hidden', '');
 });
 
 window.toggleMobileMenu = toggleMobileMenu;

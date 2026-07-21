@@ -71,6 +71,9 @@ app.include_router(phase.router, prefix="/api/phase", tags=["Phase Sessions"])
 from app.api import internal
 app.include_router(internal.router, prefix="/api/internal", tags=["Internal"])
 
+from app.api import redeem
+app.include_router(redeem.router, prefix="/api/redeem", tags=["Redeem"])
+
 
 @app.get("/")
 async def root():
