@@ -289,7 +289,7 @@ async function getAnswerKeyFromSupabase(challengeId) {
 }
 
 async function getAnswerKey(challengeId) {
-  const source = String(process.env.CONTENT_SOURCE || 'firebase').trim().toLowerCase();
+  const source = String(process.env.CONTENT_SOURCE || 'supabase').trim().toLowerCase();
   return source === 'supabase'
     ? getAnswerKeyFromSupabase(challengeId)
     : getAnswerKeyFromFirebase(challengeId);

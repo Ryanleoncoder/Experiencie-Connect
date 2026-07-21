@@ -13,14 +13,29 @@
     return root.__sbContentClient;
   }
 
-  function isEnabled() {
-    
+  function isDevEnv() {
     try {
-      const ls = root.localStorage && root.localStorage.getItem('cx_content_source');
-      if (ls) return String(ls).toLowerCase() === 'supabase';
-    } catch (e) { }
-    const v = (root.__APP_CONFIG__ && root.__APP_CONFIG__.CONTENT_SOURCE) || root.CONTENT_SOURCE || 'firebase';
-    return String(v).toLowerCase() === 'supabase';
+      const h = root.location && root.location.hostname;
+      return h === 'localhost' || h === '127.0.0.1' || h === '' || h === '[::1]';
+    } catch (e) { return false; }
+  }
+
+  function isEnabled() {
+    // Override por localStorage vale só em dev; em produção é ignorado — um valor
+    // obsoleto (ex.: 'firebase') não pode quebrar o carregamento pós deny-all do Firestore.
+    if (isDevEnv()) {
+      try {
+        const ls = root.localStorage && root.localStorage.getItem('cx_content_source');
+        if (ls) return String(ls).toLowerCase() === 'supabase';
+      } catch (e) { }
+    }
+    const v = (root.__APP_CONFIG__ && root.__APP_CONFIG__.CONTENT_SOURCE) || root.CONTENT_SOURCE || 'supabase';
+    const src = String(v).toLowerCase();
+    if (src !== 'supabase' && src !== 'firebase') {
+      try { root.console && root.console.warn('[Content] CONTENT_SOURCE invalido:', v, '- usando supabase'); } catch (e) { }
+      return true;
+    }
+    return src === 'supabase';
   }
 
   function challengeToQuestion(r) {
@@ -93,6 +108,21 @@
     });
   }
 
+  async function loadSeason(seasonId) {
+    const sb = getClient();
+    if (!sb) throw new Error('Supabase content client unavailable');
+    const { data, error } = await sb.from('content_seasons').select('*').eq('id', seasonId).maybeSingle();
+    if (error) throw error;
+    const s = data || {};
+    const meta = s.metadata || {};
+    return Object.assign({}, meta, {
+      id: s.id || seasonId,
+      nome: s.nome != null ? s.nome : meta.nome,
+      total_levels: s.total_levels != null ? s.total_levels : (meta.total_levels != null ? meta.total_levels : 3),
+      schema_version: s.schema_version != null ? s.schema_version : (meta.schema_version != null ? meta.schema_version : EXPECTED_SCHEMA_VERSION),
+    });
+  }
+
   async function loadAchievements() {
     const sb = getClient();
     if (!sb) throw new Error('Supabase content client unavailable');
@@ -106,5 +136,5 @@
     }));
   }
 
-  root.SupabaseContent = { getClient, isEnabled, loadLevelDoc, loadAchievements };
+  root.SupabaseContent = { getClient, isEnabled, loadLevelDoc, loadSeason, loadAchievements };
 })(typeof window !== 'undefined' ? window : globalThis);

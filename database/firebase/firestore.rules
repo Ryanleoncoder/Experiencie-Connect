@@ -2,62 +2,41 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    
+
     // ============================================
-    // ANSWER KEYS - BLOCK ALL CLIENT ACCESS
+    // CONTEUDO MIGRADO PARA O SUPABASE — LEITURA DO CLIENTE BLOQUEADA
     // ============================================
-    // Security critical: Answer keys must NEVER be accessible from client
-    // Only Firebase Admin SDK (backend) can read these
+    // O conteudo do jogo (temporadas, niveis, desafios, conquistas) e servido
+    // pelo Supabase (anon + RLS). O Firestore nao e mais lido pelo navegador.
+    // Bloquear a leitura aqui fecha o vazamento do `resposta_correta` inline
+    // que existia nos docs publicos de levels/challenges.
+    // O Admin SDK (backend) ignora estas regras e segue funcionando p/ migracao.
+
+    // ANSWER KEYS - nunca acessiveis pelo cliente (ja era bloqueado).
     match /answer_keys/{document=**} {
-      allow read, write: if false;  // Block all client access
-    }
-    
-    // ============================================
-    // SEASONS - PUBLIC READ ONLY
-    // ============================================
-    // Seasons are public data that clients need to read
-    match /seasons/{seasonId} {
-      allow read: if true;   // Anyone can read seasons
-      allow write: if false; // Only admin can write (via Admin SDK)
-    }
-    
-    // ============================================
-    // LEVELS - PUBLIC READ ONLY
-    // ============================================
-    // Levels within seasons are public data
-    match /seasons/{seasonId}/levels/{levelId} {
-      allow read: if true;   // Anyone can read levels
-      allow write: if false; // Only admin can write (via Admin SDK)
-    }
-    
-    // ============================================
-    // CHALLENGES - PUBLIC READ ONLY
-    // ============================================
-    // Challenges are public (but without answer keys)
-    match /seasons/{seasonId}/levels/{levelId}/challenges/{challengeId} {
-      allow read: if true;   // Anyone can read challenges
-      allow write: if false; // Only admin can write (via Admin SDK)
-    }
-    
-    // ============================================
-    // ACHIEVEMENTS - PUBLIC READ ONLY
-    // ============================================
-    match /seasons/{seasonId}/achievements/{achievementId} {
-      allow read: if true;   // Anyone can read achievements
-      allow write: if false; // Only admin can write (via Admin SDK)
+      allow read, write: if false;
     }
 
-    // Top-level achievements (lidos pela página de Conquistas — nome/desc/raridade/song/artist).
-    // Conteúdo público; os answer_keys continuam bloqueados acima.
+    // SEASONS / LEVELS / CHALLENGES / ACHIEVEMENTS - leitura do cliente negada.
+    match /seasons/{seasonId} {
+      allow read, write: if false;
+    }
+    match /seasons/{seasonId}/levels/{levelId} {
+      allow read, write: if false;
+    }
+    match /seasons/{seasonId}/levels/{levelId}/challenges/{challengeId} {
+      allow read, write: if false;
+    }
+    match /seasons/{seasonId}/achievements/{achievementId} {
+      allow read, write: if false;
+    }
     match /achievements/{achievementId} {
-      allow read: if true;
-      allow write: if false; // Só Admin SDK escreve
+      allow read, write: if false;
     }
 
     // ============================================
     // DEFAULT DENY ALL
     // ============================================
-    // Any other collection not explicitly allowed is blocked
     match /{document=**} {
       allow read, write: if false;
     }

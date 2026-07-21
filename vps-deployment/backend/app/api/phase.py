@@ -213,7 +213,7 @@ async def create_phase_session(
         return service.sanitize_phase_session(persisted)
 
     
-    content_source = (os.environ.get("CONTENT_SOURCE") or "firebase").strip().lower()
+    content_source = (os.environ.get("CONTENT_SOURCE") or "supabase").strip().lower()
     if content_source == "supabase":
         level_document = await supabase_client.load_level(
             season_id=payload.season_id,

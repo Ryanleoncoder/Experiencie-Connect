@@ -97,16 +97,14 @@ async function loadAchievementsFromFirebase() {
             } catch (_) {}
             localStorage.removeItem(SB_CACHE_KEY);
         }
-        try {
-            const achievements = await sb.loadAchievements();
-            if (achievements && achievements.length) {
-                localStorage.setItem(SB_CACHE_KEY, JSON.stringify({ data: achievements, _ts: Date.now() }));
-                conquistasDebugLog(`[Conquistas] ✅ ${achievements.length} achievements do Supabase`);
-                return achievements;
-            }
-        } catch (e) {
-            console.warn('[Conquistas] Supabase achievements falhou, fallback Firebase:', e && e.message);
+        // Supabase é a fonte: sem fallback Firebase (erro sobe → cache/manutenção).
+        const achievements = await sb.loadAchievements();
+        if (achievements && achievements.length) {
+            localStorage.setItem(SB_CACHE_KEY, JSON.stringify({ data: achievements, _ts: Date.now() }));
+            conquistasDebugLog(`[Conquistas] ✅ ${achievements.length} achievements do Supabase`);
+            return achievements;
         }
+        throw new Error('No achievements found in Supabase');
     }
 
     // 1. Checar cache local (24h — definições de conquistas não mudam durante a temporada)

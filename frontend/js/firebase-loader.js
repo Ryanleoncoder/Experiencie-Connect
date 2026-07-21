@@ -184,6 +184,16 @@ async function loadActiveSeason() {
       firebaseDebugLog('[Firebase] No cached season found in sessionStorage');
     }
     
+    // Layer 2: Supabase (fonte de conteúdo quando habilitado). Sem fallback Firebase.
+    const sbContent = (typeof window !== 'undefined') ? window.SupabaseContent : null;
+    if (sbContent && sbContent.isEnabled()) {
+      const season = await sbContent.loadSeason('S-2025-01');
+      firebaseDebugLog('[Content] ✅ Season carregada do Supabase:', season && season.id);
+      GameState.season = season;
+      sessionStorage.setItem('season_active', JSON.stringify(season));
+      return season;
+    }
+
     // Layer 3: Direct document access (no query, no index needed)
     firebaseDebugLog('[Firebase] 📡 Fetching season from Firestore...');
     const { doc, getDoc } = await getFirestoreModule();
@@ -290,14 +300,10 @@ async function loadLevel(level, setor, seasonId) {
       let levelData = null;
       const sbContent = (typeof window !== 'undefined') ? window.SupabaseContent : null;
       if (sbContent && sbContent.isEnabled()) {
-        try {
-          levelData = await sbContent.loadLevelDoc(seasonId, setor, Number(level));
-        } catch (e) {
-          console.warn('[Content] Supabase load_level falhou, fallback Firebase:', e && e.message);
-          levelData = null;
-        }
-      }
-      if (!levelData) {
+        // Supabase é a fonte de conteúdo: sem fallback Firebase. Se falhar, o erro sobe
+        // (o cache sessionStorage, checado antes desta promise, já cobriu o caminho degradado).
+        levelData = await sbContent.loadLevelDoc(seasonId, setor, Number(level));
+      } else {
         const { doc, getDoc } = await getFirestoreModule();
         const docRef = doc(GameState.db, `seasons/${seasonId}/levels/${stateKey}`);
         const docSnap = await withTimeout(getDoc(docRef), FIRESTORE_TIMEOUT_MS);
@@ -363,20 +369,13 @@ async function loadHomeBundle(seasonId, setor = 'CX', levels = [1, 2, 3]) {
     const bundlePromise = (async () => {
       const dataByStateKey = new Map();
       const sbContent = (typeof window !== 'undefined') ? window.SupabaseContent : null;
-      let usedSupabase = false;
       if (sbContent && sbContent.isEnabled()) {
-        try {
-          await Promise.all(normalizedLevels.map(async (level) => {
-            const stateKey = getLevelStateKey(level, setor);
-            dataByStateKey.set(stateKey, await sbContent.loadLevelDoc(seasonId, setor, Number(level)));
-          }));
-          usedSupabase = true;
-        } catch (e) {
-          console.warn('[Content] Supabase home bundle falhou, fallback Firebase:', e && e.message);
-          dataByStateKey.clear();
-        }
-      }
-      if (!usedSupabase) {
+        // Supabase é a fonte: sem fallback Firebase (erro sobe → cache/manutenção).
+        await Promise.all(normalizedLevels.map(async (level) => {
+          const stateKey = getLevelStateKey(level, setor);
+          dataByStateKey.set(stateKey, await sbContent.loadLevelDoc(seasonId, setor, Number(level)));
+        }));
+      } else {
         const { collection, query, where, documentId, getDocs } = await getFirestoreModule();
         const levelsRef = collection(GameState.db, `seasons/${seasonId}/levels`);
         const levelQuery = query(levelsRef, where(documentId(), 'in', levelStateKeys));
