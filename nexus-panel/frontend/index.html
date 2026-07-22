@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EC Nexus — Painel Admin</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <span class="brand">EC <b>Nexus</b></span>
+    <nav class="tabs">
+      <button class="tab active" data-tab="resgate">Resgate</button>
+      <button class="tab" data-tab="desafios">Desafios</button>
+      <button class="tab" data-tab="contextos">Contextos</button>
+      <button class="tab" data-tab="usuarios">Usuários</button>
+      <button class="tab" data-tab="convites">Convites</button>
+      <button class="tab" data-tab="temporada">Temporada</button>
+      <button class="tab" data-tab="reports">Reports</button>
+    </nav>
+    <a class="logout" href="/authelia/logout">Sair</a>
+  </header>
+
+  <main>
+    <div id="toast" class="toast" hidden></div>
+
+    <!-- RESGATE -->
+    <section id="resgate" class="panel active">
+      <h2>Códigos de resgate</h2>
+      <form id="code-form" class="card form-grid">
+        <label>Código<input name="codigo" required minlength="1" maxlength="100" placeholder="EX: EXPERIENCIA2026"></label>
+        <label>Tipo
+          <select name="tipo_reward" id="tipo_reward">
+            <option value="xp">XP</option>
+            <option value="brinde">Brinde</option>
+          </select>
+        </label>
+        <label id="wrap-xp">XP<input name="xp" type="number" min="1" max="100000" placeholder="58"></label>
+        <label id="wrap-nome" hidden>Nome do brinde<input name="nome" placeholder="Urso de pelúcia"></label>
+        <label>Escopo
+          <select name="escopo">
+            <option value="por_usuario">Por usuário (cada um resgata 1x)</option>
+            <option value="global_unico">Global único (só o primeiro)</option>
+          </select>
+        </label>
+        <label>Início (opcional)<input name="inicio" type="datetime-local"></label>
+        <label>Fim (opcional)<input name="fim" type="datetime-local"></label>
+        <button type="submit">Criar código</button>
+      </form>
+
+      <div class="card">
+        <table id="codes-table">
+          <thead><tr>
+            <th>Código</th><th>Recompensa</th><th>Escopo</th><th>Janela</th><th>Resgates</th><th>Ativo</th><th></th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+        <p class="empty" id="codes-empty" hidden>Nenhum código ainda.</p>
+      </div>
+    </section>
+
+    <!-- USUÁRIOS -->
+    <section id="usuarios" class="panel">
+      <h2>Usuários</h2>
+      <form id="users-filter" class="card inline">
+        <label>Nível mín.<input name="min_level" type="number" min="1" style="width:6rem"></label>
+        <label>XP mín.<input name="min_xp" type="number" min="0" style="width:7rem"></label>
+        <label class="chk"><input name="banned" type="checkbox"> só banidos</label>
+        <button type="submit">Filtrar</button>
+        <button type="button" id="btn-reset-all" class="danger">Reset ALL</button>
+      </form>
+      <div class="card">
+        <table id="users-table">
+          <thead><tr><th>Nome</th><th>Nível</th><th>XP</th><th>Status</th><th></th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <p class="empty" id="users-empty" hidden>Nenhum usuário.</p>
+      </div>
+    </section>
+
+    <!-- TEMPORADA -->
+    <section id="temporada" class="panel">
+      <h2>Temporada</h2>
+      <div class="card" id="season-card">Carregando…</div>
+    </section>
+
+    <!-- REPORTS -->
+    <section id="reports" class="panel">
+      <h2>Reports</h2>
+      <div class="reports-grid">
+        <div class="card"><h3>Retenção</h3><pre id="rep-retention">…</pre></div>
+        <div class="card"><h3>Atividade diária</h3><pre id="rep-activity">…</pre></div>
+        <div class="card"><h3>Distribuição de XP</h3><pre id="rep-xp">…</pre></div>
+        <div class="card"><h3>Dificuldade dos desafios</h3><pre id="rep-difficulty">…</pre></div>
+      </div>
+    </section>
+
+    <!-- DESAFIOS -->
+    <section id="desafios" class="panel">
+      <h2>Desafios</h2>
+      <div class="card inline">
+        <label>Temporada<input id="ch-season" value="S-2025-01" style="width:9rem"></label>
+        <label>Setor
+          <select id="ch-setor"><option value="">todos</option><option>CX</option><option>EX</option></select>
+        </label>
+        <label>Nível
+          <select id="ch-level"><option value="">todos</option><option>1</option><option>2</option><option>3</option></select>
+        </label>
+        <button id="ch-load">Carregar</button>
+        <button id="ch-new" class="mini">+ Novo desafio</button>
+      </div>
+      <div class="card">
+        <table id="ch-table">
+          <thead><tr><th>ID</th><th>Tipo</th><th>Título</th><th>Categoria</th><th>XP</th><th>Ativo</th><th></th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <p class="empty" id="ch-empty" hidden>Nenhum desafio (carregue com os filtros).</p>
+      </div>
+      <div class="card" id="ch-editor" hidden></div>
+    </section>
+
+    <!-- CONTEXTOS (IA / logun) -->
+    <section id="contextos" class="panel">
+      <h2>Contextos de IA <span style="color:var(--muted);font-size:.9rem">(logun — desafios de texto)</span></h2>
+      <div class="card inline">
+        <button id="ctx-load">Carregar</button>
+        <button id="ctx-new" class="mini">+ Novo contexto</button>
+      </div>
+      <div class="card">
+        <table id="ctx-table">
+          <thead><tr><th>challenge_id</th><th></th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <p class="empty" id="ctx-empty" hidden>Nenhum contexto (clique em Carregar).</p>
+      </div>
+      <div class="card" id="ctx-editor" hidden></div>
+    </section>
+
+    <!-- CONVITES -->
+    <section id="convites" class="panel">
+      <h2>Convites</h2>
+      <div class="card inline">
+        <label>Nickname<input id="inv-nick" placeholder="nome do usuário"></label>
+        <button id="inv-create">Criar convite</button>
+      </div>
+      <div class="card">
+        <h3>Em lote — um nickname por linha (ou envie um CSV/TXT)</h3>
+        <textarea id="inv-bulk" rows="5" style="width:100%" placeholder="joao&#10;maria&#10;pedro"></textarea>
+        <div class="inline" style="margin-top:.5rem">
+          <input type="file" id="inv-file" accept=".csv,.txt">
+          <button id="inv-bulk-btn">Criar em lote</button>
+        </div>
+        <p id="inv-bulk-result" class="empty" hidden></p>
+      </div>
+      <div class="card">
+        <div class="inline" style="justify-content:space-between">
+          <h3 style="margin:0">Convites criados</h3>
+          <div class="inline">
+            <button id="inv-reload" class="mini">Recarregar</button>
+            <button id="inv-download" class="mini">Baixar CSV</button>
+            <button id="inv-clear-used" class="mini danger">Limpar usados</button>
+          </div>
+        </div>
+        <table id="inv-table">
+          <thead><tr><th>Nickname</th><th>Código</th><th>Link</th><th>Expira</th><th>Usado</th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <p class="empty" id="inv-empty" hidden>Nenhum convite ainda.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>

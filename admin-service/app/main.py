@@ -102,6 +102,22 @@ app.include_router(ranking.router, prefix="/ranking", tags=["Ranking"])
 from app.api import admin
 app.include_router(admin.router, prefix="/admin", tags=["Admin"])
 
+# Redeem codes CRUD
+from app.api import redeem_codes
+app.include_router(redeem_codes.router, prefix="/admin", tags=["Redeem Codes"])
+
+# Challenges (content + answer keys)
+from app.api import challenges
+app.include_router(challenges.router, prefix="/admin", tags=["Challenges"])
+
+# Invites (criacao de usuarios)
+from app.api import invites
+app.include_router(invites.router, prefix="/admin", tags=["Invites"])
+
+# Contextos de IA (challenge_contexts)
+from app.api import contexts
+app.include_router(contexts.router, prefix="/admin", tags=["Contexts"])
+
 # Reports router - protected by AdminSecretMiddleware
 from app.api import reports
 app.include_router(reports.router, prefix="/reports", tags=["Reports"])

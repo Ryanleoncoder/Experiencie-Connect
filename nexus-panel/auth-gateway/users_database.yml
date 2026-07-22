@@ -1,0 +1,10 @@
+---
+users:
+  REPLACE_ME_USER:
+    disabled: false
+    displayname: 'Admin (EC Painel)'
+    password: 'REPLACE_WITH_ARGON2_HASH'
+    email: 'REPLACE_ME_EMAIL'
+    groups:
+      - 'nexus-admins'
+...

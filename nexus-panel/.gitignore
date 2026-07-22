@@ -1,0 +1,14 @@
+# Segredos e artefatos gerados pelo deploy/MFA — NUNCA versionar.
+# Versionamos so os templates (com REPLACE_ME) + scripts + frontend.
+MFA-SETUP.txt
+mfa-qr.png
+notification.txt
+authelia.log
+*.sqlite3
+.env
+.env.*
+!*.env.example
+
+# Config/usuarios ja preenchidos (se alguem puxar da VPS por engano)
+configuration.filled.yml
+users_database.filled.yml

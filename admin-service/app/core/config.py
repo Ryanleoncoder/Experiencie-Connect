@@ -28,10 +28,6 @@ class Settings(BaseSettings):
     DB_POOL_MAX_SIZE: int = 20
     DB_POOL_TIMEOUT: int = 30
 
-    FIREBASE_PROJECT_ID: str
-    FIREBASE_CREDENTIALS_BASE64: str
-    FIREBASE_CHALLENGES_COLLECTION: str = "challenges"
-    FIREBASE_ACHIEVEMENTS_COLLECTION: str = "achievements"
 
     REDIS_URL: str = "redis://localhost:6379"
     REDIS_ENABLED: bool = False

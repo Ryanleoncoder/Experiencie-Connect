@@ -10,9 +10,6 @@ python-multipart==0.0.6
 asyncpg==0.31.0
 supabase>=2.10.0
 
-# Firebase
-firebase-admin==6.4.0
-
 # Redis (optional)
 redis==5.0.1
 

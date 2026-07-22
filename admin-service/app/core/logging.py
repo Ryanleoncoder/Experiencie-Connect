@@ -78,7 +78,6 @@ def setup_logging(
         root_logger.addHandler(file_handler)
     
     logging.getLogger("asyncpg").setLevel(logging.WARNING)
-    logging.getLogger("firebase_admin").setLevel(logging.WARNING)
     logging.getLogger("aioredis").setLevel(logging.WARNING)
     logging.getLogger("uvicorn.access").setLevel(logging.WARNING)
 

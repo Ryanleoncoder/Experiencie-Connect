@@ -149,146 +149,70 @@ class AdminService:
             }
     
     async def close_season(self, season_id: str) -> Dict[str, Any]:
-        """
-        Transitions ACTIVE → LOCKING → CLOSED with a 30-second buffer for in-flight requests.
-        Idempotent: already CLOSED/ARCHIVED returns success immediately.
-        """
-        import asyncio
-
-        lock_name = f"close_season_{season_id}"
-        lock_acquired = await supabase_client.call_rpc(
-            'acquire_distributed_lock',
-            {'p_lock_name': lock_name, 'p_ttl_seconds': 1800}
-        )
-        
-        if not lock_acquired:
-            raise ValueError("Another season close operation is in progress")
-        
-        try:
-            season = await supabase_client.fetchrow(
-                "SELECT id, name, state FROM seasons WHERE id = $1",
-                UUID(season_id)
-            )
-            
-            if not season:
-                raise ValueError("Season not found")
-            
-            current_state = season['state']
-            
-            if current_state == 'CLOSED' or current_state == 'ARCHIVED':
-                logger.info(f"Season {season_id} already {current_state}, returning success (idempotent)")
-                return {
-                    'success': True,
-                    'season_id': season_id,
-                    'final_state': current_state,
-                    'message': f'Season already {current_state}'
-                }
-            
-            if current_state == 'ACTIVE':
-                await self.transition_season_state(season_id, 'LOCKING')
-                logger.info(f"Season {season_id} transitioned to LOCKING")
-                logger.info(f"Waiting 30 seconds for in-flight requests to complete...")
-                await asyncio.sleep(30)
-
-            if current_state == 'LOCKING' or current_state == 'ACTIVE':
-                await self.transition_season_state(season_id, 'CLOSED')
-                
-                await supabase_client.execute(
-                    "UPDATE seasons SET closed_at = NOW() WHERE id = $1",
-                    UUID(season_id)
-                )
-                
-                logger.info(f"Season {season_id} closed successfully")
-            
-            try:
-                ranking_result = await self.generate_daily_ranking()
-                logger.info(f"Final ranking snapshot created: {ranking_result['filename']}")
-            except Exception as ranking_error:
-                logger.error(f"Failed to create final ranking snapshot: {ranking_error}")
-                # Ranking failure must not fail the close operation
-            
-            await self._log_admin_operation(
-                'close_season',
-                'admin',
-                {'season_id': season_id, 'season_name': season['name']}
-            )
-            
-            return {
-                'success': True,
-                'season_id': season_id,
-                'final_state': 'CLOSED'
-            }
-        
-        finally:
-            await supabase_client.call_rpc(
-                'release_distributed_lock',
-                {'p_lock_name': lock_name}
-            )
-    
-    async def get_current_season(self) -> Optional[Dict[str, Any]]:
-        season = await supabase_client.fetchrow(
-            """
-            SELECT id, name, state, start_date, end_date, created_at
-            FROM seasons
-            WHERE state = 'ACTIVE'
-            ORDER BY start_date DESC
-            LIMIT 1
-            """
-        )
-        
-        if not season:
-            return None
-        
-        return {
-            'id': str(season['id']),
-            'name': season['name'],
-            'state': season['state'],
-            'start_date': season['start_date'].isoformat(),
-            'end_date': season['end_date'].isoformat() if season['end_date'] else None
-        }
-    
-    async def transition_season_state(
-        self,
-        season_id: str,
-        new_state: str
-    ) -> None:
-        valid_transitions = {
-            'ACTIVE': ['LOCKING'],
-            'LOCKING': ['CLOSED', 'ACTIVE'],
-            'CLOSED': ['ARCHIVED'],
-            'ARCHIVED': []
-        }
-        
-        season = await supabase_client.fetchrow(
-            "SELECT state FROM seasons WHERE id = $1",
-            UUID(season_id)
-        )
-        
-        if not season:
+        """Transiciona ACTIVE -> LOCKING -> CLOSED. Idempotente se ja CLOSED/ARCHIVED."""
+        res = supabase_client.table('seasons').select('id,name,state').eq('id', season_id).limit(1).execute()
+        rows = res.data or []
+        if not rows:
             raise ValueError("Season not found")
-        
-        current_state = season['state']
-        
-        if new_state not in valid_transitions.get(current_state, []):
-            raise ValueError(
-                f"Invalid transition: {current_state} → {new_state}. "
-                f"Valid transitions: {valid_transitions.get(current_state, [])}"
-            )
-        
-        await supabase_client.execute(
-            "UPDATE seasons SET state = $1, updated_at = NOW() WHERE id = $2",
-            new_state, UUID(season_id)
-        )
-        
-        await supabase_client.execute(
-            """
-            INSERT INTO state_transitions (season_id, from_state, to_state, transitioned_by)
-            VALUES ($1, $2, $3, $4)
-            """,
-            UUID(season_id), current_state, new_state, 'admin'
-        )
-        
-        logger.info(f"Season {season_id} transitioned: {current_state} → {new_state}")
+        current_state = rows[0]['state']
+        if current_state in ('CLOSED', 'ARCHIVED'):
+            return {'success': True, 'season_id': season_id, 'final_state': current_state,
+                    'message': f'Season already {current_state}'}
+        if current_state == 'ACTIVE':
+            await self.transition_season_state(season_id, 'LOCKING')
+        await self.transition_season_state(season_id, 'CLOSED')
+        supabase_client.table('seasons').update({'closed_at': datetime.utcnow().isoformat()}).eq('id', season_id).execute()
+        await self._log_admin_operation('close_season', 'admin',
+                                        {'season_id': season_id, 'season_name': rows[0].get('name')})
+        return {'success': True, 'season_id': season_id, 'final_state': 'CLOSED'}
+
+    async def get_current_season(self) -> Optional[Dict[str, Any]]:
+        # content_seasons e' a temporada real do jogo (status 'ativa'). Fallback: a mais recente.
+        cols = 'id,nome,descricao,status,data_inicio,data_fim,total_levels,setores'
+        res = supabase_client.table('content_seasons').select(cols).eq('status', 'ativa').order('created_at', desc=True).limit(1).execute()
+        rows = res.data or []
+        if not rows:
+            res = supabase_client.table('content_seasons').select(cols).order('created_at', desc=True).limit(1).execute()
+            rows = res.data or []
+        if not rows:
+            return None
+        s = rows[0]
+        return {
+            'id': s['id'], 'nome': s.get('nome'), 'name': s.get('nome'),
+            'status': s.get('status'), 'state': s.get('status'),
+            'start_date': s.get('data_inicio'), 'end_date': s.get('data_fim'),
+            'total_levels': s.get('total_levels'), 'descricao': s.get('descricao'), 'setores': s.get('setores'),
+        }
+
+    async def update_season(self, season_id: str, data: Dict[str, Any]) -> Dict[str, Any]:
+        fields = {k: data[k] for k in ('status', 'data_inicio', 'data_fim', 'nome', 'descricao') if k in data and data[k] is not None}
+        if not fields:
+            raise ValueError('nada para atualizar')
+        res = supabase_client.table('content_seasons').update(fields).eq('id', season_id).execute()
+        if not res.data:
+            raise LookupError('temporada nao encontrada')
+        await self._log_admin_operation('update_season', 'admin', {'season_id': season_id, 'fields': list(fields.keys())})
+        return res.data[0]
+
+    async def transition_season_state(self, season_id: str, new_state: str) -> None:
+        valid = {'ACTIVE': ['LOCKING'], 'LOCKING': ['CLOSED', 'ACTIVE'], 'CLOSED': ['ARCHIVED'], 'ARCHIVED': []}
+        res = supabase_client.table('seasons').select('state').eq('id', season_id).limit(1).execute()
+        rows = res.data or []
+        if not rows:
+            raise ValueError("Season not found")
+        current_state = rows[0]['state']
+        if new_state not in valid.get(current_state, []):
+            raise ValueError(f"Invalid transition: {current_state} -> {new_state}. Valid: {valid.get(current_state, [])}")
+        supabase_client.table('seasons').update({
+            'state': new_state, 'updated_at': datetime.utcnow().isoformat(),
+        }).eq('id', season_id).execute()
+        try:
+            supabase_client.table('state_transitions').insert({
+                'season_id': season_id, 'from_state': current_state, 'to_state': new_state, 'transitioned_by': 'admin',
+            }).execute()
+        except Exception as e:
+            logger.warning(f"state_transitions insert falhou (ignorado): {e}")
+        logger.info(f"Season {season_id} transitioned: {current_state} -> {new_state}")
     
     async def cleanup_old_data(self, retention_days: int = 90) -> Dict[str, Any]:
         """Deletes old attempts beyond retention period. Preserves all current-season data."""
@@ -366,208 +290,122 @@ class AdminService:
                 {'p_lock_name': 'cleanup_old_data'}
             )
     
-    async def ban_user(
-        self,
-        user_id: str,
-        reason: str,
-        banned_by: str = 'admin'
-    ) -> Dict[str, Any]:
-        await supabase_client.execute(
-            """
-            UPDATE usuarios
-            SET banned = true, banned_at = NOW(), ban_reason = $2
-            WHERE id = $1
-            """,
-            UUID(user_id), reason
-        )
-        
+    async def ban_user(self, user_id: str, reason: str, banned_by: str = 'admin') -> Dict[str, Any]:
+        supabase_client.table('usuarios').update({
+            'banned': True,
+            'banned_at': datetime.utcnow().isoformat(),
+            'ban_reason': reason,
+        }).eq('id', user_id).execute()
         logger.info(f"User {user_id} banned by {banned_by}: {reason}")
-        
-        await self._log_admin_operation(
-            'ban_user',
-            banned_by,
-            {'user_id': user_id, 'reason': reason}
-        )
-        
-        return {
-            'success': True,
-            'user_id': user_id,
-            'banned': True
-        }
-    
-    async def unban_user(
-        self,
-        user_id: str,
-        unbanned_by: str = 'admin'
-    ) -> Dict[str, Any]:
-        await supabase_client.execute(
-            """
-            UPDATE usuarios
-            SET banned = false, banned_at = NULL, ban_reason = NULL
-            WHERE id = $1
-            """,
-            UUID(user_id)
-        )
-        
+        await self._log_admin_operation('ban_user', banned_by, {'user_id': user_id, 'reason': reason})
+        return {'success': True, 'user_id': user_id, 'banned': True}
+
+    async def unban_user(self, user_id: str, unbanned_by: str = 'admin') -> Dict[str, Any]:
+        supabase_client.table('usuarios').update({
+            'banned': False, 'banned_at': None, 'ban_reason': None,
+        }).eq('id', user_id).execute()
         logger.info(f"User {user_id} unbanned by {unbanned_by}")
-        
-        await self._log_admin_operation(
-            'unban_user',
-            unbanned_by,
-            {'user_id': user_id}
-        )
-        
-        return {
-            'success': True,
-            'user_id': user_id,
-            'banned': False
-        }
-    
-    async def reset_user_progress(
-        self,
-        user_id: str,
-        reset_by: str = 'admin'
-    ) -> Dict[str, Any]:
-        await supabase_client.execute(
-            """
-            UPDATE user_progress
-            SET xp = 0,
-                level = 1,
-                completed_challenges = ARRAY[]::text[],
-                completed_minigames = ARRAY[]::text[],
-                attempt_history = '[]'::jsonb,
-                updated_at = NOW()
-            WHERE user_id = $1
-            """,
-            UUID(user_id)
-        )
-        
+        await self._log_admin_operation('unban_user', unbanned_by, {'user_id': user_id})
+        return {'success': True, 'user_id': user_id, 'banned': False}
+
+    async def reset_user_progress(self, user_id: str, reset_by: str = 'admin') -> Dict[str, Any]:
+        supabase_client.table('user_progress').update({
+            'xp': 0, 'level': 1,
+            'completed_challenges': [], 'completed_minigames': [], 'attempt_history': [],
+            'updated_at': datetime.utcnow().isoformat(),
+        }).eq('user_id', user_id).execute()
         logger.info(f"User {user_id} progress reset by {reset_by}")
-        
-        await self._log_admin_operation(
-            'reset_user_progress',
-            reset_by,
-            {'user_id': user_id}
-        )
-        
+        await self._log_admin_operation('reset_user_progress', reset_by, {'user_id': user_id})
+        return {'success': True, 'user_id': user_id, 'progress_reset': True}
+
+    async def delete_user(self, user_id: str, deleted_by: str = 'admin') -> Dict[str, Any]:
+        # Limpa os filhos explicitamente (FKs variam entre CASCADE e nao) e depois o usuario.
+        for tbl in ('challenge_attempts', 'intermission_game_sessions', 'phase_sessions', 'progress_history', 'user_progress'):
+            try:
+                supabase_client.table(tbl).delete().eq('user_id', user_id).execute()
+            except Exception as e:
+                logger.warning(f"delete_user: {tbl} falhou (ignorado): {e}")
+        supabase_client.table('usuarios').delete().eq('id', user_id).execute()
+        logger.info(f"User {user_id} DELETED by {deleted_by}")
+        await self._log_admin_operation('delete_user', deleted_by, {'user_id': user_id})
+        return {'success': True, 'user_id': user_id, 'deleted': True}
+
+    async def reset_all_progress(self, reset_by: str = 'admin') -> Dict[str, Any]:
+        import uuid as _uuid
+        impossible = '00000000-0000-0000-0000-000000000000'
+        for tbl in ('challenge_attempts', 'intermission_game_sessions', 'phase_sessions', 'progress_history'):
+            try:
+                supabase_client.table(tbl).delete().neq('user_id', impossible).execute()
+            except Exception as e:
+                logger.warning(f"reset_all: delete {tbl} falhou (ignorado): {e}")
+        supabase_client.table('user_progress').update({
+            'xp': 0, 'level': 1,
+            'completed_challenges': [], 'completed_minigames': [], 'attempt_history': [],
+            'phase_generation': str(_uuid.uuid4()),
+            'updated_at': datetime.utcnow().isoformat(),
+        }).neq('user_id', impossible).execute()
+        logger.info(f"ALL user progress reset by {reset_by}")
+        await self._log_admin_operation('reset_all_progress', reset_by, {})
+        return {'success': True, 'reset_all': True}
+
+    def _shape_user(self, up_row: Dict[str, Any]) -> Dict[str, Any]:
+        u = up_row.get('usuarios') or {}
+        cc = up_row.get('completed_challenges') or []
+        cm = up_row.get('completed_minigames') or []
         return {
-            'success': True,
-            'user_id': user_id,
-            'progress_reset': True
+            'id': u.get('id'),
+            'nickname': u.get('nickname'),
+            'xp': up_row.get('xp') or 0,
+            'level': up_row.get('level') or 1,
+            'challenges_completed': len(cc),
+            'minigames_completed': len(cm),
+            'banned': u.get('banned', False),
+            'created_at': u.get('criado_em'),
         }
-    
+
     async def get_user_details(self, user_id: str) -> Optional[Dict[str, Any]]:
-        user = await supabase_client.fetchrow(
-            """
-            SELECT u.id, u.nickname, u.banned, u.banned_at, u.ban_reason,
-                   u.criado_em as created_at, u.updated_at,
-                   COALESCE(up.xp, 0) as xp,
-                   COALESCE(up.level, 1) as level,
-                   COALESCE(array_length(up.completed_challenges, 1), 0) as challenges_completed,
-                   COALESCE(array_length(up.completed_minigames, 1), 0) as minigames_completed
-            FROM usuarios u
-            LEFT JOIN user_progress up ON u.id = up.user_id
-            WHERE u.id = $1
-            """,
-            UUID(user_id)
-        )
-        
-        if not user:
+        res = supabase_client.table('user_progress').select(
+            'xp,level,completed_challenges,completed_minigames,'
+            'usuarios!inner(id,nickname,banned,banned_at,ban_reason,criado_em)'
+        ).eq('user_id', user_id).limit(1).execute()
+        rows = res.data or []
+        if not rows:
             return None
-        
-        return {
-            'id': str(user['id']),
-            'nickname': user['nickname'],
-            'xp': user['xp'],
-            'level': user['level'],
-            'challenges_completed': user['challenges_completed'],
-            'minigames_completed': user['minigames_completed'],
-            'banned': user['banned'],
-            'banned_at': user['banned_at'].isoformat() if user['banned_at'] else None,
-            'ban_reason': user['ban_reason'],
-            'created_at': user['created_at'].isoformat(),
-            'updated_at': user['updated_at'].isoformat()
-        }
-    
-    async def list_users(
-        self,
-        filters: Optional[Dict[str, Any]] = None,
-        limit: int = 100,
-        offset: int = 0
-    ) -> Dict[str, Any]:
-        query = """
-            SELECT u.id, u.nickname, u.banned, u.criado_em as created_at,
-                   COALESCE(up.xp, 0) as xp,
-                   COALESCE(up.level, 1) as level,
-                   COALESCE(array_length(up.completed_challenges, 1), 0) as challenges_completed,
-                   COALESCE(array_length(up.completed_minigames, 1), 0) as minigames_completed
-            FROM usuarios u
-            LEFT JOIN user_progress up ON u.id = up.user_id
-            WHERE 1=1
-        """
-        params = []
-        param_idx = 1
+        shaped = self._shape_user(rows[0])
+        u = rows[0].get('usuarios') or {}
+        shaped['banned_at'] = u.get('banned_at')
+        shaped['ban_reason'] = u.get('ban_reason')
+        return shaped
 
+    async def list_users(self, filters: Optional[Dict[str, Any]] = None, limit: int = 100, offset: int = 0) -> Dict[str, Any]:
+        q = supabase_client.table('user_progress').select(
+            'xp,level,completed_challenges,completed_minigames,'
+            'usuarios!inner(id,nickname,banned,criado_em)',
+            count='exact',
+        )
         if filters:
             if 'banned' in filters:
-                query += f" AND banned = ${param_idx}"
-                params.append(filters['banned'])
-                param_idx += 1
-            
+                q = q.eq('usuarios.banned', filters['banned'])
             if 'min_level' in filters:
-                query += f" AND up.level >= ${param_idx}"
-                params.append(filters['min_level'])
-                param_idx += 1
-            
+                q = q.gte('level', filters['min_level'])
             if 'min_xp' in filters:
-                query += f" AND up.xp >= ${param_idx}"
-                params.append(filters['min_xp'])
-                param_idx += 1
-        
-        query += f" ORDER BY up.xp DESC, up.level DESC LIMIT ${param_idx} OFFSET ${param_idx + 1}"
-        params.extend([limit, offset])
-
-        users = await supabase_client.fetch(query, *params)
-        
-        count_query = "SELECT COUNT(*) FROM usuarios u LEFT JOIN user_progress up ON u.id = up.user_id WHERE 1=1"
-        count_params = []
-        if filters:
-            if 'banned' in filters:
-                count_query += " AND u.banned = $1"
-                count_params.append(filters['banned'])
-        
-        total = await supabase_client.fetchval(count_query, *count_params)
-        
+                q = q.gte('xp', filters['min_xp'])
+        res = q.order('xp', desc=True).order('level', desc=True).range(offset, offset + limit - 1).execute()
         return {
-            'users': [
-                {
-                    'id': str(user['id']),
-                    'nickname': user['nickname'],
-                    'xp': user['xp'],
-                    'level': user['level'],
-                    'challenges_completed': user['challenges_completed'],
-                    'minigames_completed': user['minigames_completed'],
-                    'banned': user['banned'],
-                    'created_at': user['created_at'].isoformat()
-                }
-                for user in users
-            ],
-            'total': total,
+            'users': [self._shape_user(r) for r in (res.data or [])],
+            'total': res.count if res.count is not None else len(res.data or []),
             'limit': limit,
-            'offset': offset
+            'offset': offset,
         }
-    
-    async def _log_admin_operation(
-        self,
-        operation: str,
-        user: str,
-        details: Dict[str, Any]
-    ) -> None:
-        supabase_client.client.table('admin_audit_logs').insert({
-            'operation': operation,
-            'user': user,
-            'details': details
-        }).execute()
+
+    async def _log_admin_operation(self, operation: str, user: str, details: Dict[str, Any]) -> None:
+        # Auditoria e' secundaria: nao derruba a operacao se a tabela nao existir.
+        try:
+            supabase_client.table('admin_audit_logs').insert({
+                'operation': operation, 'user': user, 'details': details,
+            }).execute()
+        except Exception as e:
+            logger.warning(f"admin_audit_logs insert falhou (ignorado): {e}")
 
 
 admin_service = AdminService()

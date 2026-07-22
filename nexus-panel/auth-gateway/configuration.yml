@@ -1,0 +1,62 @@
+---
+theme: 'dark'
+
+server:
+  address: 'tcp://127.0.0.1:9092/authelia'
+
+log:
+  level: 'info'
+  file_path: '/home/nexus/auth-gateway/authelia.log'
+
+totp:
+  issuer: 'EC Nexus'
+  period: 30
+  skew: 1
+
+authentication_backend:
+  password_change:
+    disable: true
+  password_reset:
+    disable: true
+  file:
+    path: '/home/nexus/auth-gateway/users_database.yml'
+    password:
+      algorithm: 'argon2'
+
+access_control:
+  default_policy: 'deny'
+  rules:
+    - domain: 'REPLACE_ME_DOMAIN'
+      policy: 'two_factor'
+
+session:
+  secret: 'REPLACE_ME_session_secret'
+  cookies:
+    - name: 'nexus_session'
+      domain: 'REPLACE_ME_DOMAIN'
+      authelia_url: 'https://REPLACE_ME_DOMAIN/authelia'
+      default_redirection_url: 'https://REPLACE_ME_DOMAIN'
+      expiration: '12 hours'
+      inactivity: '2 hours'
+      remember_me: '0'
+
+regulation:
+  max_retries: 3
+  find_time: '2 minutes'
+  ban_time: '5 minutes'
+
+storage:
+  encryption_key: 'REPLACE_ME_storage_encryption_key'
+  local:
+    path: '/home/nexus/auth-gateway/db.sqlite3'
+
+identity_validation:
+  reset_password:
+    jwt_secret: 'REPLACE_ME_jwt_secret'
+  elevated_session:
+    require_second_factor: true
+
+notifier:
+  filesystem:
+    filename: '/home/nexus/auth-gateway/notification.txt'
+...
