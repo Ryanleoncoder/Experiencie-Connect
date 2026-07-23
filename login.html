@@ -34,18 +34,25 @@
         <p class="subtitle">Acesse sua conta e continue sua jornada de experiências.</p>
 
         <form id="login-form" novalidate onsubmit="handleLogin(event)">
+          <div class="field">
+            <svg class="fic" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/>
+              <path d="M4 21c0-4 4-6 8-6s8 2 8 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <input type="text" id="username" name="username" placeholder="Usuario" autocomplete="username" maxlength="50" required>
+          </div>
+
           <div class="error-message" id="error-message" role="alert">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6m0-6 6 6"/></svg>
             <span>Não foi possível entrar com a passkey.</span>
           </div>
 
           <div class="cl-wrap">
-            <button type="submit" class="btn-cl" id="login-btn">
+            <button type="submit" class="btn-cl" id="login-btn" data-flow="login" data-done="Entrou">
               <span class="cl-text">Entrar com passkey <svg class="cl-arrow" viewBox="0 0 24 24" style="width:18px;height:18px"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-              <span class="cl-stage" aria-hidden="true"><span class="passkey-spinner"></span></span>
+              <span class="cl-stage" aria-hidden="true"></span>
             </button>
           </div>
-          <p class="passkey-wait" id="passkey-wait" role="status" aria-live="polite">Confirme no seu dispositivo…</p>
         </form>
         <p class="signup">Primeiro acesso ou recuperação? Use o link e o código enviados pelo administrador.</p>
       </div>
@@ -82,6 +89,22 @@
       </div>
     </aside>
   </main>
+
+  <footer class="ec-footer">
+    <nav>
+      <a href="sobre.html">Sobre</a>
+      <a href="#">Suporte</a>
+    </nav>
+    <div class="ft-meta">
+      <span class="ft-dot"></span>
+      <span>© 2026 Experience Connect</span>
+      <span class="ft-tag">v2.0</span>
+      <a class="ft-credit" href="https://github.com/Ryanleoncoder" target="_blank" rel="noreferrer noopener">
+        <img src="./frontend/assets/image/redesocial/github.svg" alt="GitHub">
+        Desenvolvido por Ryan Cruz
+      </a>
+    </div>
+  </footer>
 
   <div class="ec-redirect-overlay" id="ec-redirect-overlay" aria-hidden="true"><div class="ec-redirect-inner"><span class="ec-redirect-label">Entrando…</span></div></div>
   <script src="./frontend/js/progress-sync-service.js" defer></script>

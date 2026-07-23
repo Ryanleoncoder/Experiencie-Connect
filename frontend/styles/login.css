@@ -383,41 +383,6 @@ h1.title .hl {
   opacity: 1;
 }
 
-.passkey-spinner {
-  width: 18px;
-  height: 18px;
-  border: 2.5px solid rgba(10, 10, 10, .28);
-  border-top-color: var(--k);
-  border-radius: 50%;
-  animation: passkeySpin .72s linear infinite;
-}
-
-.passkey-wait {
-  max-height: 0;
-  margin: 0;
-  overflow: hidden;
-  color: var(--n4);
-  font-size: 12px;
-  line-height: 1.35;
-  opacity: 0;
-  text-align: center;
-  transition: max-height .2s ease, margin-top .2s ease, opacity .2s ease;
-}
-
-.passkey-wait.show {
-  max-height: 24px;
-  margin-top: 14px;
-  opacity: 1;
-}
-
-@keyframes passkeySpin {
-  to { transform: rotate(360deg); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .passkey-spinner { animation-duration: 1.8s; }
-}
-
 /* Re-expand → pill on confirm */
 .btn-cl.confirmed {
   width: 100%;

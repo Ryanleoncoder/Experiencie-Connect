@@ -102,9 +102,9 @@
     return api('/passkeys/register/verify', { credential: payload });
   }
 
-  async function loginWithPasskey() {
+  async function loginWithPasskey(username) {
     if (!supported()) throw new Error('Este navegador não oferece suporte a passkeys. Use um navegador atualizado.');
-    var options = await api('/passkeys/login/options');
+    var options = await api('/passkeys/login/options', { username: username });
     var credential;
     try {
       credential = await navigator.credentials.get({ publicKey: requestOptions(options.public_key) });

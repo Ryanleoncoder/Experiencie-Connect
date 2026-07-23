@@ -85,6 +85,10 @@ class AuthenticationVerifyRequest(BaseModel):
     credential: dict[str, Any]
 
 
+class AuthenticationOptionsRequest(BaseModel):
+    username: str = Field(min_length=1, max_length=50)
+
+
 def _redis():
     if not redis_client.is_available() or redis_client.redis is None:
         raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Authentication temporarily unavailable")
@@ -208,6 +212,16 @@ async def _user(user_id: str) -> dict[str, Any]:
     rows = result.data or []
     if not rows or rows[0].get("banned"):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Account unavailable")
+    return rows[0]
+
+
+async def _user_by_nickname(nickname: str) -> dict[str, Any] | None:
+    result = supabase_client.table("usuarios").select(
+        "id,nickname,banned"
+    ).eq("nickname", nickname).limit(2).execute()
+    rows = result.data or []
+    if len(rows) != 1 or rows[0].get("banned"):
+        return None
     return rows[0]
 
 
@@ -421,17 +435,25 @@ async def register_verify(
 
 
 @router.post("/passkeys/login/options")
-async def login_options(request: Request):
+async def login_options(request: Request, body: AuthenticationOptionsRequest):
     await _rate_limit(request, "login-options", 30, 10 * 60)
+    username = body.username.strip()
+    user = await _user_by_nickname(username)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unable to start passkey sign-in")
+    credentials = await _active_credentials(user["id"])
+    if not credentials:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unable to start passkey sign-in")
     challenge = secrets.token_bytes(32)
     options = generate_authentication_options(
         rp_id=settings.WEBAUTHN_RP_ID,
         challenge=challenge,
         timeout=settings.WEBAUTHN_CHALLENGE_SECONDS * 1000,
+        allow_credentials=_credential_descriptors(credentials),
         user_verification=UserVerificationRequirement.REQUIRED,
     )
     challenge_id = await _put_state("authentication", {
-        "purpose": "login", "challenge": bytes_to_base64url(challenge),
+        "purpose": "login", "user_id": user["id"], "challenge": bytes_to_base64url(challenge),
     }, settings.WEBAUTHN_CHALLENGE_SECONDS)
     return {"challenge_id": challenge_id, "public_key": _public_options(options)}
 
@@ -480,6 +502,8 @@ async def login_verify(request: Request, body: AuthenticationVerifyRequest, resp
     if state.get("purpose") != "login":
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid authentication ceremony")
     stored, user = await _verify_assertion(state, body.credential)
+    if str(user["id"]) != str(state.get("user_id")):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Passkey verification failed")
     await _issue_session(response, user, str(stored["id"]))
     supabase_client.table("passkey_security_events").insert({
         "user_id": user["id"], "credential_id": stored["id"], "event_type": "PASSKEY_AUTHENTICATED",
