@@ -300,6 +300,12 @@ body {
     letter-spacing: 0.5px;
 }
 
+.nickname-display.identity-pending {
+    background: rgba(0, 0, 0, 0.05);
+    border-style: dashed;
+    box-shadow: none;
+}
+
 /* --- Step Indicator --- */
 .step-indicator {
     display: flex;

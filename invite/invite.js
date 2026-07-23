@@ -73,7 +73,9 @@
       var result = await window.PasskeyClient.api('/activation/verify', { token: token, code: code });
       state.accountExists = result.account_exists;
       state.nickname = result.nickname;
-      document.getElementById('nickname-display').textContent = result.nickname || '—';
+      var nicknameDisplay = document.getElementById('nickname-display');
+      nicknameDisplay.textContent = result.nickname ? 'Conta confirmada: ' + result.nickname : 'Conta confirmada.';
+      nicknameDisplay.classList.remove('identity-pending');
       if (state.accountExists) {
         document.querySelector('[data-step="2"]').style.display = 'none';
         document.querySelectorAll('#step-indicator .step-line')[0].style.display = 'none';

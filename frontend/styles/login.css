@@ -190,6 +190,27 @@ h1.title .hl {
   margin-bottom: 14px;
 }
 
+.passkey-login-hint {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  background: var(--w);
+  border: var(--b2);
+  border-radius: var(--r2);
+  color: var(--n4);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.passkey-login-hint .fic {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  color: var(--k);
+}
+
 .field svg.fic {
   position: absolute;
   left: 15px;
