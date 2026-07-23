@@ -82,7 +82,7 @@ body {
     display: block;
     width: 100%;
     max-width: 510px;
-    margin: 18px auto;
+    margin: 0 auto 18px;
     border: 2px solid var(--black);
     border-radius: var(--radius-md);
     box-shadow: 4px 4px 0 var(--yellow);
