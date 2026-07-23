@@ -51,6 +51,16 @@ async function validatePlatformAccess(req, res) {
       };
     }
     
+    
+    if (config.season_state?.status === 'LOCKING') {
+      return {
+        allowed: false,
+        reason: 'season_finalizing',
+        message: 'Estamos preparando o resultado final da temporada',
+        redirect: '/maintenance.html'
+      };
+    }
+
     if (['CLOSED', 'ARCHIVED'].includes(config.season_state?.status)) {
       return {
         allowed: false,
