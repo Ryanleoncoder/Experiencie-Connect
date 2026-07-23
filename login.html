@@ -49,9 +49,10 @@
           <div class="cl-wrap">
             <button type="submit" class="btn-cl" id="login-btn">
               <span class="cl-text">Entrar com passkey <svg class="cl-arrow" viewBox="0 0 24 24" style="width:18px;height:18px"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-              <span class="cl-stage"></span>
+              <span class="cl-stage" aria-hidden="true"><span class="passkey-spinner"></span></span>
             </button>
           </div>
+          <p class="passkey-wait" id="passkey-wait" role="status" aria-live="polite">Confirme no seu dispositivo…</p>
         </form>
         <p class="signup">Primeiro acesso ou recuperação? Use o link e o código enviados pelo administrador.</p>
       </div>

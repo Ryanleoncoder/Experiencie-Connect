@@ -56,6 +56,18 @@ class PasskeyAuthTests(unittest.TestCase):
         self.assertIsNotNone(auth.CREDENTIAL_ID_RE.fullmatch("AbCdEf0123456789_-"))
         self.assertIsNone(auth.CREDENTIAL_ID_RE.fullmatch("credential with spaces"))
 
+    def test_one_time_state_uses_redis6_compatible_atomic_script(self):
+        async def run():
+            redis = AsyncMock()
+            redis.eval.return_value = '{"ok": true}'
+            with patch.object(auth, "_redis", return_value=redis):
+                result = await auth._take_state("registration", "a" * 43)
+            return result, redis
+
+        result, redis = asyncio.run(run())
+        self.assertEqual(result, {"ok": True})
+        redis.eval.assert_awaited_once_with(auth.TAKE_STATE_SCRIPT, 1, "passkey:registration:" + "a" * 43)
+
 
 if __name__ == "__main__":
     unittest.main()

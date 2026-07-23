@@ -4,9 +4,11 @@ async function handleLogin(event) {
   event.preventDefault();
   var button = document.getElementById('login-btn');
   var error = document.getElementById('error-message');
+  var wait = document.getElementById('passkey-wait');
   if (button.disabled) return;
   button.disabled = true;
   button.classList.add('loading');
+  wait.classList.add('show');
   error.classList.remove('show');
   try {
     var result = await window.PasskeyClient.loginWithPasskey();
@@ -19,6 +21,7 @@ async function handleLogin(event) {
     error.classList.add('show');
     button.disabled = false;
     button.classList.remove('loading');
+    wait.classList.remove('show');
   }
 }
 

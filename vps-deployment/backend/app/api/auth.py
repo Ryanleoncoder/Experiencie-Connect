@@ -48,6 +48,14 @@ REAUTH_COOKIE = "cx_passkey_reauth"
 SESSION_COOKIE = "cx_session"
 AUTH_FLAG_COOKIE = "cx_auth"
 
+TAKE_STATE_SCRIPT = """
+local value = redis.call('GET', KEYS[1])
+if value then
+  redis.call('DEL', KEYS[1])
+end
+return value
+"""
+
 AVATARS = {
     "m3345.webp", "m4245.webp", "m4523.webp", "m5353.webp", "m5354.webp",
     "m5367.webp", "m5444.webp", "m6345.webp", "m6735.webp", "h3535.webp",
@@ -112,7 +120,8 @@ async def _put_state(prefix: str, payload: dict[str, Any], ttl: int) -> str:
 async def _take_state(prefix: str, state_id: str | None) -> dict[str, Any]:
     if not state_id or not re.fullmatch(r"[A-Za-z0-9_-]{32,128}", state_id):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Activation expired")
-    value = await _redis().getdel(f"passkey:{prefix}:{state_id}")
+    key = f"passkey:{prefix}:{state_id}"
+    value = await _redis().eval(TAKE_STATE_SCRIPT, 1, key)
     if not value:
         raise HTTPException(status_code=status.HTTP_410_GONE, detail="This step expired. Start again.")
     try:

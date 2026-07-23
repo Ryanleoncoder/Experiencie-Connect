@@ -78,10 +78,24 @@
     return Boolean(global.PublicKeyCredential && navigator.credentials);
   }
 
+  function promptError(error, action) {
+    if (error && (error.name === 'NotAllowedError' || error.name === 'AbortError')) {
+      return new Error(action === 'register'
+        ? 'A criação da passkey foi cancelada. Você pode tentar novamente quando quiser.'
+        : 'A confirmação foi cancelada. Tente novamente quando estiver pronto.');
+    }
+    return error instanceof Error ? error : new Error('Não foi possível concluir a confirmação da passkey.');
+  }
+
   async function registerPasskey(registration) {
     if (!supported()) throw new Error('Este navegador não oferece suporte a passkeys. Use um navegador atualizado.');
     var options = await api('/passkeys/register/options', registration || {});
-    var credential = await navigator.credentials.create({ publicKey: creationOptions(options.public_key) });
+    var credential;
+    try {
+      credential = await navigator.credentials.create({ publicKey: creationOptions(options.public_key) });
+    } catch (error) {
+      throw promptError(error, 'register');
+    }
     if (!credential) throw new Error('A criação da passkey foi cancelada.');
     var payload = credentialJson(credential);
     payload._challenge_id = options.challenge_id;
@@ -91,7 +105,12 @@
   async function loginWithPasskey() {
     if (!supported()) throw new Error('Este navegador não oferece suporte a passkeys. Use um navegador atualizado.');
     var options = await api('/passkeys/login/options');
-    var credential = await navigator.credentials.get({ publicKey: requestOptions(options.public_key) });
+    var credential;
+    try {
+      credential = await navigator.credentials.get({ publicKey: requestOptions(options.public_key) });
+    } catch (error) {
+      throw promptError(error, 'login');
+    }
     if (!credential) throw new Error('A autenticação foi cancelada.');
     var payload = credentialJson(credential);
     payload._challenge_id = options.challenge_id;
