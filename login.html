@@ -17,6 +17,24 @@
   <script src="./frontend/js/env-loader.js"></script>
 </head>
 <body>
+  <svg style="display:none" aria-hidden="true">
+    <symbol id="ec-loader-lg" viewBox="0 0 100 100">
+      <g class="ecl-rays" stroke="var(--y)" stroke-width="3" stroke-linecap="round">
+        <line x1="50" y1="6" x2="50" y2="15"/><line x1="94" y1="50" x2="85" y2="50"/>
+        <line x1="50" y1="94" x2="50" y2="85"/><line x1="6" y1="50" x2="15" y2="50"/>
+        <line x1="81" y1="19" x2="75" y2="25"/><line x1="81" y1="81" x2="75" y2="75"/>
+        <line x1="19" y1="81" x2="25" y2="75"/><line x1="19" y1="19" x2="25" y2="25"/>
+      </g>
+      <circle class="ecl-orbit" cx="50" cy="50" r="44"/>
+      <circle class="ecl-dot" cx="50" cy="6" r="4.5"/>
+      <g class="ecl-mark">
+        <path class="ecl-crown" d="M61 28 l3 -7 4 4.5 4 -7 3 8.5 z" fill="var(--y)" stroke="var(--y)" stroke-width="1" stroke-linejoin="round"/>
+        <rect class="ecl-mark-rect" x="30" y="34" width="40" height="36" rx="5"/>
+        <text class="ecl-mark-txt" x="50" y="59" font-family="DM Sans" font-weight="800" font-size="20" text-anchor="middle">EC</text>
+      </g>
+    </symbol>
+  </svg>
+
   <a class="ec-topbrand" href="index.html" aria-label="Experience Connect">
     <img class="ec-topbrand-mark" src="https://ec-cdn.rysn-craft.workers.dev" alt="EC" width="88">
     <span class="ec-topbrand-txt">experience<br><span class="b2">connect</span></span>
@@ -106,7 +124,14 @@
     </div>
   </footer>
 
-  <div class="ec-redirect-overlay" id="ec-redirect-overlay" aria-hidden="true"><div class="ec-redirect-inner"><span class="ec-redirect-label">Entrando…</span></div></div>
+  <div class="ec-redirect-overlay" id="ec-redirect-overlay" aria-hidden="true">
+    <div class="ec-redirect-inner">
+      <div class="ec-loader" style="width:80px;height:80px;color:var(--k)">
+        <svg viewBox="0 0 100 100"><use href="#ec-loader-lg"/></svg>
+      </div>
+      <span class="ec-redirect-label">Entrando…</span>
+    </div>
+  </div>
   <script src="./frontend/js/progress-sync-service.js" defer></script>
   <script src="./frontend/js/passkey-client.js" defer></script>
   <script src="./frontend/js/login.js" defer></script>
