@@ -38,7 +38,7 @@ class Settings(BaseSettings):
     # Passkeys / WebAuthn
     WEBAUTHN_RP_ID: str = "expconnect.com.br"
     WEBAUTHN_RP_NAME: str = "Experience Connect"
-    WEBAUTHN_ORIGINS: str = "https://expconnect.com.br"
+    WEBAUTHN_ORIGINS: str = "https://expconnect.com.br,https://www.expconnect.com.br"
     WEBAUTHN_SESSION_SECONDS: int = 4 * 24 * 60 * 60
     WEBAUTHN_ACTIVATION_SECONDS: int = 15 * 60
     WEBAUTHN_CHALLENGE_SECONDS: int = 5 * 60
