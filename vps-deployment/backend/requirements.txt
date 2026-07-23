@@ -13,3 +13,4 @@ python-multipart==0.0.20
 
 # System monitoring
 psutil==6.1.1
+webauthn==3.0.0

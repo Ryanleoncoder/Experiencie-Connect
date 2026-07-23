@@ -28,6 +28,16 @@
   },
   "redirects": [
     {
+      "source": "/register",
+      "destination": "/login",
+      "permanent": false
+    },
+    {
+      "source": "/register.html",
+      "destination": "/login",
+      "permanent": false
+    },
+    {
       "source": "/home",
       "destination": "/app",
       "permanent": false
@@ -142,14 +152,6 @@
     {
       "source": "/resgatar.html",
       "destination": "/api/render-page?page=resgatar.html"
-    },
-    {
-      "source": "/register",
-      "destination": "/api/render-page?page=register.html"
-    },
-    {
-      "source": "/register.html",
-      "destination": "/api/render-page?page=register.html"
     },
     {
       "source": "/sobre",

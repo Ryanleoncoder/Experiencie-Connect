@@ -1,5 +1,4 @@
 """Application configuration using Pydantic Settings."""
-
 from pydantic_settings import BaseSettings
 from typing import List
 
@@ -36,6 +35,15 @@ class Settings(BaseSettings):
     RATE_LIMIT_REQUESTS: int = 100
     RATE_LIMIT_WINDOW: int = 60
 
+    # Passkeys / WebAuthn
+    WEBAUTHN_RP_ID: str = "expconnect.com.br"
+    WEBAUTHN_RP_NAME: str = "Experience Connect"
+    WEBAUTHN_ORIGINS: str = "https://expconnect.com.br"
+    WEBAUTHN_SESSION_SECONDS: int = 4 * 24 * 60 * 60
+    WEBAUTHN_ACTIVATION_SECONDS: int = 15 * 60
+    WEBAUTHN_CHALLENGE_SECONDS: int = 5 * 60
+    CXGAME_COOKIE_DOMAIN: str = ".expconnect.com.br"
+
     LOG_LEVEL: str = "INFO"
     LOG_FORMAT: str = "json"
     LOG_FILE: str = "/var/log/cxgame/backend.log"
@@ -58,6 +66,10 @@ class Settings(BaseSettings):
     @property
     def redis_url(self) -> str:
         return f"redis://:{self.REDIS_PASSWORD}@{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"
+
+    @property
+    def webauthn_origins_list(self) -> List[str]:
+        return [origin.strip() for origin in self.WEBAUTHN_ORIGINS.split(",") if origin.strip()]
 
 
 settings = Settings()

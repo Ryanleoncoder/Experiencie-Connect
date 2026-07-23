@@ -29,14 +29,11 @@ function saveUsersData(users) {
 }
 
 function getCxSessionToken() {
-    return window.CxSession?.getSessionValue?.('cx_session_token') || '';
+    return '';
 }
 
 function buildProtectedHeaders(extraHeaders = {}) {
-    const token = getCxSessionToken();
-    return token
-        ? { ...extraHeaders, Authorization: `Bearer ${token}` }
-        : { ...extraHeaders };
+    return { ...extraHeaders };
 }
 
 const GENERIC_PUBLIC_DISPLAY_NAMES = new Set([

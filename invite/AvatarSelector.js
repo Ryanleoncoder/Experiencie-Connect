@@ -51,85 +51,21 @@ class AvatarSelector {
   }
 
   async loadAvatars() {
-    try {
-      const response = await fetch('/api/accept-invite');
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch avatars: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      if (!data.success || !Array.isArray(data.avatars)) {
-        throw new Error('Invalid response format from accept-invite API');
-      }
-
-      const avatarFilenames = data.avatars;
-
-      // Each avatar object: {filename, name, description, url}
-      this.avatars = avatarFilenames.map(filename => {
-        const info = this.metadataLoader
-          ? this.metadataLoader.getAvatarInfo(filename)
-          : { name: filename.replace(/\.(webp|png)$/i, ''), description: '' };
-
-        return {
-          filename,
-          name: info.name,
-          description: info.description,
-          url: `/frontend/assets/image/avatar/${filename}`
-        };
-      });
-
-      avatarSelectorDebugLog(`[AvatarSelector] Loaded ${this.avatars.length} avatars from API`);
-
-      this.shuffleAvatars();
-
-    } catch (error) {
-      console.error('[AvatarSelector] Failed to load avatars from API:', error);
-      console.warn('[AvatarSelector] Using fallback avatar list');
-
-      const fallbackFilenames = [
-        'h3535.webp',
-        'h4234.webp',
-        'h4244.webp',
-        'h45234.webp',
-        'h5234.webp',
-        'h52344.webp',
-        'h5345.webp',
-        'h53534.webp',
-        'h5354.webp',
-        'h5355.webp',
-        'h5635.webp',
-        'h7545.webp',
-        'h8724.webp',
-        'm3345.webp',
-        'm4245.webp',
-        'm4523.webp',
-        'm5353.webp',
-        'm5354.webp',
-        'm5367.webp',
-        'm5444.webp',
-        'm6345.webp',
-        'm6735.webp'
-      ];
-
-      this.avatars = fallbackFilenames.map(filename => {
-        const info = this.metadataLoader
-          ? this.metadataLoader.getAvatarInfo(filename)
-          : { name: filename.replace(/\.(webp|png)$/i, ''), description: '' };
-
-        return {
-          filename,
-          name: info.name,
-          description: info.description,
-          url: `/frontend/assets/image/avatar/${filename}`
-        };
-      });
-
-      avatarSelectorDebugLog(`[AvatarSelector] Loaded ${this.avatars.length} avatars from fallback`);
-
-      this.shuffleAvatars();
-    }
+    const avatarFilenames = [
+      'h3535.webp', 'h4234.webp', 'h4244.webp', 'h45234.webp', 'h5234.webp',
+      'h52344.webp', 'h5345.webp', 'h53534.webp', 'h5354.webp', 'h5355.webp',
+      'h5635.webp', 'h7545.webp', 'h8724.webp', 'm3345.webp', 'm4245.webp',
+      'm4523.webp', 'm5353.webp', 'm5354.webp', 'm5367.webp', 'm5444.webp',
+      'm6345.webp', 'm6735.webp'
+    ];
+    this.avatars = avatarFilenames.map(filename => {
+      const info = this.metadataLoader
+        ? this.metadataLoader.getAvatarInfo(filename)
+        : { name: filename.replace(/\.(webp|png)$/i, ''), description: '' };
+      return { filename, name: info.name, description: info.description, url: `/frontend/assets/image/avatar/${filename}` };
+    });
+    avatarSelectorDebugLog(`[AvatarSelector] Loaded ${this.avatars.length} local avatars`);
+    this.shuffleAvatars();
   }
 
   // Fisher-Yates shuffle to mix male/female avatars randomly
@@ -261,35 +197,14 @@ class AvatarSelector {
       }
     };
 
-    card.addEventListener('click', async (e) => {
-      if (window.exclusivePersonaSystem && window.exclusivePersonaSystem.isExclusive) {
-        avatarSelectorDebugLog('[AvatarSelector] Exclusive persona detected, starting reveal flow immediately');
-        await startExclusiveReveal();
-      } else {
-        openAvatarModal({
-          filename: avatar.filename,
-          name: avatar.name,
-          description: avatar.description,
-          imagePath: `/frontend/assets/image/avatar/${avatar.filename}`
-        });
-      }
-    });
+    // Selection is immediate in the passkey activation flow. The old modal
+    // depended on the password-era invite script and is intentionally gone.
+    card.addEventListener('click', () => this.handleSelection(avatar.filename));
 
-    card.addEventListener('keydown', async (e) => {
+    card.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-
-        if (window.exclusivePersonaSystem && window.exclusivePersonaSystem.isExclusive) {
-          avatarSelectorDebugLog('[AvatarSelector] Exclusive persona detected (keyboard), starting reveal flow immediately');
-          await startExclusiveReveal();
-        } else {
-          openAvatarModal({
-            filename: avatar.filename,
-            name: avatar.name,
-            description: avatar.description,
-            imagePath: `/frontend/assets/image/avatar/${avatar.filename}`
-          });
-        }
+        this.handleSelection(avatar.filename);
       }
     });
 

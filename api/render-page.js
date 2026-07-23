@@ -26,7 +26,6 @@ const PUBLIC_PAGES = new Set([
   'momento-critico.html',
   'outside-window.html',
   'ranking.html',
-  'register.html',
   'resgatar.html',
   'season-closed.html',
   'sobre.html',

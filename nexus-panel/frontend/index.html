@@ -170,6 +170,26 @@
     </section>
   </main>
 
+  <section id="recovery-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="recovery-title" hidden>
+    <div class="modal-card">
+      <div class="modal-head">
+        <h2 id="recovery-title">Recuperação por passkey</h2>
+        <button type="button" id="recovery-close" class="mini" aria-label="Fechar">Fechar</button>
+      </div>
+      <p id="recovery-summary" class="modal-copy"></p>
+      <p class="modal-note">Envie o link e o código por canais separados. As passkeys já cadastradas permanecem válidas.</p>
+      <label>Link de recuperação
+        <textarea id="recovery-link" class="recovery-value" rows="3" readonly></textarea>
+      </label>
+      <button type="button" id="recovery-copy-link" class="mini">Copiar link</button>
+      <label>Código de recuperação
+        <input id="recovery-code" class="recovery-value" readonly>
+      </label>
+      <button type="button" id="recovery-copy-code" class="mini">Copiar código</button>
+      <p id="recovery-expires" class="modal-expiry"></p>
+    </div>
+  </section>
+
   <script src="/app.js"></script>
 </body>
 </html>

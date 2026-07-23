@@ -349,7 +349,6 @@
 
     async fetchJson(url, options = {}) {
       const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
-      if (this.token) headers['Authorization'] = `Bearer ${this.token}`;
       const response = await root.fetch(url, {
         ...options,
         credentials: 'include',

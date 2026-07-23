@@ -54,6 +54,8 @@
   }
 
   function getSessionValue(key) {
+
+    if (key === 'cx_session_token') return null;
     const primary = getPrimaryStorage();
     const fallback = getFallbackStorage();
     return primary?.getItem?.(key) || fallback?.getItem?.(key) || null;
@@ -90,11 +92,6 @@
   }
 
   function hasActiveSession() {
-    const session = getSessionSnapshot();
-    if (session.token && session.userId && session.loggedIn) {
-      return true;
-    }
-    
     return hasAuthCookie();
   }
 
@@ -398,10 +395,7 @@
   }
 
   function buildProtectedHeaders(extraHeaders = {}) {
-    const token = getSessionValue('cx_session_token');
-    return token
-      ? { ...extraHeaders, Authorization: `Bearer ${token}` }
-      : { ...extraHeaders };
+    return { ...extraHeaders };
   }
 
   async function bootstrapPage(options = {}) {

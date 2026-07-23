@@ -2,126 +2,21 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <script src="./frontend/js/console-control.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="https://favicon.rysn-craft.workers.dev">
-    <meta name="description" content="Experience Connect - Criar Conta">
-    <title>Experience Connect — Cadastro</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <meta name="robots" content="noindex">
+    <meta http-equiv="refresh" content="0; url=/login">
+    <title>Experience Connect — Cadastro por convite</title>
     <link rel="stylesheet" href="./frontend/styles/login.css">
-    <script src="./frontend/js/env-loader.js"></script>
-
-    <!-- Platform Status Check removed - register is a public page (Fase 2 optimization) -->
 </head>
 <body>
-
-    <div class="bg-effects" aria-hidden="true">
-        <div class="bg-glow bg-glow--1"></div>
-        <div class="bg-glow bg-glow--2"></div>
-        <div class="bg-grid"></div>
-    </div>
-
-    <main class="login-page" id="login-page">
-        <div class="brand" id="brand">
-            <div class="brand-logo">
-                <img class="brand-mark" src="https://ec-cdn.rysn-craft.workers.dev" alt="Experience Connect" width="48" height="48" loading="eager" decoding="async">
-            </div>
-            <h1 class="brand-name">Exp<span class="text-yellow">Connect</span></h1>
-            <p class="brand-tagline">Crie sua conta e comece sua jornada EC</p>
-        </div>
-
-        <div class="login-card" id="register-card">
-            <h2 class="card-title">Criar Conta</h2>
-            <p class="card-subtitle">Escolha seu nickname de agente EC</p>
-
-            <form onsubmit="handleRegister(event)" id="register-form" autocomplete="off">
-                <div class="input-group" id="group-nickname">
-                    <div class="input-icon">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-                        </svg>
-                    </div>
-                    <input type="text" class="input-field" id="nickname" placeholder="Seu nickname" maxlength="20" required>
-                </div>
-
-                <div class="error-message" id="error-message">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
-                    </svg>
-                    <span id="error-text">Esse nickname já existe. Escolha outro.</span>
-                </div>
-
-                <button type="submit" class="login-btn" id="register-btn">
-                    <span class="btn-text">Criar Conta</span>
-                    <span class="btn-loader" id="btn-loader">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
-                        </svg>
-                    </span>
-                </button>
-            </form>
-
-            <div class="password-result" id="password-result" style="display:none;">
-                <div class="result-icon">
-                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                        <polyline points="22 4 12 14.01 9 11.01"/>
-                    </svg>
-                </div>
-                <h3 class="result-title">Conta Criada!</h3>
-                <p class="result-desc">Anote sua senha gerada abaixo. Você precisará dela para fazer login.</p>
-
-                <div class="credential-box">
-                    <div class="credential-row">
-                        <span class="credential-label">Nickname</span>
-                        <span class="credential-value" id="show-nickname">—</span>
-                    </div>
-                    <div class="credential-row">
-                        <span class="credential-label">Senha</span>
-                        <div class="credential-value-wrap">
-                            <span class="credential-value credential-value--password" id="show-password">—</span>
-                            <button class="copy-btn" id="copy-btn" onclick="copyPassword()" title="Copiar senha">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <a href="login.html" class="login-btn" id="go-login-btn" style="text-decoration:none; text-align:center; display:flex; margin-top: 16px;">
-                    <span class="btn-text">Ir para Login</span>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left:8px;">
-                        <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-                    </svg>
-                </a>
-            </div>
-
-            <p class="card-footer-text">
-                Já tem conta? <a href="login.html" class="text-yellow">Fazer Login</a>
-            </p>
-        </div>
-
-        <div class="particles" aria-hidden="true">
-            <span class="particle"></span>
-            <span class="particle"></span>
-            <span class="particle"></span>
-            <span class="particle"></span>
-            <span class="particle"></span>
-            <span class="particle"></span>
-            <span class="particle"></span>
-            <span class="particle"></span>
-            <span class="particle"></span>
-            <span class="particle"></span>
-            <span class="particle"></span>
-            <span class="particle"></span>
-        </div>
+    <main class="login-page">
+        <section class="login-card" aria-labelledby="register-title">
+            <h1 class="card-title" id="register-title">Cadastro por convite</h1>
+            <p class="card-subtitle">Use o link de ativação recebido, confirme o código e crie sua passkey. Não há cadastro por senha.</p>
+            <a class="login-btn" href="/login" style="text-decoration:none;display:flex;justify-content:center">
+                Entrar com passkey
+            </a>
+        </section>
     </main>
-
-    <script src="./frontend/js/register.js"></script>
 </body>
 </html>
-

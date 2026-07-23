@@ -77,3 +77,18 @@ pre { margin: 0; max-height: 320px; overflow: auto; font-size: .8rem; color: var
 }
 .toast.ok { background: var(--ok); color: #08210f; }
 .toast.error { background: var(--bad); color: #fff; }
+
+.modal {
+  position: fixed; inset: 0; z-index: 40; display: grid; place-items: center;
+  padding: 1rem; background: rgb(0 0 0 / .68);
+}
+.modal[hidden] { display: none; }
+.modal-card {
+  width: min(100%, 620px); background: var(--card); border: 1px solid var(--line);
+  border-radius: 12px; padding: 1.2rem; box-shadow: 0 16px 55px rgb(0 0 0 / .45);
+}
+.modal-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: .8rem; }
+.modal-head h2 { margin: 0; }
+.modal-copy { margin: 0 0 .55rem; }
+.modal-note, .modal-expiry { color: var(--muted); font-size: .9rem; }
+.recovery-value { width: 100%; margin-bottom: .45rem; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; resize: vertical; }

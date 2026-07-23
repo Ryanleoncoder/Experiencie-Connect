@@ -2,263 +2,84 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-    <script src="../frontend/js/console-control.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="https://favicon.rysn-craft.workers.dev">
-  <title>Ativar Convite - Experience Connect</title>
   <meta name="robots" content="noindex, nofollow">
+  <title>Ativar acesso — Experience Connect</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700;9..40,800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,400;9..40,600;9..40,700;9..40,800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/invite/invite.css">
+  <script src="/frontend/js/console-control.js"></script>
+  <script src="/frontend/js/env-loader.js"></script>
 </head>
 <body>
-  <!-- EC Global Loader symbol -->
-  <svg style="display:none" aria-hidden="true">
-    <symbol id="ec-loader-lg" viewBox="0 0 100 100">
-      <g class="ecl-rays" stroke="var(--y)" stroke-width="3" stroke-linecap="round">
-        <line x1="50" y1="6" x2="50" y2="15"/>
-        <line x1="94" y1="50" x2="85" y2="50"/>
-        <line x1="50" y1="94" x2="50" y2="85"/>
-        <line x1="6" y1="50" x2="15" y2="50"/>
-        <line x1="81" y1="19" x2="75" y2="25"/>
-        <line x1="81" y1="81" x2="75" y2="75"/>
-        <line x1="19" y1="81" x2="25" y2="75"/>
-        <line x1="19" y1="19" x2="25" y2="25"/>
-      </g>
-      <circle class="ecl-orbit" cx="50" cy="50" r="44"/>
-      <circle class="ecl-dot" cx="50" cy="6" r="4.5"/>
-      <g class="ecl-mark">
-        <path class="ecl-crown" d="M61 28 l3 -7 4 4.5 4 -7 3 8.5 z" fill="var(--y)" stroke="var(--y)" stroke-width="1" stroke-linejoin="round"/>
-        <rect class="ecl-mark-rect" x="30" y="34" width="40" height="36" rx="5"/>
-        <text class="ecl-mark-txt" x="50" y="59" font-family="DM Sans" font-weight="800" font-size="20" text-anchor="middle">EC</text>
-      </g>
-    </symbol>
-  </svg>
+  <main class="invite-container">
+    <section id="loading-state" class="state">
+      <p>Preparando a ativação segura…</p>
+    </section>
 
-  <div class="background-effects">
-    <div class="glow glow-1"></div>
-    <div class="glow glow-2"></div>
-    <div class="glow glow-3"></div>
-    <div class="grid-overlay"></div>
-  </div>
-
-  <div class="invite-container">
-    <div id="loading-state" class="state">
-      <div class="ec-loader" style="width:80px;height:80px;color:var(--k,#0A0A0A)">
-        <svg viewBox="0 0 100 100"><use href="#ec-loader-lg"/></svg>
-      </div>
-      <p>Validando convite...</p>
-    </div>
-
-    <div id="error-state" class="state hidden">
-      <img src="/frontend/assets/image/icons8-alert-96.apng.png" alt="Error" class="error-icon">
-      <h2 class="error-title">Convite Inválido</h2>
+    <section id="error-state" class="state hidden">
+      <img src="/frontend/assets/image/icons8-alert-96.apng.png" alt="" class="error-icon">
+      <h1 class="error-title">Não foi possível continuar</h1>
       <p id="error-message" class="error-text"></p>
-    </div>
+    </section>
 
-    <div id="form-state" class="state hidden">
-      <div class="invite-header">
-        <img class="invite-brand-logo" src="https://ec-cdn.rysn-craft.workers.dev" alt="Experience Connect" width="48" height="48" loading="eager" decoding="async">
-        <h1>Bem-vindo ao Experience Connect!</h1>
-        <p>Você foi convidado para criar sua conta.</p>
-        <p class="nickname-display">Usuário: <strong id="nickname-display"></strong></p>
+    <section id="form-state" class="state hidden">
+      <header class="invite-header">
+        <img class="invite-brand-logo" src="https://ec-cdn.rysn-craft.workers.dev" alt="Experience Connect" width="48" height="48">
+        <h1>Ative seu acesso</h1>
+        <p id="activation-intro">Confirme o código recebido e crie uma passkey. Não existe senha nesta conta.</p>
+        <p class="nickname-display">Usuário: <strong id="nickname-display">—</strong></p>
+      </header>
+
+      <div class="step-indicator" id="step-indicator" aria-label="Etapas da ativação">
+        <div class="step active" data-step="1"><div class="step-circle">1</div><div class="step-label">Código</div></div>
+        <div class="step-line"></div>
+        <div class="step" data-step="2"><div class="step-circle">2</div><div class="step-label">Personagem</div></div>
+        <div class="step-line"></div>
+        <div class="step" data-step="3"><div class="step-circle">3</div><div class="step-label">Passkey</div></div>
       </div>
 
-      <div class="step-indicator">
-        <div class="step active" data-step="1">
-          <div class="step-circle">1</div>
-          <div class="step-label">Código</div>
-        </div>
-        <div class="step-line"></div>
-        <div class="step" data-step="2">
-          <div class="step-circle">2</div>
-          <div class="step-label">Senha</div>
-        </div>
-        <div class="step-line"></div>
-        <div class="step" data-step="3">
-          <div class="step-circle">3</div>
-          <div class="step-label">Avatar</div>
-        </div>
-      </div>
-
-      <div id="step-1" class="step-content active">
-        <h2 class="step-title">Digite o Código de Convite</h2>
-        <p class="step-description">Insira o código que você recebeu no convite</p>
-        
+      <div id="step-code" class="step-content active">
+        <h2 class="step-title">Digite o código recebido</h2>
+        <p class="step-description">O link abre esta tela; o código separado confirma que é você.</p>
         <form id="code-form" class="step-form" novalidate>
-          <!-- Honeypot Field (Anti-bot protection) -->
-          <input 
-            type="text" 
-            id="website" 
-            name="website" 
-            style="position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none;"
-            tabindex="-1"
-            autocomplete="off"
-            aria-label="Leave this field empty"
-          />
-
           <div class="input-group">
-            <label for="invite-code">Código de Convite</label>
-            <input 
-              type="text" 
-              id="invite-code" 
-              placeholder="CX-ALPHA-XXXX"
-              maxlength="13"
-              required
-              autofocus
-            />
+            <label for="invite-code">Código de ativação</label>
+            <input id="invite-code" type="text" placeholder="EC-1234-12345-12345" maxlength="19" autocomplete="one-time-code" autocapitalize="characters" required autofocus>
           </div>
-
-          <div id="code-error" class="form-error hidden"></div>
-
-          <button type="submit" class="btn-primary">
-            <span class="btn-text">Continuar</span>
-          </button>
+          <div id="code-error" class="form-error hidden" role="alert"></div>
+          <button type="submit" class="btn-primary"><span class="btn-text">Continuar</span></button>
         </form>
       </div>
 
-      <div id="step-2" class="step-content hidden">
-        <h2 class="step-title">Crie sua Senha</h2>
-        <p class="step-description">Escolha uma senha segura para sua conta</p>
-        
-        <form id="password-form" class="step-form" novalidate>
-          <input type="text" id="username-hint" autocomplete="username" readonly aria-hidden="true"
-            style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;" tabindex="-1">
-          <div class="input-group">
-            <label for="password">Senha</label>
-            <div class="password-wrapper">
-              <input
-                type="password"
-                id="password"
-                placeholder="Mínimo 6 caracteres"
-                minlength="6"
-                maxlength="128"
-                autocomplete="new-password"
-                required
-              />
-              <button type="button" class="toggle-password" onclick="togglePasswordVisibility('password')" aria-label="Mostrar senha">
-                <svg class="eye-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                  <circle cx="12" cy="12" r="3"/>
-                </svg>
-                <svg class="eye-closed" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="display:none">
-                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
-                  <line x1="1" y1="1" x2="23" y2="23"/>
-                </svg>
-              </button>
-            </div>
-            <div id="password-strength" class="password-strength hidden">
-              <div class="strength-bar">
-                <div id="strength-bar-fill" class="strength-bar-fill"></div>
-              </div>
-              <span id="strength-text" class="strength-text"></span>
-            </div>
-          </div>
-
-          <div class="pw-hint-anchor">
-            <div id="password-requirements" class="password-requirements hidden">
-              <div class="requirement" id="req-length">
-                <span class="req-icon">○</span>
-                <span class="req-text">Mínimo 6 caracteres</span>
-              </div>
-              <div class="requirement" id="req-uppercase">
-                <span class="req-icon">○</span>
-                <span class="req-text">Pelo menos 1 letra maiúscula</span>
-              </div>
-              <div class="requirement" id="req-lowercase">
-                <span class="req-icon">○</span>
-                <span class="req-text">Pelo menos 1 letra minúscula</span>
-              </div>
-              <div class="requirement" id="req-special">
-                <span class="req-icon">○</span>
-                <span class="req-text">Pelo menos 1 caractere especial (#@%$!&*)</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="input-group">
-            <label for="confirm-password">Confirmar Senha</label>
-            <div class="password-wrapper">
-              <input
-                type="password"
-                id="confirm-password"
-                placeholder="Digite a senha novamente"
-                minlength="6"
-                maxlength="128"
-                autocomplete="new-password"
-                required
-              />
-              <button type="button" class="toggle-password" onclick="togglePasswordVisibility('confirm-password')" aria-label="Mostrar senha">
-                <svg class="eye-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                  <circle cx="12" cy="12" r="3"/>
-                </svg>
-                <svg class="eye-closed" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="display:none">
-                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
-                  <line x1="1" y1="1" x2="23" y2="23"/>
-                </svg>
-              </button>
-            </div>
-          </div>
-
-          <div id="password-error" class="form-error hidden"></div>
-
-          <button type="submit" class="btn-primary">
-            <span class="btn-text">Continuar</span>
-          </button>
-        </form>
-      </div>
-
-      <div id="step-3" class="step-content hidden">
-        <h2 class="step-title">Escolha seu Avatar</h2>
-        <p class="step-description">Selecione um avatar que representa você</p>
-        
+      <div id="step-character" class="step-content hidden">
+        <h2 class="step-title">Escolha seu personagem</h2>
+        <p class="step-description">Essa escolha faz parte da criação da sua conta.</p>
         <div id="avatar-selector-container" class="avatar-selector-container"></div>
-        <div id="avatar-error" class="form-error hidden"></div>
-
-        <button type="button" id="finish-btn" class="btn-primary btn-aml">
-          <span class="aml-text">Aceitar Convite</span>
-          <span class="aml-stage"></span>
-        </button>
+        <div id="avatar-error" class="form-error hidden" role="alert"></div>
+        <button type="button" id="character-next" class="btn-primary" disabled><span class="btn-text">Criar minha passkey</span></button>
       </div>
-    </div>
 
-    <div id="success-state" class="state hidden">
-      <img src="/frontend/assets/image/icons8-check-mark-96.apng.png" alt="Success" class="success-icon">
-      <h2 class="success-title">Conta Criada com Sucesso!</h2>
-      <p class="success-text">Parabéns! Seu acesso foi liberado.</p>
-      <p class="success-text">Agora você já pode fazer login na plataforma.</p>
-      <p id="countdown-section" class="redirect-text" style="display: none;">Redirecionando em <span id="countdown">3</span> segundos...</p>
-    </div>
-  </div>
-
-  <div id="avatar-modal" class="avatar-modal hidden">
-    <div class="avatar-modal-overlay"></div>
-    <div class="avatar-modal-content">
-      <div class="avatar-modal-image-container">
-        <img id="avatar-modal-image" class="avatar-modal-image" alt="Avatar Preview">
+      <div id="step-passkey" class="step-content hidden">
+        <h2 class="step-title">Crie sua passkey</h2>
+        <p class="step-description">O navegador pedirá Face ID, digital, PIN ou sua chave de segurança.</p>
+        <img class="passkey-guide" src="/frontend/assets/image/ec-passkey-guia.svg" alt="Guia visual: criar passkey, confirmar sua identidade no dispositivo e concluir a ativação.">
+        <div id="passkey-error" class="form-error hidden" role="alert"></div>
+        <button type="button" id="create-passkey" class="btn-primary"><span class="btn-text">Criar passkey</span></button>
       </div>
-      <h3 id="avatar-modal-name" class="avatar-modal-name"></h3>
-      <p id="avatar-modal-description" class="avatar-modal-description"></p>
-      <p class="avatar-modal-question">Você escolheu esse personagem?</p>
-      <div class="avatar-modal-buttons">
-        <button type="button" class="btn-secondary" onclick="closeAvatarModal()">
-          <span class="btn-text">Voltar</span>
-        </button>
-        <button type="button" class="btn-primary" onclick="confirmAvatarSelection()">
-          <span class="btn-text">Confirmar Escolha</span>
-        </button>
-      </div>
-    </div>
-  </div>
+    </section>
 
-  <script src="/frontend/js/components/AvatarMetadataLoader.js?v=20250119-01"></script>
-  <script src="/invite/AvatarSelector.js?v=20250119-01"></script>
-  <script src="/invite/LogumAnimationController.js?v=20250119-01"></script>
-  <script src="/invite/TimingConfig.js?v=20250119-01"></script>
-  <script src="/invite/ExclusivePersonaSystem.js?v=20250119-01"></script>
-  <script src="/invite/ExclusiveAvatarRevealFlow.js?v=20250119-01"></script>
-  <script src="/invite/invite.js?v=20260613-01"></script>
+    <section id="success-state" class="state hidden">
+      <img src="/frontend/assets/image/icons8-check-mark-96.apng.png" alt="" class="success-icon">
+      <h1 class="success-title">Conta ativada!</h1>
+      <p class="success-text">Sua passkey foi cadastrada e seu acesso está liberado.</p>
+    </section>
+  </main>
+
+  <script src="/frontend/js/components/AvatarMetadataLoader.js"></script>
+  <script src="/invite/AvatarSelector.js"></script>
+  <script src="/frontend/js/passkey-client.js"></script>
+  <script src="/invite/invite.js"></script>
 </body>
 </html>

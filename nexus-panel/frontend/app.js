@@ -180,10 +180,12 @@ async function loadUsers() {
         <td class="actions">
           <button class="mini ${banned ? 'on' : 'danger'}" data-act="${banned ? 'unban' : 'ban'}">${banned ? 'desbanir' : 'banir'}</button>
           <button class="mini" data-act="reset">reset</button>
+          <button class="mini" data-act="recover">recuperar acesso</button>
           <button class="mini danger" data-act="del">excluir</button>
         </td>`;
       tr.querySelector('[data-act]').addEventListener('click', () => userAction(u.id, banned ? 'unban' : 'ban'));
       tr.querySelector('[data-act="reset"]').addEventListener('click', () => userAction(u.id, 'reset'));
+      tr.querySelector('[data-act="recover"]').addEventListener('click', () => issuePasskeyRecovery(u));
       tr.querySelector('[data-act="del"]').addEventListener('click', () => userAction(u.id, 'del'));
       tbody.appendChild(tr);
     }
@@ -211,6 +213,53 @@ document.getElementById('btn-reset-all').addEventListener('click', async () => {
   try { await api('/admin/users/reset-all', { method: 'POST', body: '{}' }); toast('Reset all concluído.'); loadUsers(); }
   catch (e) { toast(e.message, true); }
 });
+
+function closeRecoveryModal() {
+  document.getElementById('recovery-modal').hidden = true;
+}
+
+async function copyRecoveryValue(elementId, label) {
+  const element = document.getElementById(elementId);
+  try {
+    await navigator.clipboard.writeText(element.value);
+    toast(`${label} copiado.`);
+  } catch (_) {
+    element.select();
+    document.execCommand('copy');
+    toast(`${label} copiado.`);
+  }
+}
+
+function showRecoveryGrant(user, grant) {
+  const displayName = user.display_name || user.displayname || user.nickname || user.id;
+  document.getElementById('recovery-summary').textContent = `Recuperação criada para ${displayName}.`;
+  document.getElementById('recovery-link').value = grant.invite_url || '';
+  document.getElementById('recovery-code').value = grant.invite_code || '';
+  document.getElementById('recovery-expires').textContent = grant.invite_expires
+    ? `Válido até ${new Date(grant.invite_expires).toLocaleString('pt-BR')}.`
+    : 'Válido por 30 minutos.';
+  document.getElementById('recovery-modal').hidden = false;
+}
+
+async function issuePasskeyRecovery(user) {
+  const displayName = user.display_name || user.displayname || user.nickname || user.id;
+  if (!confirm(`Criar uma recuperação de passkey para ${displayName}? O link e o código valem 30 minutos e substituem uma recuperação pendente.`)) return;
+  try {
+    const grant = await api(`/admin/users/${user.id}/passkey-recovery`, {
+      method: 'POST',
+      body: JSON.stringify({ created_by: 'nexus-panel' }),
+    });
+    if (!grant.invite_url || !grant.invite_code) throw new Error('A recuperação não retornou link e código.');
+    showRecoveryGrant(user, grant);
+  } catch (e) { toast(e.message, true); }
+}
+
+document.getElementById('recovery-close').addEventListener('click', closeRecoveryModal);
+document.getElementById('recovery-modal').addEventListener('click', (event) => {
+  if (event.target.id === 'recovery-modal') closeRecoveryModal();
+});
+document.getElementById('recovery-copy-link').addEventListener('click', () => copyRecoveryValue('recovery-link', 'Link'));
+document.getElementById('recovery-copy-code').addEventListener('click', () => copyRecoveryValue('recovery-code', 'Código'));
 
 async function loadSeason() {
   const card = document.getElementById('season-card');

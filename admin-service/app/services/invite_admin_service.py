@@ -1,7 +1,7 @@
-"""Convites (criacao de usuarios) pro painel: usa a RPC gerar_invite existente.
-Single + lote (lista de nicknames). Listagem via tabela invite_token."""
+"""Admin-side issuance and recovery for passwordless passkey grants."""
 
 import logging
+from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List
 
 from app.db.supabase_client import supabase_client
@@ -10,53 +10,102 @@ logger = logging.getLogger(__name__)
 
 
 def _err_message(exc: Exception) -> str:
-    msg = str(exc)
-    # A APIError da supabase-py costuma trazer a mensagem do RAISE EXCEPTION do Postgres.
-    for key in ("'message': '", '"message": "'):
-        if key in msg:
-            rest = msg.split(key, 1)[1]
-            end = rest.find("'") if key.endswith("'") else rest.find('"')
+    message = str(exc)
+    for marker in ("'message': '", '"message": "'):
+        if marker in message:
+            rest = message.split(marker, 1)[1]
+            end = rest.find("'") if marker.endswith("'") else rest.find('"')
             if end > 0:
                 return rest[:end]
-    return msg
+    return message
 
 
 class InviteAdminService:
-    async def create_invite(self, nickname: str) -> Dict[str, Any]:
+    EVENT_TTL = timedelta(days=4)
+    RECOVERY_TTL = timedelta(minutes=30)
+
+    async def _grant(self, grant_type: str, *, nickname: str | None = None,
+                     target_user_id: str | None = None, created_by: str = "admin") -> Dict[str, Any]:
+        expires = datetime.now(timezone.utc) + (self.RECOVERY_TTL if grant_type == "RECOVERY" else self.EVENT_TTL)
+        try:
+            data = await supabase_client.call_rpc("create_passkey_grant", {
+                "p_grant_type": grant_type,
+                "p_nickname": nickname,
+                "p_target_user_id": target_user_id,
+                "p_expires_at": expires.isoformat(),
+                "p_created_by": created_by,
+            })
+            return {"ok": True, "grant": data}
+        except Exception as exc:
+            logger.warning("Could not issue %s passkey grant: %s", grant_type, exc)
+            return {"ok": False, "error": _err_message(exc)}
+
+    async def create_invite(self, nickname: str, created_by: str = "admin") -> Dict[str, Any]:
         nickname = (nickname or "").strip()
         if not nickname:
             return {"ok": False, "nickname": nickname, "error": "nickname vazio"}
-        try:
-            data = await supabase_client.call_rpc("gerar_invite", {"p_nickname": nickname})
-            return {"ok": True, "invite": data}
-        except Exception as e:
-            logger.warning("gerar_invite falhou p/ %s: %s", nickname, e)
-            return {"ok": False, "nickname": nickname, "error": _err_message(e)}
+        result = await self._grant("INVITE", nickname=nickname, created_by=created_by)
+        if not result["ok"]:
+            return {"ok": False, "nickname": nickname, "error": result["error"]}
+        return {"ok": True, "invite": result["grant"]}
 
-    async def create_bulk(self, nicknames: List[str]) -> Dict[str, Any]:
-        results = []
-        for nick in nicknames:
-            nick = (nick or "").strip()
-            if not nick:
-                continue
-            results.append(await self.create_invite(nick))
-        ok = [r for r in results if r.get("ok")]
-        fail = [r for r in results if not r.get("ok")]
-        return {"total": len(results), "created": len(ok), "failed": len(fail), "results": results}
-
-    async def clear_used_invites(self) -> Dict[str, Any]:
-        res = supabase_client.table("invite_token").delete().eq("invite_used", True).execute()
-        return {"deleted": len(res.data or [])}
+    async def create_bulk(self, nicknames: List[str], created_by: str = "admin") -> Dict[str, Any]:
+        results = [await self.create_invite(nickname, created_by) for nickname in nicknames if (nickname or "").strip()]
+        return {
+            "total": len(results),
+            "created": sum(result.get("ok", False) for result in results),
+            "failed": sum(not result.get("ok", False) for result in results),
+            "results": results,
+        }
 
     async def list_invites(self, limit: int = 200) -> List[Dict[str, Any]]:
-        res = (
-            supabase_client.table("invite_token")
-            .select("nickname,invite_code,invite_url,invite_used,invite_expires,created_at")
-            .order("created_at", desc=True)
-            .limit(limit)
-            .execute()
-        )
-        return res.data or []
+        result = (supabase_client.table("passkey_grants")
+                  .select("id,grant_type,state,nickname,target_user_id,expires_at,used_at,revoked_at,attempt_count,created_by,created_at")
+                  .order("created_at", desc=True).limit(limit).execute())
+        return result.data or []
+
+    async def clear_used_invites(self) -> Dict[str, Any]:
+        # Security/audit events reference grants. They are never physically
+        # deleted from the admin route anymore.
+        return {"deleted": 0, "message": "Passkey grants are retained for audit."}
+
+    async def create_recovery(self, user_id: str, created_by: str = "admin") -> Dict[str, Any]:
+        return await self._grant("RECOVERY", target_user_id=user_id, created_by=created_by)
+
+    async def create_migration(self, user_id: str, created_by: str = "admin") -> Dict[str, Any]:
+        return await self._grant("MIGRATION", target_user_id=user_id, created_by=created_by)
+
+    async def create_migration_batch(self, created_by: str = "admin") -> Dict[str, Any]:
+        users = (supabase_client.table("usuarios").select("id,nickname").eq("banned", False).limit(10000).execute().data or [])
+        credentials = (supabase_client.table("passkey_credentials").select("user_id").is_("revoked_at", "null").execute().data or [])
+        covered_users = {credential["user_id"] for credential in credentials}
+        results = []
+        for user in users:
+            if user["id"] not in covered_users:
+                result = await self.create_migration(user["id"], created_by)
+                results.append({"user_id": user["id"], "nickname": user["nickname"], **result})
+        return {
+            "total": len(results), "created": sum(result.get("ok", False) for result in results),
+            "failed": sum(not result.get("ok", False) for result in results), "results": results,
+        }
+
+    async def list_passkeys(self, user_id: str) -> List[Dict[str, Any]]:
+        result = (supabase_client.table("passkey_credentials")
+                  .select("id,friendly_name,transports,aaguid,backup_eligible,backup_state,created_at,last_used_at,revoked_at,revoked_reason")
+                  .eq("user_id", user_id).order("created_at", desc=True).execute())
+        return result.data or []
+
+    async def revoke_passkey(self, credential_id: str, reason: str) -> bool:
+        result = await supabase_client.call_rpc("revoke_passkey_credential", {
+            "p_credential_id": credential_id, "p_reason": (reason or "admin_revoked")[:200],
+        })
+        return bool(result)
+
+    async def revoke_all_passkeys(self, user_id: str, reason: str) -> int:
+        result = await supabase_client.call_rpc("revoke_all_user_passkeys", {
+            "p_user_id": user_id, "p_reason": (reason or "admin_revoked_all")[:200],
+        })
+        return int(result or 0)
 
 
 invite_admin_service = InviteAdminService()

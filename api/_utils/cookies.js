@@ -1,6 +1,6 @@
 const SESSION_COOKIE = 'cx_session';
 const AUTH_FLAG_COOKIE = 'cx_auth';
-const DEFAULT_MAX_AGE_SECONDS = 7 * 24 * 60 * 60; // 7d
+const DEFAULT_MAX_AGE_SECONDS = 4 * 24 * 60 * 60; // event maximum
 
 function isProduction() {
   return process.env.VERCEL_ENV === 'production' || process.env.ENVIRONMENT === 'production';

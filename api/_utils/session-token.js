@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const { randomUUID } = require('crypto');
 
 function getSessionSecret() {
   const secret =
@@ -22,12 +23,14 @@ function createSessionToken(user, options = {}) {
     {
       sub: user.id,
       nickname: user.nickname || null,
-      typ: 'cx_session'
+      typ: 'cx_session',
+      jti: options.sessionId || randomUUID(),
+      sv: Number.isInteger(options.authVersion) ? options.authVersion : 1
     },
     getSessionSecret(),
     {
       algorithm: 'HS256',
-      expiresIn: options.expiresIn || '7d',
+      expiresIn: options.expiresIn || '4d',
       issuer: 'cx-game',
       audience: 'cxgame-vps'
     }

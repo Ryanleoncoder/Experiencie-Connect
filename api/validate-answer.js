@@ -525,7 +525,7 @@ module.exports = async (req, res) => {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const auth = requireCxSession(req);
+  const auth = await requireCxSession(req);
   if (!auth.ok) {
     return res.status(auth.status).json({
       error: auth.error,

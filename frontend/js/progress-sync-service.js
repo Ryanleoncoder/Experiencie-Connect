@@ -77,7 +77,7 @@ class ProgressSyncService {
   }
 
   getSessionToken() {
-    return sessionStorage.getItem('cx_session_token') || localStorage.getItem('cx_session_token') || '';
+    return '';
   }
 
   async fetchProtectedJSON(url) {
@@ -90,7 +90,6 @@ class ProgressSyncService {
     }
 
     const headers = { Accept: 'application/json' };
-    if (token) headers.Authorization = `Bearer ${token}`;
 
     const response = await fetch(url, {
       method: 'GET',

@@ -71,13 +71,7 @@
 
         <div id="login-prompt" class="login-prompt" style="display:none">
             <div class="login-prompt__msg">Faça login para ver suas conquistas da temporada</div>
-            <form id="season-login-form" class="season-login" autocomplete="on">
-                <input type="text" id="sl-nick" class="season-login__input" placeholder="Usuário" autocomplete="username" required>
-                <input type="password" id="sl-pass" class="season-login__input" placeholder="Senha" autocomplete="current-password" required>
-                <input type="text" id="sl-website" tabindex="-1" autocomplete="off" aria-hidden="true" class="season-login__hp">
-                <button type="submit" class="status-btn status-btn--primary" id="sl-submit" style="min-width:100%">Entrar</button>
-                <div class="season-login__error" id="sl-error" role="alert"></div>
-            </form>
+            <a class="status-btn status-btn--primary" href="/login" style="min-width:100%;text-decoration:none">Entrar com passkey</a>
         </div>
 
         <div class="status-actions">
@@ -269,96 +263,9 @@
             const prompt = document.getElementById('login-prompt');
             if (prompt) prompt.style.display = 'flex';
             document.querySelectorAll('.status-actions, .share-row').forEach(el => { el.style.display = 'none'; });
-            setupInlineLogin();
         }
 
         
-        async function storeSessionAndSync(data, usernameInput) {
-            const u = data.user;
-            const uid = u.id || usernameInput;
-            const storage = window.CxSession?.getPrimaryStorage?.() || sessionStorage;
-
-            ['localStorage', 'sessionStorage'].forEach((s) => {
-                const st = window[s];
-                ['cx_logged_in_user', 'cx_session_token', 'cx_ranking_code', 'cx_display_name', 'loggedIn'].forEach(k => st.removeItem(k));
-            });
-
-            storage.setItem('cx_logged_in_user', uid);
-            storage.setItem('cx_logged_in_user_email', u.nickname || usernameInput.toLowerCase());
-            if (u.ranking_code) storage.setItem('cx_ranking_code', u.ranking_code);
-            if (u.display_name) storage.setItem('cx_display_name', u.display_name);
-            storage.setItem('loggedIn', 'true');
-            
-
-            const users = JSON.parse(storage.getItem('cx_users') || '{}');
-            if (!users[uid]) {
-                users[uid] = {
-                    nickname: u.nickname || usernameInput,
-                    display_name: u.display_name || null,
-                    ranking_code: u.ranking_code || null,
-                    avatar_file_name: u.avatar_file_name || null,
-                    level: 1, xp: 0, completedChallenges: []
-                };
-            }
-            try {
-                if (window.progressSync) {
-                    await window.progressSync.initialize();
-                    const rp = await window.progressSync.loadProgressFromSupabase(uid);
-                    if (rp) {
-                        users[uid] = {
-                            ...users[uid],
-                            xp: rp.xp, level: rp.level,
-                            completedChallenges: rp.completed_challenges,
-                            completedMinigames: rp.completed_minigames,
-                            attemptHistory: rp.attempt_history,
-                            display_name: rp.display_name || users[uid].display_name || null,
-                            ranking_code: rp.ranking_code || users[uid].ranking_code || null,
-                            avatar_file_name: rp.avatar_file_name || users[uid].avatar_file_name || null
-                        };
-                    }
-                }
-            } catch (e) { }
-            storage.setItem('cx_users', JSON.stringify(users));
-        }
-
-        function setupInlineLogin() {
-            const form = document.getElementById('season-login-form');
-            if (!form) return;
-            const errEl = document.getElementById('sl-error');
-            const btn = document.getElementById('sl-submit');
-
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                errEl.textContent = '';
-                const nickname = document.getElementById('sl-nick').value.trim();
-                const password = document.getElementById('sl-pass').value;
-                const website = document.getElementById('sl-website').value || '';
-                if (!nickname || !password) { errEl.textContent = 'Preencha usuário e senha.'; return; }
-
-                btn.disabled = true;
-                const label = btn.textContent;
-                btn.textContent = 'Entrando...';
-                try {
-                    const res = await fetch('/api/login', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ nickname, password, website })
-                    });
-                    const data = await res.json();
-                    if (res.ok && data.success) {
-                        await storeSessionAndSync(data, nickname);
-                        location.reload();
-                        return;
-                    }
-                    errEl.textContent = data.error || 'Usuário ou senha inválidos.';
-                } catch (_) {
-                    errEl.textContent = 'Erro de conexão. Tente novamente.';
-                }
-                btn.disabled = false;
-                btn.textContent = label;
-            });
-        }
-
         // Next Season Date 
         const urlParams        = new URLSearchParams(window.location.search);
         const nextSeasonDate   = urlParams.get('next_season_date');

@@ -72,7 +72,7 @@
     }
 
     function getCxSessionToken() {
-        return sessionStorage.getItem('cx_session_token') || localStorage.getItem('cx_session_token') || '';
+        return '';
     }
 
     function getPhaseSessionIdFromLocation() {
@@ -93,10 +93,7 @@
     }
 
     function buildProtectedHeaders(extraHeaders = {}) {
-        const token = getCxSessionToken();
-        return token
-            ? { ...extraHeaders, Authorization: `Bearer ${token}` }
-            : { ...extraHeaders };
+        return { ...extraHeaders };
     }
 
     /**

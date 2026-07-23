@@ -375,14 +375,11 @@ function getChallengeRandomizationUserId(user = null) {
 }
 
 function getCxSessionToken() {
-    return window.CxSession?.getSessionValue?.('cx_session_token') || sessionStorage.getItem('cx_session_token') || localStorage.getItem('cx_session_token') || '';
+    return '';
 }
 
 function buildProtectedHeaders(extraHeaders = {}) {
-    const token = getCxSessionToken();
-    return token
-        ? { ...extraHeaders, Authorization: `Bearer ${token}` }
-        : { ...extraHeaders };
+    return { ...extraHeaders };
 }
 
 function getPhaseSessionIdFromUrl(search = window.location.search) {

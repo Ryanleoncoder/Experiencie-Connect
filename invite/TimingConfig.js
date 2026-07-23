@@ -87,7 +87,7 @@ const DEFAULT_TIMING_CONFIG = {
   
   
   /**
-   * Delay após a seleção antes de prosseguir para a próxima etapa (criação de senha).
+   * Delay após a seleção antes de prosseguir para a criação da passkey.
    * Este delay permite que o feedback visual complete antes da transição.
    */
   redirectDelay: 600,

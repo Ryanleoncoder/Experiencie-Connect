@@ -28,8 +28,7 @@
   }
 
   function getStoredSessionToken({ localStorageRef, sessionStorageRef } = {}) {
-    const sessionRef = sessionStorageRef || root?.sessionStorage;
-    return sessionRef?.getItem?.('cx_session_token') || null;
+    return null;
   }
 
   function challengeSignature(challengeIds = []) {
@@ -432,9 +431,9 @@
 
       const response = await this.fetchImpl(`${this.apiBase}/api/intermission/manifest`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           user_id: userId,
@@ -485,9 +484,9 @@
         // ENTRADA no desafio: cria-ou-reusa a phase autoritativa (POST).
         response = await this.fetchImpl(`${this.apiBase}/api/phase/sessions`, {
           method: 'POST',
+          credentials: 'include',
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({ season_id: seasonId, level, setor })
         });
@@ -500,7 +499,7 @@
           const q = `season_id=${encodeURIComponent(seasonId)}&level=${encodeURIComponent(level)}&setor=${encodeURIComponent(setor || 'CX')}`;
           response = await this.fetchImpl(`${this.apiBase}/api/phase/sessions/active?${q}`, {
             method: 'GET',
-            headers: { 'Authorization': `Bearer ${token}` },
+            credentials: 'include',
             signal: ctrl ? ctrl.signal : undefined
           });
         } finally {
@@ -539,9 +538,9 @@
         `${this.apiBase}/api/phase/sessions/${encodeURIComponent(phaseSessionId)}/intermission/${encodeURIComponent(flowChallengeId)}/resolve`,
         {
           method: 'POST',
+          credentials: 'include',
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
+            'Content-Type': 'application/json'
           }
         }
       );
