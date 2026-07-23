@@ -72,6 +72,10 @@ class ActivationRequest(BaseModel):
     code: str = Field(min_length=10, max_length=32)
 
 
+class ActivationStatusRequest(BaseModel):
+    token: str = Field(min_length=64, max_length=128)
+
+
 class RegistrationOptionsRequest(BaseModel):
     avatar_file_name: str | None = Field(default=None, max_length=100)
 
@@ -339,6 +343,30 @@ async def verify_activation(request: Request, body: ActivationRequest, response:
         "nickname": grant["nickname"],
         "activation_expires_in": settings.WEBAUTHN_ACTIVATION_SECONDS,
     }
+
+
+@router.post("/activation/status")
+async def activation_status(request: Request, body: ActivationStatusRequest):
+    """Return only whether a link can still begin an activation ceremony."""
+    await _rate_limit(request, "activation-status", 30, 10 * 60)
+    token = body.token.strip().lower()
+    if not re.fullmatch(r"[a-f0-9]{64}", token):
+        return {"valid": False}
+    try:
+        result = supabase_client.table("passkey_grants").select(
+            "state,expires_at"
+        ).eq("token_hash", _hash(token)).limit(1).execute()
+        rows = result.data or []
+    except Exception as exc:
+        logger.exception("Could not read activation link status")
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Activation status temporarily unavailable") from exc
+    if not rows or rows[0].get("state") != "ISSUED":
+        return {"valid": False}
+    try:
+        expires_at = datetime.fromisoformat(str(rows[0]["expires_at"]).replace("Z", "+00:00"))
+    except (KeyError, TypeError, ValueError):
+        return {"valid": False}
+    return {"valid": expires_at > datetime.now(timezone.utc)}
 
 
 @router.post("/passkeys/register/options")

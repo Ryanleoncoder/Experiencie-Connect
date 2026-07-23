@@ -114,10 +114,23 @@
     }
   });
 
-  if (!/^[a-f0-9]{64}$/.test(token)) {
-    showError('Este link de ativação é inválido. Peça um novo convite ao administrador.');
-  } else {
-    showState('form');
-    showStep('code', 1);
+  async function initializeActivation() {
+    if (!/^[a-f0-9]{64}$/.test(token)) {
+      showError('Este link de ativação é inválido. Peça um novo convite ao administrador.');
+      return;
+    }
+    try {
+      var status = await window.PasskeyClient.api('/activation/status', { token: token });
+      if (!status.valid) {
+        showError('Este link já foi usado ou expirou. Solicite um novo acesso ao administrador.');
+        return;
+      }
+      showState('form');
+      showStep('code', 1);
+    } catch (exception) {
+      showError('Não foi possível validar este link agora. Tente novamente em instantes.');
+    }
   }
+
+  initializeActivation();
 })();
